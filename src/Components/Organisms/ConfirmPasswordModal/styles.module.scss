@@ -1,4 +1,7 @@
 @import "../../../Variable.scss";
+.modal{
+  backdrop-filter: blur(5px) !important;
+}
 .input_box {
   width: 100%;
 }

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 import styles from "./styles.module.scss";
 import { Formik, Form } from "formik";
@@ -13,6 +13,15 @@ type ConfirmModalType = {
 const ConfirmPasswordModal = (props: ConfirmModalType) => {
   const { ConfirmModal, handleConfirmModal } = props;
 
+  const [PasswordView, setPasswordView] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+  const [PasswordType, setPasswordType] = useState({
+    password: "password",
+    confirmPassword: "password",
+  });
+
   const validationSchema = Yup.object().shape({
     password: Yup.string()
       .min(8, "Too Short")
@@ -23,6 +32,21 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
       .required("Confirm password is required"),
   });
 
+  useEffect(() => {
+    if (PasswordView.password) {
+      setPasswordType((prev) => ({ ...prev, password: "text" }));
+    }
+    if (!PasswordView.password) {
+      setPasswordType((prev) => ({ ...prev, password: "password" }));
+    }
+    if (PasswordView.confirmPassword) {
+      setPasswordType((prev) => ({ ...prev, confirmPassword: "text" }));
+    }
+    if (!PasswordView.confirmPassword) {
+      setPasswordType((prev) => ({ ...prev, confirmPassword: "password" }));
+    }
+  }, [PasswordView]);
+
   return (
     <Modal
       title="Add Password"
@@ -30,6 +54,8 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
       onOk={handleConfirmModal}
       onCancel={handleConfirmModal}
       footer={null}
+      className={styles.modal}
+      centered
     >
       <Formik
         initialValues={{ password: "", confirmPassword: "" }}
@@ -42,8 +68,10 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
               <InputLabel1
                 name="password"
                 label="Password"
-                type="password"
+                type={PasswordType.password}
                 onChange={handleChange}
+                PasswordView={PasswordView.password}
+                setPasswordView={setPasswordView}
               />
             </div>
             {errors.password && touched.password ? (
@@ -53,15 +81,19 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
               <InputLabel1
                 name="confirmPassword"
                 label="Confirm Password"
-                type="password"
+                type={PasswordType.confirmPassword}
                 onChange={handleChange}
+                PasswordView={PasswordView.confirmPassword}
+                setPasswordView={setPasswordView}
               />
             </div>
             {errors.confirmPassword && touched.confirmPassword ? (
               <div className={styles.error}>{errors.confirmPassword}</div>
             ) : null}
 
-            <button type="submit" className={styles.button}>Submit</button>
+            <button type="submit" className={styles.button}>
+              Submit
+            </button>
           </Form>
         )}
       </Formik>

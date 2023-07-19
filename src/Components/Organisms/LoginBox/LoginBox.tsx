@@ -5,8 +5,14 @@ import RememberMe from "../../Molecules/RememberMe/RememberMe";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 function LoginBox() {
-  const [PasswordView, setPasswordView] = useState(false);
-  const [PasswordType, setPasswordType] = useState("password");
+  const [PasswordView, setPasswordView] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+  const [PasswordType, setPasswordType] = useState({
+    password: "password",
+    confirmPassword: "password",
+  });
 
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid Email").required("Email is required"),
@@ -17,10 +23,11 @@ function LoginBox() {
   });
 
   useEffect(() => {
-    if (PasswordView) {
-      setPasswordType("text");
-    } else {
-      setPasswordType("password");
+    if (PasswordView.password) {
+      setPasswordType((prev) => ({ ...prev, password: "text" }));
+    }
+    if (!PasswordView.password) {
+      setPasswordType((prev) => ({ ...prev, password: "password" }));
     }
   }, [PasswordView]);
 
@@ -51,8 +58,8 @@ function LoginBox() {
               <InputLabel1
                 name="password"
                 label="Password"
-                type={PasswordType}
-                PasswordView={PasswordView}
+                type={PasswordType.password}
+                PasswordView={PasswordView.password}
                 setPasswordView={setPasswordView}
                 onChange={handleChange}
               />

@@ -3,17 +3,20 @@ import InputBox1 from "../../../Atoms/InputBox/InputBox1/InputBox1";
 import styles from "./styles.module.scss";
 import Icons from "../../../../Utils/ReactIcons/Icons";
 type InputType = {
-  name:string,
+  name: string;
   label: string;
   type: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  setPasswordView?: Dispatch<SetStateAction<boolean>>;
+  setPasswordView?: Dispatch<
+    SetStateAction<{ password: boolean; confirmPassword: boolean }>
+  >;
   PasswordView?: boolean;
 };
 
 function InputLabel1(props: InputType) {
-  const { name,label, type, value, onChange, setPasswordView, PasswordView } = props;
+  const { name, label, type, value, onChange, setPasswordView, PasswordView } =
+    props;
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -23,14 +26,24 @@ function InputLabel1(props: InputType) {
             {PasswordView ? (
               <div
                 className={styles.icon}
-                onClick={() => setPasswordView(!PasswordView)}
+                onClick={() =>
+                  setPasswordView((prev) => ({
+                    ...prev,
+                    [name]: !PasswordView,
+                  }))
+                }
               >
                 <Icons name="AiFillEye" />
               </div>
             ) : (
               <div
                 className={styles.icon}
-                onClick={() => setPasswordView(!PasswordView)}
+                onClick={() =>
+                  setPasswordView((prev) => ({
+                    ...prev,
+                    [name]: !PasswordView,
+                  }))
+                }
               >
                 <Icons name="AiFillEyeInvisible" />
               </div>
