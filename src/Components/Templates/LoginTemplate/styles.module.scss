@@ -1,0 +1,23 @@
+@import "../../../Variable.scss";
+.container {
+  display: flex;
+}
+.left_container {
+  //   border: 1px solid red;
+  width: 50%;
+  height: 100vh;
+  background-color: $Blue_Background_color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.right_container {
+  // border: 1px solid red;
+  width: 50%;
+  height: 100vh;
+  background-color: $Grey_Background_color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}

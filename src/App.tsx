@@ -1,11 +1,8 @@
 import "./App.scss";
+import ProjectRoutes from "./Routes/ProjectRoutes";
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Hello World</h1>
-    </div>
-  );
+  return <ProjectRoutes />;
 }
 
 export default App;
