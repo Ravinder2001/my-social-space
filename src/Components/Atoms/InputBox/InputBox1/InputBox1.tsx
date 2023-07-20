@@ -5,6 +5,7 @@ type InputBoxType = {
   type: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  max_length?: number;
 };
 
 function InputBox1(props: InputBoxType) {
@@ -15,6 +16,7 @@ function InputBox1(props: InputBoxType) {
       type={props.type}
       value={props.value}
       onChange={props.onChange}
+      maxLength={props.max_length}
     />
   );
 }

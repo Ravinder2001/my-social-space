@@ -6,7 +6,7 @@ import { setIndex } from "../../../store/Slices/LoginPageSlice";
 function LoginNavHeader() {
   const dispatch = useDispatch();
   const selectedIndex = useSelector(
-    (state: RootState) => state.LoginPageReducer.index
+    (state: RootState) => state.loginPage.index
   );
 
   const handleIndex = (e: MouseEvent<HTMLDivElement>) => {

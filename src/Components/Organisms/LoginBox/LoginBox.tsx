@@ -4,7 +4,19 @@ import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
 import RememberMe from "../../Molecules/RememberMe/RememberMe";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { auth, googleAuth } from "../../../firebase.config";
+import LoginWithToken from "../../../APIs/LoginWithToken";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
+import LoginWithEmailAndPassword from "../../../APIs/LoginWithEmailAndPassword";
+import { useDispatch } from "react-redux";
+import { LoginUser } from "../../../store/Slices/UserSlice";
+import { JWT_Decode } from "../../../Utils/Function";
+
 function LoginBox() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [PasswordView, setPasswordView] = useState({
     password: false,
     confirmPassword: false,
@@ -13,6 +25,7 @@ function LoginBox() {
     password: "password",
     confirmPassword: "password",
   });
+  const [RememberMeState, setRememberMeState] = useState<boolean>(false);
 
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid Email").required("Email is required"),
@@ -21,6 +34,45 @@ function LoginBox() {
       .max(20, "Too long")
       .required("Password is required"),
   });
+
+  const handleTokenLogin = () => {
+    auth.signInWithPopup(googleAuth).then((res) => {
+      if (res) {
+        res.user?.getIdToken().then(async (token) => {
+          const res = await LoginWithToken({ token });
+          if (res.status === Request_Succesfull) {
+            const decode = JWT_Decode(res.token);
+            dispatch(LoginUser(decode));
+            localStorage.setItem(LocalStorageKey, res.token);
+            navigate("/");
+            message.success("Welcome to My Social Space");
+          } else {
+            message.error(res.response.data.message);
+          }
+        });
+      }
+    });
+  };
+  const handleEmailLogin = async (values: {
+    email: string;
+    password: string;
+  }) => {
+    let data = {
+      email: values.email,
+      password: values.password,
+      rememberMe: RememberMeState,
+    };
+    const res = await LoginWithEmailAndPassword(data);
+    if (res.status === Request_Succesfull) {
+      const decode = JWT_Decode(res.token);
+      dispatch(LoginUser(decode));
+      localStorage.setItem(LocalStorageKey, res.token);
+      navigate("/");
+      message.success("Welcome to My Social Space");
+    } else {
+      message.error(res.response.data.message);
+    }
+  };
 
   useEffect(() => {
     if (PasswordView.password) {
@@ -38,7 +90,7 @@ function LoginBox() {
         initialValues={{ email: "", password: "" }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
-          console.log(values);
+          handleEmailLogin(values);
         }}
       >
         {({ errors, touched, handleChange }) => (
@@ -49,6 +101,7 @@ function LoginBox() {
                 label="Email"
                 type="text"
                 onChange={handleChange}
+                max_length={255}
               />
             </div>
             {errors.email && touched.email ? (
@@ -62,13 +115,17 @@ function LoginBox() {
                 PasswordView={PasswordView.password}
                 setPasswordView={setPasswordView}
                 onChange={handleChange}
+                max_length={20}
               />
             </div>
             {errors.password && touched.password ? (
               <div className={styles.error}>{errors.password}</div>
             ) : null}
             <div className={styles.forgot_box}>
-              <RememberMe />
+              <RememberMe
+                setRememberMeState={setRememberMeState}
+                RememberMeState={RememberMeState}
+              />
               <div className={styles.forgot_text}>Forgot Password?</div>
             </div>
             <button type="submit" className={styles.button}>
@@ -79,7 +136,9 @@ function LoginBox() {
       </Formik>
 
       <div className={styles.line}></div>
-      <div className={styles.google}>Login with Google</div>
+      <div className={styles.google} onClick={handleTokenLogin}>
+        Login with Google
+      </div>
     </div>
   );
 }

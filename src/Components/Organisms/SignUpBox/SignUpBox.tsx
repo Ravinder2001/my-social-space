@@ -4,7 +4,17 @@ import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import ConfirmPasswordModal from "../ConfirmPasswordModal/ConfirmPasswordModal";
+import { auth, googleAuth } from "../../../firebase.config";
+import { message } from "antd";
+import RegisterWithEmailAndPassword from "../../../APIs/RegisterWithEmailAndPassword";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { useNavigate } from "react-router-dom";
+import { JWT_Decode } from "../../../Utils/Function";
+import { LoginUser } from "../../../store/Slices/UserSlice";
+import { useDispatch } from "react-redux";
 function SignUpBox() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [PasswordView, setPasswordView] = useState({
     password: false,
     confirmPassword: false,
@@ -35,6 +45,36 @@ function SignUpBox() {
     setConfirmModal(!ConfirmModal);
   };
 
+  const handleGmailVerification = async (email: string) => {
+    try {
+      const signInMethods = await auth.fetchSignInMethodsForEmail(email);
+      return signInMethods.length;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const handleRegisterWithEmailAndPassword = async (data: {
+    email: string;
+    name: string;
+    password: string;
+  }) => {
+    const res = await RegisterWithEmailAndPassword({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
+    if (res.status === Request_Succesfull) {
+      const decode = JWT_Decode(res.token);
+      dispatch(LoginUser(decode));
+      localStorage.setItem(LocalStorageKey, res.token);
+      navigate("/");
+      message.success("Welcome to My Social Space");
+    } else {
+      message.error(res.response.data.message);
+    }
+  };
+
   useEffect(() => {
     if (PasswordView.password) {
       setPasswordType((prev) => ({ ...prev, password: "text" }));
@@ -62,8 +102,12 @@ function SignUpBox() {
             confirmPassword: "",
           }}
           validationSchema={signUpSchema}
-          onSubmit={(values) => {
-            console.log(values);
+          onSubmit={async (values) => {
+            if (await handleGmailVerification(values.email)) {
+              handleRegisterWithEmailAndPassword(values);
+            } else {
+              message.error("Please enter a valid email");
+            }
           }}
         >
           {({ errors, touched, handleChange }) => (
@@ -74,6 +118,7 @@ function SignUpBox() {
                   label="Name"
                   type="text"
                   onChange={handleChange}
+                  max_length={255}
                 />
               </div>
               {errors.name && touched.name ? (
@@ -85,6 +130,7 @@ function SignUpBox() {
                   label="Email"
                   type="email"
                   onChange={handleChange}
+                  max_length={255}
                 />
               </div>
               {errors.email && touched.email ? (
@@ -98,6 +144,7 @@ function SignUpBox() {
                   PasswordView={PasswordView.password}
                   setPasswordView={setPasswordView}
                   onChange={handleChange}
+                  max_length={20}
                 />
               </div>
               {errors.password && touched.password ? (
@@ -111,6 +158,7 @@ function SignUpBox() {
                   PasswordView={PasswordView.confirmPassword}
                   setPasswordView={setPasswordView}
                   onChange={handleChange}
+                  max_length={20}
                 />
               </div>
               {errors.confirmPassword && touched.confirmPassword ? (

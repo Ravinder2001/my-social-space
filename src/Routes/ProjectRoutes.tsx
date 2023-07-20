@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
 import PublicRoutes from "./PublicRoutes";
 import Login from "../Pages/Login/Login";
+import { LocalStorageKey } from "../Utils/Constant";
 
 function ProjectRoutes() {
   return (
@@ -12,7 +13,14 @@ function ProjectRoutes() {
         path="/"
         element={
           <PrivateRoutes>
-            <div>Hii</div>
+            <button
+              onClick={() => {
+                localStorage.removeItem(LocalStorageKey);
+                
+              }}
+            >
+              Logout
+            </button>
           </PrivateRoutes>
         }
       />

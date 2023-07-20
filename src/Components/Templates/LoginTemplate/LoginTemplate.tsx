@@ -10,7 +10,7 @@ import SignUpBox from "../../Organisms/SignUpBox/SignUpBox";
 
 function LoginTemplate() {
   const SelectedIndex = useSelector(
-    (state: RootState) => state.LoginPageReducer.index
+    (state: RootState) => state.loginPage.index
   );
   return (
     <div className={styles.container}>

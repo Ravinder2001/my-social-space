@@ -1,9 +1,16 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button, Modal } from "antd";
+import { Button, Modal, message } from "antd";
 import styles from "./styles.module.scss";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
+import { auth, googleAuth } from "../../../firebase.config";
+import RegisterWithToken from "../../../APIs/RegisterWithToken";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { JWT_Decode } from "../../../Utils/Function";
+import { LoginUser } from "../../../store/Slices/UserSlice";
 
 type ConfirmModalType = {
   handleConfirmModal: () => void;
@@ -11,6 +18,8 @@ type ConfirmModalType = {
 };
 
 const ConfirmPasswordModal = (props: ConfirmModalType) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { ConfirmModal, handleConfirmModal } = props;
 
   const [PasswordView, setPasswordView] = useState({
@@ -32,6 +41,28 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
       .required("Confirm password is required"),
   });
 
+  const handleSubmit = (values: { password: string }) => {
+    auth.signInWithPopup(googleAuth).then((response) => {
+      if (response) {
+        response.user?.getIdToken().then(async (token) => {
+          const res = await RegisterWithToken({
+            token,
+            password: values.password,
+          });
+          if (res.status === Request_Succesfull) {
+            const decode = JWT_Decode(res.token);
+            dispatch(LoginUser(decode));
+            localStorage.setItem(LocalStorageKey, res.token);
+            navigate("/");
+            message.success("Welcome to My Social Space");
+          } else {
+            message.error(res.response.data.message);
+          }
+        });
+      }
+    });
+  };
+
   useEffect(() => {
     if (PasswordView.password) {
       setPasswordType((prev) => ({ ...prev, password: "text" }));
@@ -51,7 +82,6 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
     <Modal
       title="Add Password"
       open={ConfirmModal}
-      onOk={handleConfirmModal}
       onCancel={handleConfirmModal}
       footer={null}
       className={styles.modal}
@@ -60,7 +90,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
       <Formik
         initialValues={{ password: "", confirmPassword: "" }}
         validationSchema={validationSchema}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => handleSubmit(values)}
       >
         {({ errors, handleChange, touched }) => (
           <Form>
@@ -72,6 +102,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
                 onChange={handleChange}
                 PasswordView={PasswordView.password}
                 setPasswordView={setPasswordView}
+                max_length={20}
               />
             </div>
             {errors.password && touched.password ? (
@@ -85,6 +116,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
                 onChange={handleChange}
                 PasswordView={PasswordView.confirmPassword}
                 setPasswordView={setPasswordView}
+                max_length={20}
               />
             </div>
             {errors.confirmPassword && touched.confirmPassword ? (

@@ -12,11 +12,20 @@ type InputType = {
     SetStateAction<{ password: boolean; confirmPassword: boolean }>
   >;
   PasswordView?: boolean;
+  max_length?: number;
 };
 
 function InputLabel1(props: InputType) {
-  const { name, label, type, value, onChange, setPasswordView, PasswordView } =
-    props;
+  const {
+    name,
+    label,
+    type,
+    value,
+    onChange,
+    setPasswordView,
+    PasswordView,
+    max_length,
+  } = props;
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -51,7 +60,13 @@ function InputLabel1(props: InputType) {
           </>
         )}
       </div>
-      <InputBox1 name={name} type={type} value={value} onChange={onChange} />
+      <InputBox1
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        max_length={max_length}
+      />
     </div>
   );
 }

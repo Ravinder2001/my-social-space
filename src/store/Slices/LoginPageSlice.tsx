@@ -6,7 +6,7 @@ export interface PageState {
 }
 
 const initialState: PageState = {
-  index: "1",
+  index: "0",
 };
 
 export const LoginPageSlice = createSlice({
