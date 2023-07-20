@@ -13,6 +13,8 @@ import LoginWithEmailAndPassword from "../../../APIs/LoginWithEmailAndPassword";
 import { useDispatch } from "react-redux";
 import { LoginUser } from "../../../store/Slices/UserSlice";
 import { JWT_Decode } from "../../../Utils/Function";
+import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
+import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 
 function LoginBox() {
   const navigate = useNavigate();
@@ -26,6 +28,8 @@ function LoginBox() {
     confirmPassword: "password",
   });
   const [RememberMeState, setRememberMeState] = useState<boolean>(false);
+  const [EmailLoader, setEmailLoader] = useState(false);
+  const [TokenLoader, setTokenLoader] = useState(false);
 
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid Email").required("Email is required"),
@@ -36,6 +40,7 @@ function LoginBox() {
   });
 
   const handleTokenLogin = () => {
+    setTokenLoader(true);
     auth.signInWithPopup(googleAuth).then((res) => {
       if (res) {
         res.user?.getIdToken().then(async (token) => {
@@ -44,9 +49,11 @@ function LoginBox() {
             const decode = JWT_Decode(res.token);
             dispatch(LoginUser(decode));
             localStorage.setItem(LocalStorageKey, res.token);
+            setTokenLoader(false);
             navigate("/");
             message.success("Welcome to My Social Space");
           } else {
+            setTokenLoader(false);
             message.error(res.response.data.message);
           }
         });
@@ -57,6 +64,7 @@ function LoginBox() {
     email: string;
     password: string;
   }) => {
+    setEmailLoader(true);
     let data = {
       email: values.email,
       password: values.password,
@@ -67,9 +75,11 @@ function LoginBox() {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
       localStorage.setItem(LocalStorageKey, res.token);
+      setEmailLoader(false);
       navigate("/");
       message.success("Welcome to My Social Space");
     } else {
+      setEmailLoader(false);
       message.error(res.response.data.message);
     }
   };
@@ -85,6 +95,11 @@ function LoginBox() {
 
   return (
     <div className={styles.container}>
+      {TokenLoader && (
+        <div className={styles.loader}>
+          <Loader2 />
+        </div>
+      )}
       <div className={styles.heading}>Accout Login</div>
       <Formik
         initialValues={{ email: "", password: "" }}
@@ -129,7 +144,7 @@ function LoginBox() {
               <div className={styles.forgot_text}>Forgot Password?</div>
             </div>
             <button type="submit" className={styles.button}>
-              Login
+              {EmailLoader ? <Loader1 /> : "Login"}
             </button>
           </Form>
         )}

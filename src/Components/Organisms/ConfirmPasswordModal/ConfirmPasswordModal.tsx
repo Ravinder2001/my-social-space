@@ -15,12 +15,13 @@ import { LoginUser } from "../../../store/Slices/UserSlice";
 type ConfirmModalType = {
   handleConfirmModal: () => void;
   ConfirmModal: boolean;
+  setTokenLoader: Dispatch<SetStateAction<boolean>>;
 };
 
 const ConfirmPasswordModal = (props: ConfirmModalType) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { ConfirmModal, handleConfirmModal } = props;
+  const { ConfirmModal, handleConfirmModal, setTokenLoader } = props;
 
   const [PasswordView, setPasswordView] = useState({
     password: false,
@@ -58,6 +59,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
           } else {
             message.error(res.response.data.message);
           }
+          handleConfirmModal()
         });
       }
     });
@@ -77,6 +79,14 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
       setPasswordType((prev) => ({ ...prev, confirmPassword: "password" }));
     }
   }, [PasswordView]);
+
+  useEffect(() => {
+    if (ConfirmModal) {
+      setTokenLoader(true);
+    }else{
+      setTokenLoader(false)
+    }
+  }, [ConfirmModal]);
 
   return (
     <Modal

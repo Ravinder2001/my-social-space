@@ -7,6 +7,7 @@ import LoginBox from "../../Organisms/LoginBox/LoginBox";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import SignUpBox from "../../Organisms/SignUpBox/SignUpBox";
+import About from "../../Organisms/About/About";
 
 function LoginTemplate() {
   const SelectedIndex = useSelector(
@@ -21,7 +22,7 @@ function LoginTemplate() {
         <LoginNavBar />
         {SelectedIndex === "0" && <LoginBox />}
         {SelectedIndex === "1" && <SignUpBox />}
-        {SelectedIndex === "2" && <div>About Us Page</div>}
+        {SelectedIndex === "2" && <About />}
         {SelectedIndex === "3" && <div>Contact Us Page</div>}
       </div>
     </div>

@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { JWT_Decode } from "../../../Utils/Function";
 import { LoginUser } from "../../../store/Slices/UserSlice";
 import { useDispatch } from "react-redux";
+import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
+import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 function SignUpBox() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ function SignUpBox() {
   });
 
   const [ConfirmModal, setConfirmModal] = useState(false);
+  const [EmailLoader, setEmailLoader] = useState(false);
+  const [TokenLoader, setTokenLoader] = useState(false);
 
   const signUpSchema = Yup.object().shape({
     name: Yup.string()
@@ -68,9 +72,11 @@ function SignUpBox() {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
       localStorage.setItem(LocalStorageKey, res.token);
+      setEmailLoader(false);
       navigate("/");
       message.success("Welcome to My Social Space");
     } else {
+      setEmailLoader(false);
       message.error(res.response.data.message);
     }
   };
@@ -93,6 +99,11 @@ function SignUpBox() {
   return (
     <>
       <div className={styles.container}>
+        {TokenLoader && (
+          <div className={styles.loader}>
+            <Loader2 />
+          </div>
+        )}
         <div className={styles.heading}>Create An Account</div>
         <Formik
           initialValues={{
@@ -103,9 +114,11 @@ function SignUpBox() {
           }}
           validationSchema={signUpSchema}
           onSubmit={async (values) => {
+            setEmailLoader(true);
             if (await handleGmailVerification(values.email)) {
               handleRegisterWithEmailAndPassword(values);
             } else {
+              setEmailLoader(false);
               message.error("Please enter a valid email");
             }
           }}
@@ -166,7 +179,7 @@ function SignUpBox() {
               ) : null}
 
               <button className={styles.button} type="submit">
-                Sign Up
+                {EmailLoader ? <Loader1 /> : "Sign Up"}
               </button>
             </Form>
           )}
@@ -179,6 +192,7 @@ function SignUpBox() {
       </div>
       <ConfirmPasswordModal
         handleConfirmModal={handleConfirmModal}
+        setTokenLoader={setTokenLoader}
         ConfirmModal={ConfirmModal}
       />
     </>
