@@ -1,0 +1,20 @@
+.logo_box {
+  padding: 10px;
+  width: auto;
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+.logo_img {
+  width: 25%;
+  height: 70%;
+}
+.logo_text {
+  width: 80%;
+  height: 100%;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+
+  //   border: 1px solid red;
+}

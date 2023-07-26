@@ -2,24 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface PageState {
-  index: string;
+  index: number;
 }
 
 const initialState: PageState = {
-  index: "0",
+  index: 5,
 };
 
-export const LoginPageSlice = createSlice({
-  name: "LoginPageSlice",
+export const DrawerSlice = createSlice({
+  name: "DrawerSlice",
   initialState,
   reducers: {
-    setIndex: (state, action: PayloadAction<string>) => {
+    setIndex: (state, action: PayloadAction<number>) => {
       state.index = action.payload;
-      
     },
   },
 });
 
-export const { setIndex } = LoginPageSlice.actions;
+export const { setIndex } = DrawerSlice.actions;
 
-export default LoginPageSlice.reducer;
+export default DrawerSlice.reducer;

@@ -6,7 +6,7 @@ type IconsType = {
   size?: number;
   color?: string;
 };
-function Icons(props: IconsType) {
+function ReactIcons(props: IconsType) {
   switch (props.name) {
     case "AiFillEye":
       return <AiFillEye size={props.size} color={props.color} />;
@@ -17,4 +17,4 @@ function Icons(props: IconsType) {
   }
 }
 
-export default Icons;
+export default ReactIcons;

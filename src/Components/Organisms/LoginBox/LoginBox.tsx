@@ -15,6 +15,7 @@ import { LoginUser } from "../../../store/Slices/UserSlice";
 import { JWT_Decode } from "../../../Utils/Function";
 import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
+import { setIndex } from "../../../store/Slices/DrawerSlice";
 
 function LoginBox() {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ function LoginBox() {
           if (res.status === Request_Succesfull) {
             const decode = JWT_Decode(res.token);
             dispatch(LoginUser(decode));
+      
             localStorage.setItem(LocalStorageKey, res.token);
             setTokenLoader(false);
             navigate("/");
@@ -74,6 +76,7 @@ function LoginBox() {
     if (res.status === Request_Succesfull) {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
+    
       localStorage.setItem(LocalStorageKey, res.token);
       setEmailLoader(false);
       navigate("/");

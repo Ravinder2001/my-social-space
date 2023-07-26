@@ -4,16 +4,18 @@ import storage from "redux-persist/lib/storage";
 
 import LoginPageReducer from "./Slices/LoginPageSlice";
 import UserReducer from "./Slices/UserSlice";
+import DrawerRedcuer from "./Slices/DrawerSlice";
 
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: [],
+  blacklist: ["DrawerRedcuer"],
 };
 
 const rootReducer = combineReducers({
-  loginPage: LoginPageReducer,
-  user: UserReducer,
+  LoginPageReducer,
+  UserReducer,
+  DrawerRedcuer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

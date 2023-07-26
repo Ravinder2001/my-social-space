@@ -8,10 +8,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import SignUpBox from "../../Organisms/SignUpBox/SignUpBox";
 import About from "../../Organisms/About/About";
+import Logo from "../../../Assets/Images/Logo_3.png";
 
 function LoginTemplate() {
   const SelectedIndex = useSelector(
-    (state: RootState) => state.loginPage.index
+    (state: RootState) => state.LoginPageReducer.index
   );
   return (
     <div className={styles.container}>
@@ -20,10 +21,18 @@ function LoginTemplate() {
       </div>
       <div className={styles.right_container}>
         <LoginNavBar />
-        {SelectedIndex === "0" && <LoginBox />}
-        {SelectedIndex === "1" && <SignUpBox />}
-        {SelectedIndex === "2" && <About />}
-        {SelectedIndex === "3" && <div>Contact Us Page</div>}
+        <div className={styles.content_box}>
+          {SelectedIndex === "0" && <LoginBox />}
+          {SelectedIndex === "1" && <SignUpBox />}
+          {SelectedIndex === "2" && <About />}
+          {SelectedIndex === "3" && <div>Contact Us Page</div>}
+        </div>
+
+        <div className={styles.bottom_box}>
+          <div>
+            <img src={Logo} alt="" width="70px" height="30px" />
+          </div>
+        </div>
       </div>
     </div>
   );

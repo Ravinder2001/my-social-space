@@ -1,7 +1,7 @@
 import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
 import InputBox1 from "../../../Atoms/InputBox/InputBox1/InputBox1";
 import styles from "./styles.module.scss";
-import Icons from "../../../../Utils/ReactIcons/Icons";
+import ReactIcons from "../../../../Utils/Icons/ReactIcons";
 type InputType = {
   name: string;
   label: string;
@@ -42,7 +42,7 @@ function InputLabel1(props: InputType) {
                   }))
                 }
               >
-                <Icons name="AiFillEye" />
+                <ReactIcons name="AiFillEye" />
               </div>
             ) : (
               <div
@@ -54,7 +54,7 @@ function InputLabel1(props: InputType) {
                   }))
                 }
               >
-                <Icons name="AiFillEyeInvisible" />
+                <ReactIcons name="AiFillEyeInvisible" />
               </div>
             )}
           </>

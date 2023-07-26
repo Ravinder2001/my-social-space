@@ -8,7 +8,7 @@ type PublicRoutesType = {
 };
 
 function PublicRoutes({ children }: PublicRoutesType) {
-  const User = useSelector((state: RootState) => state.user.user);
+  const User = useSelector((state: RootState) => state.UserReducer.user);
   return !User ? <div>{children}</div> : <Navigate to="/" />;
 }
 
