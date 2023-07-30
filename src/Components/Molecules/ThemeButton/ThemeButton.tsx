@@ -1,10 +1,11 @@
-import React from "react";
-import styles from "./styles.module.scss";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
 import ThemeToogleButton from "../../Atoms/ThemeToogleButton/ThemeToogleButton";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { ToogleTheme } from "../../../store/Slices/UserSlice";
+
+import styles from "./styles.module.scss";
 
 function ThemeButton() {
   const dispatch = useDispatch();

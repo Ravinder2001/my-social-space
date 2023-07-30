@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { useState } from "react";
+import { MailOutlined, SettingOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { useSelector } from "react-redux";
+
 import { RootState } from "../../../store/store";
 
 const items: MenuProps["items"] = [
@@ -22,7 +19,7 @@ const items: MenuProps["items"] = [
   },
 ];
 
-const MenuBox: React.FC = () => {
+const MenuBox = () => {
   const Theme = useSelector((state: RootState) => state.UserReducer.theme);
   const [current, setCurrent] = useState("mail");
 

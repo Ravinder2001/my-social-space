@@ -1,7 +1,8 @@
-import React from "react";
-import styles from "./styles.module.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
+
 function BioHeader() {
   const Theme = useSelector((state: RootState) => state.UserReducer.theme);
   return (

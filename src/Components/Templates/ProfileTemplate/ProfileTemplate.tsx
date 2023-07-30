@@ -1,13 +1,15 @@
-import React from "react";
-import styles from "./styles.module.scss";
-import ProfileHeader from "../../Organisms/ProfileHeader/ProfileHeader";
-import BioContainer from "../../Organisms/BioContainer/BioContainer";
+import { useSelector } from "react-redux";
 import { Tabs } from "antd";
 import type { TabsProps } from "antd";
+
+import ProfileHeader from "../../Organisms/ProfileHeader/ProfileHeader";
+import BioContainer from "../../Organisms/BioContainer/BioContainer";
 import PostContainer from "../../Organisms/PostContainer/PostContainer";
 import PhotosContainer from "../../Organisms/PhotosContainer/PhotosContainer";
-import { useSelector } from "react-redux";
+
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
 
 function ProfileTemplate() {
   const items: TabsProps["items"] = [

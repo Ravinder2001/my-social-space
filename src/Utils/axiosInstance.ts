@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from "axios";
+
 import config from "./config";
+
 import { LocalStorageKey } from "./Constant";
 
 const axiosInstance: AxiosInstance = axios.create({
@@ -23,7 +25,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status == 401) {
-      //handle logout
+      localStorage.removeItem(LocalStorageKey);
+      window.location.reload();
     }
     return Promise.reject(error);
   }

@@ -1,8 +1,9 @@
-import React from "react";
-import styles from "./styles.module.scss";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
 
 type BioType = {
   icon: string;

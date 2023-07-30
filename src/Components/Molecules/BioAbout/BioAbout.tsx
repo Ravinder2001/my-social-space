@@ -1,6 +1,7 @@
-import React from "react";
 import BioItems from "../BioItems/BioItems";
+
 import styles from "./styles.module.scss";
+
 function BioAbout() {
   let items = [
     {

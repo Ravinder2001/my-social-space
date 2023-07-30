@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import styles from "./styles.module.scss";
+import { Modal } from "antd";
+
 import CarouselBox from "../Carousel/Carousel";
 import Data from "../../../data.json";
 import PostImpression from "../../Molecules/PostImpression/PostImpression";
 import PostCommentBox from "../../Molecules/PostCommentBox/PostCommentBox";
+
+import styles from "./styles.module.scss";
+
 type PostModalType = {
   handleModal: () => void;
   open: boolean;

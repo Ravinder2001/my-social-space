@@ -1,9 +1,7 @@
-import React, { useState, MouseEvent } from "react";
-import styles from "./styles.module.scss";
 import Icon from "../../../Assets/Images/Vector.png";
 import LoginNavHeader from "../../Molecules/LoginNavHeader/LoginNavHeader";
 
-
+import styles from "./styles.module.scss";
 
 function LoginNavBar() {
   return (

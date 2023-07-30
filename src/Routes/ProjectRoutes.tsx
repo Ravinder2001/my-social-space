@@ -1,18 +1,23 @@
-import React from "react";
-
 import { Routes, Route } from "react-router-dom";
+
 import PrivateRoutes from "./PrivateRoutes";
 import PublicRoutes from "./PublicRoutes";
 import Login from "../Pages/Login";
-import { LocalStorageKey } from "../Utils/Constant";
-import ProfileTemplate from "../Components/Templates/ProfileTemplate/ProfileTemplate";
 import Profile from "../Pages/Profile";
+import {
+  Add_Route,
+  Discover_Route,
+  Home_Route,
+  Login_Route,
+  Messages_Route,
+  Profile_Route,
+} from "../Utils/Constant";
 
 function ProjectRoutes() {
   return (
     <Routes>
       <Route
-        path="/"
+        path={Home_Route}
         element={
           <PrivateRoutes>
             <div>Hii</div>
@@ -20,7 +25,7 @@ function ProjectRoutes() {
         }
       />
       <Route
-        path="/discover"
+        path={Discover_Route}
         element={
           <PrivateRoutes>
             <div>discover</div>
@@ -28,7 +33,7 @@ function ProjectRoutes() {
         }
       />
       <Route
-        path="/add"
+        path={Add_Route}
         element={
           <PrivateRoutes>
             <div>Add</div>
@@ -36,7 +41,7 @@ function ProjectRoutes() {
         }
       />
       <Route
-        path="/messages"
+        path={Messages_Route}
         element={
           <PrivateRoutes>
             <div>Messages</div>
@@ -44,7 +49,7 @@ function ProjectRoutes() {
         }
       />
       <Route
-        path="/profile"
+        path={Profile_Route}
         element={
           <PrivateRoutes>
             <Profile />
@@ -52,7 +57,7 @@ function ProjectRoutes() {
         }
       />
       <Route
-        path="/login"
+        path={Login_Route}
         element={
           <PublicRoutes>
             <Login />

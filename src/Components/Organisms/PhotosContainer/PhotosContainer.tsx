@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import styles from "./styles.module.scss";
 import Gallery from "react-photo-gallery";
+
+import  { useState } from "react";
+
 import Data from "../../../data.json";
 import PostModal from "../PostModal/PostModal";
+
+import styles from "./styles.module.scss";
+
 function PhotosContainer() {
   const images = Data.images;
   const [open, setOpen] = useState(false);

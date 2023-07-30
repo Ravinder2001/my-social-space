@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import styles from "./styles.module.scss";
-import image from "../../../Assets/Images/Vector.png";
+import  { useState } from "react";
 import { useSelector } from "react-redux";
+
+import image from "../../../Assets/Images/Vector.png";
+
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
+
 function ProfileHeader() {
   const Theme = useSelector((state: RootState) => state.UserReducer.theme);
   const [Status, setStatus] = useState(true);

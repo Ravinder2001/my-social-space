@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction } from "react";
+import  { Dispatch, SetStateAction } from "react";
+
 import styles from "./styles.module.scss";
 
 type RememberType = {

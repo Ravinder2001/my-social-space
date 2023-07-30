@@ -1,7 +1,10 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
+
 import InputBox1 from "../../../Atoms/InputBox/InputBox1/InputBox1";
-import styles from "./styles.module.scss";
 import ReactIcons from "../../../../Utils/Icons/ReactIcons";
+
+import styles from "./styles.module.scss";
+
 type InputType = {
   name: string;
   label: string;

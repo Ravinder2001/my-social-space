@@ -1,9 +1,11 @@
-import React from "react";
-import styles from "./styles.module.scss";
-import LucideIcons from "../../../Utils/Icons/LucideIcons";
 import { useDispatch, useSelector } from "react-redux";
+
+import LucideIcons from "../../../Utils/Icons/LucideIcons";
+
 import { RootState } from "../../../store/store";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
+
+import styles from "./styles.module.scss";
 
 type DrawerPropsTypes = {
   IconName: string;
@@ -16,11 +18,10 @@ type DrawerPropsTypes = {
 
 function DrawerItems(props: DrawerPropsTypes) {
   const dispatch = useDispatch();
-  const Index = useSelector((state: RootState) => state.DrawerRedcuer.index);
+  const Index = useSelector((state: RootState) => state.DrawerReducer.index);
   const handleClick = () => {
+    dispatch(setIndex(props.index));
 
-      dispatch(setIndex(props.index));
-    
     props.handleClick();
   };
   return (

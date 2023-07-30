@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
-import styles from "./styles.module.scss";
-import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
 import * as Yup from "yup";
-import { Formik, Form } from "formik";
-import ConfirmPasswordModal from "../ConfirmPasswordModal/ConfirmPasswordModal";
-import { auth, googleAuth } from "../../../firebase.config";
+
+import  { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { message } from "antd";
-import RegisterWithEmailAndPassword from "../../../APIs/RegisterWithEmailAndPassword";
-import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
+
+import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
+import ConfirmPasswordModal from "../ConfirmPasswordModal/ConfirmPasswordModal";
+import RegisterWithEmailAndPassword from "../../../APIs/RegisterWithEmailAndPassword";
+import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
+import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
+
+import { Formik, Form } from "formik";
+import { auth } from "../../../firebase.config";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
 import { JWT_Decode } from "../../../Utils/Function";
 import { LoginUser } from "../../../store/Slices/UserSlice";
-import { useDispatch } from "react-redux";
-import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
-import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
+
+import styles from "./styles.module.scss";
+
 function SignUpBox() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

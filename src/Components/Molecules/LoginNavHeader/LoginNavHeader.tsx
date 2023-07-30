@@ -1,8 +1,11 @@
-import React, { useState, MouseEvent } from "react";
-import styles from "./styles.module.scss";
+import { MouseEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { RootState } from "../../../store/store";
 import { setIndex } from "../../../store/Slices/LoginPageSlice";
+
+import styles from "./styles.module.scss";
+
 function LoginNavHeader() {
   const dispatch = useDispatch();
   const selectedIndex = useSelector(

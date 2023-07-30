@@ -1,13 +1,16 @@
-import React from "react";
-import styles from "./styles.module.scss";
+import { useSelector } from "react-redux";
+
 import PostHeader from "../../Molecules/PostHeader/PostHeader";
 import PostCaption from "../../Molecules/PostCaption/PostCaption";
 import PostImages from "../../Molecules/PostImages/PostImages";
 import Data from "../../../data.json";
 import PostImpression from "../../Molecules/PostImpression/PostImpression";
 import PostCommentBox from "../../Molecules/PostCommentBox/PostCommentBox";
-import { useSelector } from "react-redux";
+
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
+
 function PostContainer() {
   const Theme = useSelector((state: RootState) => state.UserReducer.theme);
   const data = Data.images;

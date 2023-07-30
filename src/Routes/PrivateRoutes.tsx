@@ -1,9 +1,14 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
+
 import Drawer from "../Components/Organisms/Drawer/Drawer";
+
+import { RootState } from "../store/store";
+import { Login_Route } from "../Utils/Constant";
+
 import styles from "../App.module.scss";
+
 type PrivateRoutesType = { children: ReactNode };
 
 function PrivateRoutes({ children }: PrivateRoutesType) {
@@ -16,7 +21,7 @@ function PrivateRoutes({ children }: PrivateRoutesType) {
       <div className={styles.children_box}>{children}</div>
     </div>
   ) : (
-    <Navigate to="/login" />
+    <Navigate to={Login_Route} />
   );
 }
 

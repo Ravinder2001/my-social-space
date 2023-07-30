@@ -1,6 +1,7 @@
-import React from "react";
 import Logo from "../../../Assets/Images/Logo_2.png";
+
 import styles from "./styles.module.scss";
+
 function LoginPageLogo() {
   return (
     <div className={styles.container}>

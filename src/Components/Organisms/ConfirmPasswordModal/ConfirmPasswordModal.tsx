@@ -1,16 +1,20 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button, Modal, message } from "antd";
-import styles from "./styles.module.scss";
-import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
-import { auth, googleAuth } from "../../../firebase.config";
-import RegisterWithToken from "../../../APIs/RegisterWithToken";
-import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
-import { useNavigate } from "react-router-dom";
+
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Modal, message } from "antd";
+import { Formik, Form } from "formik";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
+import RegisterWithToken from "../../../APIs/RegisterWithToken";
+
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { auth, googleAuth } from "../../../firebase.config";
 import { JWT_Decode } from "../../../Utils/Function";
 import { LoginUser } from "../../../store/Slices/UserSlice";
+
+import styles from "./styles.module.scss";
 
 type ConfirmModalType = {
   handleConfirmModal: () => void;
@@ -59,7 +63,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
           } else {
             message.error(res.response.data.message);
           }
-          handleConfirmModal()
+          handleConfirmModal();
         });
       }
     });
@@ -83,8 +87,8 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
   useEffect(() => {
     if (ConfirmModal) {
       setTokenLoader(true);
-    }else{
-      setTokenLoader(false)
+    } else {
+      setTokenLoader(false);
     }
   }, [ConfirmModal]);
 

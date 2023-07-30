@@ -1,11 +1,12 @@
-import { useEffect } from "react";
-import ProjectRoutes from "./Routes/ProjectRoutes";
-import { LocalStorageKey } from "./Utils/Constant";
 import jwtDecode from "jwt-decode";
-import { useDispatch } from "react-redux";
-import { LoginUser, Logout } from "./store/Slices/UserSlice";
-import { setIndex } from "./store/Slices/DrawerSlice";
 
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
+import ProjectRoutes from "./Routes/ProjectRoutes";
+
+import { LocalStorageKey } from "./Utils/Constant";
+import { LoginUser, Logout } from "./store/Slices/UserSlice";
 interface decode {
   exp: number;
   iat: number;
@@ -13,6 +14,7 @@ interface decode {
   name: string;
 }
 function App() {
+
   const dispatch = useDispatch();
   const logout = () => {
     localStorage.removeItem(LocalStorageKey);

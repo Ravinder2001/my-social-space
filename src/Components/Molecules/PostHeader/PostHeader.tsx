@@ -1,6 +1,7 @@
-import React from "react";
-import styles from "./styles.module.scss";
 import MenuBox from "../MenuBox/MenuBox";
+
+import styles from "./styles.module.scss";
+
 function PostHeader() {
   return (
     <div className={styles.header}>

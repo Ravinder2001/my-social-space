@@ -1,7 +1,8 @@
-import React from "react";
 import Logo_1 from "../../../Assets/Images/Logo_2.png";
-import styles from "./styles.module.scss";
 import LogoText from "../../Atoms/LogoText/LogoText";
+
+import styles from "./styles.module.scss";
+
 function LogoBox() {
   return (
     <div className={styles.logo_box}>

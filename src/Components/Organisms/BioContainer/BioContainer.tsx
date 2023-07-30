@@ -1,10 +1,12 @@
-import React from "react";
-import styles from "./styles.module.scss";
-import BioHeader from "../../Molecules/BioHeader/BioHeader";
-import BioItems from "../../Molecules/BioItems/BioItems";
-import BioAbout from "../../Molecules/BioAbout/BioAbout";
 import { useSelector } from "react-redux";
+
+import BioHeader from "../../Molecules/BioHeader/BioHeader";
+import BioAbout from "../../Molecules/BioAbout/BioAbout";
+
 import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
+
 function BioContainer() {
   const Theme = useSelector((state: RootState) => state.UserReducer.theme);
   return (

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
-import styles from "./styles.module.scss";
 import LoginPageLogo from "../../Molecules/LoginPageLogo/LoginPageLogo";
 import LoginNavBar from "../../Organisms/NavBar/LoginNavBar";
 import LoginBox from "../../Organisms/LoginBox/LoginBox";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store/store";
 import SignUpBox from "../../Organisms/SignUpBox/SignUpBox";
 import About from "../../Organisms/About/About";
 import Logo from "../../../Assets/Images/Logo_3.png";
+
+import { RootState } from "../../../store/store";
+
+import styles from "./styles.module.scss";
 
 function LoginTemplate() {
   const SelectedIndex = useSelector(

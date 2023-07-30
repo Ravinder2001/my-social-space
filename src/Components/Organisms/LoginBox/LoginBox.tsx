@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
-import styles from "./styles.module.scss";
-import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
-import RememberMe from "../../Molecules/RememberMe/RememberMe";
-import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { auth, googleAuth } from "../../../firebase.config";
-import LoginWithToken from "../../../APIs/LoginWithToken";
-import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+
+import  { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Formik, Form } from "formik";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+
+import InputLabel1 from "../../Molecules/InputLabel/InputLabel1/InputLabel1";
+import RememberMe from "../../Molecules/RememberMe/RememberMe";
+import LoginWithToken from "../../../APIs/LoginWithToken";
 import LoginWithEmailAndPassword from "../../../APIs/LoginWithEmailAndPassword";
-import { useDispatch } from "react-redux";
-import { LoginUser } from "../../../store/Slices/UserSlice";
-import { JWT_Decode } from "../../../Utils/Function";
 import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
-import { setIndex } from "../../../store/Slices/DrawerSlice";
+
+import { auth, googleAuth } from "../../../firebase.config";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { LoginUser } from "../../../store/Slices/UserSlice";
+import { JWT_Decode } from "../../../Utils/Function";
+
+import styles from "./styles.module.scss";
 
 function LoginBox() {
   const navigate = useNavigate();

@@ -1,14 +1,17 @@
-import React from "react";
-import styles from "./styles.module.scss";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import DrawerItems from "../../Molecules/DrawerItems/DrawerItems";
 import LogoBox from "../../Molecules/LogoBox/LogoBox";
-import { useNavigate } from "react-router-dom";
+import ThemeButton from "../../Molecules/ThemeButton/ThemeButton";
+import ProfileBox from "../../Molecules/ProfileBox/ProfileBox";
+
 import { LocalStorageKey } from "../../../Utils/Constant";
-import { useDispatch } from "react-redux";
 import { Logout } from "../../../store/Slices/UserSlice";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
-import ProfileBox from "../../Molecules/ProfileBox/ProfileBox";
-import ThemeButton from "../../Molecules/ThemeButton/ThemeButton";
+
+import styles from "./styles.module.scss";
+
 function Drawer() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

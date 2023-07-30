@@ -1,5 +1,7 @@
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
+
 import styles from "./styles.module.scss";
+
 type InputBoxType = {
   name?: string;
   type: string;

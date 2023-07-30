@@ -1,5 +1,5 @@
-import React from "react";
 import styles from "./styles.module.scss";
+
 function PostCaption() {
   return (
     <div className={styles.container}>
