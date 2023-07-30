@@ -1,7 +1,7 @@
 .container {
   display: flex;
   align-items: center;
-  font-family: "Times New Roman", Times, serif;
+  // font-family: "Times New Roman", Times, serif;
 }
 .left_box {
   font-size: 35px;
@@ -11,13 +11,13 @@
 }
 .top {
   // border: 1px solid green;
-  font-size: 15px;
-  margin-top: 2px;
+  font-size: 13px;
+  margin-top: 0px;
   text-transform: uppercase;
 }
 .bottom {
   //   border: 1px solid red;
-  font-size: 15px;
+  font-size: 13px;
   margin-top: -3px;
   text-transform: uppercase;
 }

@@ -3,8 +3,46 @@ body {
   margin: 0;
   font-family: $font_family;
 }
+.ant-tabs-nav .ant-tabs-tab {
+  font-family: $font_family; /* Replace 'Your Desired Font' with the font you want to use */
+}
+.ant-tabs-nav .ant-tabs-tab {
+  font-size: 16px; /* Adjust the font size as needed */
+}
+
+/* Change the font weight for the tabs */
+.ant-tabs-nav .ant-tabs-tab {
+  font-weight: 500; /* Adjust the font weight as needed */
+}
+.ant-menu {
+  border: none !important;
+}
+.react-photo-gallery--gallery img{
+  border-radius: 10px;
+} 
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #bababa;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

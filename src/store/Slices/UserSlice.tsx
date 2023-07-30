@@ -6,6 +6,7 @@ export interface PageState {
   name: string;
   image: string;
   user: boolean;
+  theme: string;
 }
 
 const initialState: PageState = {
@@ -13,6 +14,7 @@ const initialState: PageState = {
   name: "",
   image: "",
   user: false,
+  theme: "light",
 };
 
 export const UserSlice = createSlice({
@@ -20,7 +22,7 @@ export const UserSlice = createSlice({
   initialState,
   reducers: {
     LoginUser: (
-      state,
+      state: PageState,
       action: PayloadAction<{ id: string; name: string; image?: string }>
     ) => {
       state.id = action.payload.id;
@@ -28,15 +30,18 @@ export const UserSlice = createSlice({
       state.image = action.payload.image ?? "";
       state.user = true;
     },
-    Logout: (state) => {
+    Logout: (state: PageState) => {
       state.id = "";
       state.name = "";
       state.image = "";
       state.user = false;
     },
+    ToogleTheme: (state: PageState) => {
+      state.theme = state.theme === "light" ? "dark" : "light";
+    },
   },
 });
 
-export const { LoginUser, Logout } = UserSlice.actions;
+export const { LoginUser, Logout,ToogleTheme } = UserSlice.actions;
 
 export default UserSlice.reducer;

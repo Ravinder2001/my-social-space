@@ -1,3 +1,4 @@
+@import "./Variable.scss";
 .container {
   display: flex;
 }
@@ -8,4 +9,7 @@
 .children_box {
   width: 85%;
   height: 100vh;
+  // background-color: $Blue_Background_color;
+  // border: 1px solid red;
+  // border-radius: 30px;
 }

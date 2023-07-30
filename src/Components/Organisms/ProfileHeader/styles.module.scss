@@ -4,6 +4,8 @@
   height: 300px;
   // border: 1px solid red;
   position: relative;
+  background-color: white;
+  // border: 1px solid red;
 }
 .imgBox {
   width: 100%;
@@ -12,6 +14,7 @@
 .top_div {
   width: 100%;
   height: 100px;
+  // margin-top: -1px;
   background-color: $Image_Background_color;
 }
 .img {

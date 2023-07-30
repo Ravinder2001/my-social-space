@@ -7,6 +7,8 @@ import { LocalStorageKey } from "../../../Utils/Constant";
 import { useDispatch } from "react-redux";
 import { Logout } from "../../../store/Slices/UserSlice";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
+import ProfileBox from "../../Molecules/ProfileBox/ProfileBox";
+import ThemeButton from "../../Molecules/ThemeButton/ThemeButton";
 function Drawer() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,6 +16,7 @@ function Drawer() {
     <div className={styles.container}>
       <div className={styles.header_items}>
         <LogoBox />
+        <ProfileBox />
         <DrawerItems
           label="Home"
           IconColor="#df3096"
@@ -54,6 +57,7 @@ function Drawer() {
           index={5}
           handleClick={() => navigate("/profile")}
         />
+        <ThemeButton />
       </div>
       <div className={styles.footer_items}>
         <DrawerItems

@@ -3,10 +3,13 @@ import {
   Briefcase,
   Clock,
   Compass,
+  Heart,
   Home,
   LogOut,
   MapPin,
   MessageCircle,
+  MessageCircleIcon,
+  Palette,
   PlusSquare,
   UserCircle,
 } from "lucide-react";
@@ -36,6 +39,12 @@ function LucideIcons(props: IconsType) {
       return <MapPin color={props.color} size={props.size} />;
     case "Clock":
       return <Clock color={props.color} size={props.size} />;
+    case "Heart":
+      return <Heart color={props.color} size={props.size} />;
+    case "MessageCircleIcon":
+      return <MessageCircleIcon color={props.color} size={props.size} />;
+    case "Palette":
+      return <Palette color={props.color} size={props.size} />;
     default:
       return <></>;
   }

@@ -1,0 +1,25 @@
+
+.container {
+  width: 100%;
+  height: 500px;
+  display: flex;
+  overflow: auto;
+  // border: 1px solid red;
+}
+.left_box {
+  width: 60%;
+  height: 100%;
+  // border: 1px solid green;
+  overflow: auto;
+
+}
+.right_box {
+  width: 40%;
+  height: 100%;
+  padding: 0px 10px;
+  // border: 1px solid green;
+}
+.comment_box{
+  height: 80%;
+  // border: 1px solid red;
+}

@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { persistor, store } from "./store/store";
 import { PersistGate } from "redux-persist/integration/react";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
