@@ -6,6 +6,8 @@ import { Tabs } from "antd";
 import type { TabsProps } from "antd";
 import PostContainer from "../../Organisms/PostContainer/PostContainer";
 import PhotosContainer from "../../Organisms/PhotosContainer/PhotosContainer";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
 function ProfileTemplate() {
   const items: TabsProps["items"] = [
@@ -25,17 +27,35 @@ function ProfileTemplate() {
       children: `Content of Tab Pane 3`,
     },
   ];
+  const Theme = useSelector((state: RootState) => state.UserReducer.theme);
 
   return (
     <div className={styles.container}>
       <ProfileHeader />
-      <div className={styles.sub_container}>
+      <div
+        className={`${styles.sub_container} ${
+          Theme === "dark"
+            ? styles.dark_sub_container
+            : styles.light_sub_container
+        }`}
+      >
         <div className={styles.bio_container}>
           <BioContainer />
         </div>
         <div className={styles.post_container}>
-          <div className={styles.post_sub_container}>
-            <Tabs defaultActiveKey="2" items={items} className={styles.test} />
+          <div
+            className={`${styles.post_sub_container} ${
+              Theme === "dark"
+                ? styles.dark_post_sub_container
+                : styles.light_post_sub_container
+            }`}
+          >
+            <Tabs
+              defaultActiveKey="1"
+              items={items}
+              className={styles.test}
+              style={{ color: Theme === "dark" ? "white" : "black" }}
+            />
           </div>
         </div>
       </div>

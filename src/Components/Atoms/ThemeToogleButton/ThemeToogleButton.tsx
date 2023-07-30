@@ -8,7 +8,7 @@ type ButtonType = {
 function ThemeToogleButton(props: ButtonType) {
   return (
     <div className={styles.toggleWrapper}>
-      <input type="checkbox" onChange={props.handleChange} checked={props.Theme=="light"} className={styles.dn} id="dn" />
+      <input type="checkbox" onChange={props.handleChange} checked={props.Theme!=="light"} className={styles.dn} id="dn" />
       <label htmlFor="dn" className={styles.toggle}>
         <span className={styles.toggle_handler}>
           <span className={`${styles.crater} ${styles.crater_1}`}></span>

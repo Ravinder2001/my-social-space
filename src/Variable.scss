@@ -1,8 +1,28 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito");
 
-$font_family:'Nunito';
+$font_family: "Nunito";
 $Blue_Background_color: #080c2e;
 $Grey_Background_color: #ededf0;
-$Image_Background_color:#151418;
-$button_color:#080c2e;
-$Status_Boder_color:rgb(0, 255, 200);
+$Image_Background_color: #151418;
+$button_color: #080c2e;
+
+$Status_Boder_color: rgb(255, 0, 191);
+$Dark_Status_Boder_color: rgb(212, 255, 0);
+
+$Dark_theme_background_color: #0c4567;
+
+$Dark_Theme_Linear_Gradient: linear-gradient(to right, #41b6b4, #0c4567);
+$Light_Theme_Linear_Gradient: linear-gradient(to right, #2dc47b, #5f09a4);
+
+$Light_Post_Box: linear-gradient(
+  90deg,
+  rgba(2, 0, 36, 1) 0%,
+  rgba(240, 205, 236, 1) 0%,
+  rgba(176, 226, 236, 1) 100%
+);
+$Dark_Post_Box: linear-gradient(
+  90deg,
+  rgba(0, 0, 0, 1) 0%,
+  rgba(6, 69, 107, 1) 100%
+);
+

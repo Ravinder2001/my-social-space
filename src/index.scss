@@ -4,6 +4,7 @@ body {
   font-family: $font_family;
 }
 .ant-tabs-nav .ant-tabs-tab {
+  // color: white !important;
   font-family: $font_family; /* Replace 'Your Desired Font' with the font you want to use */
 }
 .ant-tabs-nav .ant-tabs-tab {
@@ -16,6 +17,8 @@ body {
 }
 .ant-menu {
   border: none !important;
+  background: transparent !important;
+
 }
 .react-photo-gallery--gallery img{
   border-radius: 10px;

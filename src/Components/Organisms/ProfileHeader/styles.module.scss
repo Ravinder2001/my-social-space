@@ -2,10 +2,13 @@
 .container {
   width: 100%;
   height: 300px;
-  // border: 1px solid red;
   position: relative;
-  background-color: white;
-  // border: 1px solid red;
+}
+.light_container {
+  background: $Light_Theme_Linear_Gradient;
+}
+.dark_container {
+  background: $Dark_Theme_Linear_Gradient;
 }
 .imgBox {
   width: 100%;
@@ -30,10 +33,16 @@
   cursor: pointer;
 }
 .IsStatus {
-  border: 5px solid $Status_Boder_color;
   padding: 5px;
   border-radius: 50%;
   background-color: white;
+}
+.IsLightStatus{
+  border: 5px solid $Status_Boder_color;
+
+}
+.IsDarkStatus {
+  border: 5px solid $Dark_Status_Boder_color;
 }
 .profile_pic {
   width: 100%;
@@ -47,4 +56,16 @@
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
+  padding-bottom: 10px;
+  color: black;
+}
+.dark_name {
+  font-weight: bold;
+  font-size: 20px;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 10px;
+  color: white;
 }

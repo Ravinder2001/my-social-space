@@ -9,6 +9,13 @@
   height: 500px;
   overflow: hidden;
   margin-bottom: 20px;
-  background-color: white;
   border-radius: 10px;
+}
+.dark_post_box {
+
+  background: $Dark_Post_Box;
+}
+.light_post_box {
+  // background-color: white;
+  background: $Light_Post_Box;
 }

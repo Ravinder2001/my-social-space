@@ -3,9 +3,10 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
 import PublicRoutes from "./PublicRoutes";
-import Login from "../Pages/Login/Login";
+import Login from "../Pages/Login";
 import { LocalStorageKey } from "../Utils/Constant";
 import ProfileTemplate from "../Components/Templates/ProfileTemplate/ProfileTemplate";
+import Profile from "../Pages/Profile";
 
 function ProjectRoutes() {
   return (
@@ -46,7 +47,7 @@ function ProjectRoutes() {
         path="/profile"
         element={
           <PrivateRoutes>
-            <ProfileTemplate />
+            <Profile />
           </PrivateRoutes>
         }
       />
