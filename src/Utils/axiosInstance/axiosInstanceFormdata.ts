@@ -1,17 +1,17 @@
 import axios, { AxiosInstance } from "axios";
 
-import config from "./config";
+import config from "../config";
 
-import { LocalStorageKey } from "./Constant";
+import { LocalStorageKey } from "../Constant";
 
-const axiosInstance: AxiosInstance = axios.create({
+const axiosInstanceFormdata: AxiosInstance = axios.create({
   baseURL: config.baseURL,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
+axiosInstanceFormdata.interceptors.request.use((config) => {
   const token = localStorage.getItem(LocalStorageKey);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-axiosInstance.interceptors.response.use(
+axiosInstanceFormdata.interceptors.response.use(
   (res) => {
     return res;
   },
@@ -32,4 +32,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosInstanceFormdata;

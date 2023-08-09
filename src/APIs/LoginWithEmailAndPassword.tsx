@@ -1,4 +1,4 @@
-import axiosInstance from "../Utils/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 const LoginWithEmailAndPassword = async (data: {
   email: string;
@@ -14,6 +14,7 @@ const LoginWithEmailAndPassword = async (data: {
       return response.data;
     }
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

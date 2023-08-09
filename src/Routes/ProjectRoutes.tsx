@@ -12,6 +12,7 @@ import {
   Messages_Route,
   Profile_Route,
 } from "../Utils/Constant";
+import Add from "../Pages/Add";
 
 function ProjectRoutes() {
   return (
@@ -36,7 +37,7 @@ function ProjectRoutes() {
         path={Add_Route}
         element={
           <PrivateRoutes>
-            <div>Add</div>
+            <Add />
           </PrivateRoutes>
         }
       />

@@ -1,0 +1,64 @@
+@import "../../../Variable.scss";
+.container {
+  font-family: $font_family;
+  display: flex;
+}
+.add_box {
+  width: 100%;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 5px;
+  height: calc(100vh - 300px);
+  position: relative;
+}
+.add_button {
+  background-color: black;
+  width: 100px;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+.with_image_add_button {
+  background-color: rgb(7, 105, 125);
+  width: 50%;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.images_box {
+  margin-top: 10px;
+  height: 88%;
+}
+.delete_container {
+  display: flex;
+  width: 100%;
+}
+.delete {
+  background-color: rgb(119, 125, 7);
+  width: 50%;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 10px;
+  border: none;
+  font-family: $font_family;
+}
+.left_box {
+  width: 50%;
+}
+.right_box {
+  width: 50%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}

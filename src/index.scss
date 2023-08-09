@@ -1,7 +1,7 @@
 @import "./Variable.scss";
 body {
   margin: 0;
-  font-family: $font_family;
+  font-family: $font_family !important;
 }
 .ant-tabs-nav .ant-tabs-tab {
   // color: white !important;

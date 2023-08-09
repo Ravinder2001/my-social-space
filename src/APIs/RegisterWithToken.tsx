@@ -1,4 +1,4 @@
-import axiosInstance from "../Utils/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 const RegisterWithToken = async (data: { token: string; password: string }) => {
   try {

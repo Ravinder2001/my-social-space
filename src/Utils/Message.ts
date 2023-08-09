@@ -1,0 +1,1 @@
+export const ImageSizeError="Image size should be less than 15mb. "

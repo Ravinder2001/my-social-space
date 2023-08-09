@@ -1,4 +1,4 @@
-import axiosInstance from "../Utils/axiosInstance";
+import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 const RegisterWithEmailAndPassword = async (data: {
   email: string;
