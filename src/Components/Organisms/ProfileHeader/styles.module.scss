@@ -3,6 +3,7 @@
   width: 100%;
   height: 300px;
   position: relative;
+  
 }
 .light_container {
   background: $Light_Theme_Linear_Gradient;
@@ -31,15 +32,17 @@
   transform: translateX(-50%);
   position: absolute;
   cursor: pointer;
+  box-shadow: rgba(11, 70, 232, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 .IsStatus {
   padding: 5px;
   border-radius: 50%;
   background-color: white;
 }
-.IsLightStatus{
+.IsLightStatus {
   border: 5px solid $Status_Boder_color;
-
 }
 .IsDarkStatus {
   border: 5px solid $Dark_Status_Boder_color;

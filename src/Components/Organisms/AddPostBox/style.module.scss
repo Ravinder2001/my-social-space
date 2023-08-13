@@ -1,31 +1,36 @@
 @import "../../../Variable.scss";
 .container {
   font-family: $font_family;
-  display: flex;
+
+}
+.add_container {
+  margin-top: 20px;
+}
+.heading {
+  font-size: 16px;
+  // font-weight: bold;
+  color: rgb(238, 236, 236);
+}
+.caption_container{
+  margin-top: 10px;
 }
 .add_box {
-  width: 100%;
-  border: 1px solid grey;
+
+  // padding-bottom: 0px;
+  margin-top: 5px;
+  width: 98%;
+  // border: 1px solid grey;
   border-radius: 8px;
   padding: 5px;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 350px);
   position: relative;
+  background: linear-gradient(to right, rgb(9, 117, 194), rgb(8, 148, 166));
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 .add_button {
   background-color: black;
-  width: 100px;
-  text-align: center;
-  padding: 10px;
-  color: white;
-  border-radius: 8px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-}
-.with_image_add_button {
-  background-color: rgb(7, 105, 125);
   width: 50%;
   text-align: center;
   padding: 10px;
@@ -33,9 +38,16 @@
   border-radius: 8px;
   cursor: pointer;
 }
+.with_image_add_button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .images_box {
-  margin-top: 10px;
-  height: 88%;
+  margin-top: 5px;
+  height: 86%;
+  // border: 1px solid red;
 }
 .delete_container {
   display: flex;
@@ -43,6 +55,7 @@
 }
 .delete {
   background-color: rgb(119, 125, 7);
+  // background-color: rgb(7, 105, 125);
   width: 50%;
   text-align: center;
   padding: 10px;
@@ -53,12 +66,22 @@
   border: none;
   font-family: $font_family;
 }
-.left_box {
-  width: 50%;
+.post {
+  background-color: rgb(3, 28, 91);
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  border: none;
+  font-family: $font_family;
 }
-.right_box {
-  width: 50%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+
+
+.main_heading{
+  font-size: 20px;
+  color: white;
+  margin-top: 5px;
 }

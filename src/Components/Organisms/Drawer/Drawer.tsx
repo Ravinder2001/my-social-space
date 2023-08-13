@@ -1,4 +1,5 @@
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import DrawerItems from "../../Molecules/DrawerItems/DrawerItems";
@@ -6,17 +7,42 @@ import LogoBox from "../../Molecules/LogoBox/LogoBox";
 import ThemeButton from "../../Molecules/ThemeButton/ThemeButton";
 import ProfileBox from "../../Molecules/ProfileBox/ProfileBox";
 
-import { LocalStorageKey } from "../../../Utils/Constant";
-import { Logout } from "../../../store/Slices/UserSlice";
+import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { AddPicture, Logout } from "../../../store/Slices/UserSlice";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
 
 import styles from "./styles.module.scss";
+import AddProfilePictureModal from "../AddProfilePictureModal/AddProfilePictureModal";
+import GetProfilePicture from "../../../APIs/GetProfilePicture";
+import { RootState } from "../../../store/store";
+import SVGIcons from "../../../Assets/SVG/SvgIcon";
 
 function Drawer() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const User_id = useSelector((state: RootState) => state.UserReducer.id);
+
+  const [open, setOpen] = useState(false);
+  const [closeable, setCloseable] = useState(true);
+  const FetchProfilePicture = async (id: string) => {
+    const image = await GetProfilePicture(id);
+    if (image?.status === Request_Succesfull) {
+      if (image.data.length) {
+        dispatch(AddPicture(image.data));
+      } else {
+        setOpen(true);
+        setCloseable(image.data.closeable);
+      }
+    }
+  };
+  useEffect(() => {
+    FetchProfilePicture(User_id);
+  }, [User_id]);
   return (
     <div className={styles.container}>
+      <div className={styles.background}>
+        <SVGIcons name="Drawer_Background" />
+      </div>
       <div className={styles.header_items}>
         <LogoBox />
         <ProfileBox />
@@ -77,6 +103,11 @@ function Drawer() {
           index={-1}
         />
       </div>
+      <AddProfilePictureModal
+        open={open}
+        setOpen={setOpen}
+        closeable={closeable}
+      />
     </div>
   );
 }

@@ -1,12 +1,15 @@
 import jwtDecode from "jwt-decode";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import ProjectRoutes from "./Routes/ProjectRoutes";
 
 import { LocalStorageKey } from "./Utils/Constant";
 import { LoginUser, Logout } from "./store/Slices/UserSlice";
+import { withSuspense } from "./HOC/withSuspense";
+import GetServerHealth from "./APIs/GetServerHealth";
+
 interface decode {
   exp: number;
   iat: number;
@@ -14,33 +17,56 @@ interface decode {
   name: string;
 }
 function App() {
-
   const dispatch = useDispatch();
+  const [ServerHealth, setServerHealth] = useState<string>("Loading");
+
   const logout = () => {
     localStorage.removeItem(LocalStorageKey);
     dispatch(Logout());
   };
+
+  const CheckServerHealth = async () => {
+    const ServerRes = await GetServerHealth();
+    setServerHealth(ServerRes);
+  };
   useEffect(() => {
-    const token = localStorage.getItem(LocalStorageKey);
-    if (token) {
-      const decode: decode = jwtDecode(token);
-      if (decode) {
-        let exp = decode.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
-        if (exp > currentTime) {
-          dispatch(LoginUser(decode));
-  
+    CheckServerHealth();
+  }, []);
+
+  useEffect(() => {
+    if (ServerHealth === "OK") {
+      const token = localStorage.getItem(LocalStorageKey);
+      if (token) {
+        const decode: decode = jwtDecode(token);
+        if (decode) {
+          let exp = decode.exp;
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (exp > currentTime) {
+            dispatch(LoginUser(decode));
+          } else {
+            logout();
+          }
         } else {
           logout();
         }
       } else {
         logout();
       }
-    } else {
-      logout();
     }
-  }, []);
-  return <ProjectRoutes />;
+  }, [ServerHealth]);
+
+  const ComponentWithSuspense = withSuspense(ProjectRoutes);
+  return (
+    <>
+      {ServerHealth === "Loading" ? (
+        "Server Loading"
+      ) : ServerHealth === "OK" ? (
+        <ComponentWithSuspense />
+      ) : (
+        <div>server is down</div>
+      )}
+    </>
+  );
 }
 
 export default App;

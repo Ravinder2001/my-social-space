@@ -57,6 +57,7 @@ function SignUpBox() {
   const handleGmailVerification = async (email: string) => {
     try {
       const signInMethods = await auth.fetchSignInMethodsForEmail(email);
+      console.log("🚀  file: SignUpBox.tsx:60  signInMethods:", signInMethods)
       return signInMethods.length;
     } catch (err) {
       return false;

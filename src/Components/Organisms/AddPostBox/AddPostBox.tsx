@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 import CaptionBox from "../../Molecules/CaptionBox/CaptionBox";
 import styles from "./style.module.scss";
 import PostImages from "../../Molecules/PostImages/PostImages";
 import { PhotoProps } from "react-photo-gallery";
 import { nanoid } from "nanoid";
 import { message } from "antd";
-import { Image_Compresser } from "../../../Utils/Function";
+import { BlobToFile, Image_Compresser } from "../../../Utils/Function";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
@@ -24,14 +24,9 @@ function AddPostBox() {
   const [uploadedImages, setUploadedImages] = useState<PhotoProps[]>([]);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [caption, setCaption] = useState<string>("");
-
-  function BlobToFile(blobUrl: string, fileName: string): Promise<File> {
-    return fetch(blobUrl)
-      .then((response) => response.blob())
-      .then(
-        (blobData) => new File([blobData], fileName, { type: blobData.type })
-      );
-  }
+  const handleCaption = (text: string) => {
+    setCaption(text);
+  };
 
   const handleImageSelect = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -112,67 +107,61 @@ function AddPostBox() {
 
       formdata.append("caption", caption);
       const image_res = await AddPost({ id: User_id, formdata: formdata });
-      message.success(image_res.message);
+      if (image_res?.status === 200) {
+        message.success(image_res.message);
+      }
     }
-  };
-  const handleCaption = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setCaption(e.target.value);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.left_box}>
-        <div>
-          <CaptionBox handleCaption={handleCaption} />
-        </div>
-        <div>
-          <div>Add Images</div>
-          <div className={styles.add_box}>
-            <div className={styles.delete_container}>
-              <div
-                className={
-                  uploadedImages.length
-                    ? styles.with_image_add_button
-                    : styles.add_button
-                }
-                onClick={handleClick}
-              >
-                Add Image
+      <div className={styles.main_heading}>Add Post</div>
+      <div className={styles.caption_container}>
+        <CaptionBox value={caption} handleCaption={handleCaption} />
+      </div>
+      <div className={styles.add_container}>
+        <div className={styles.heading}>Add Images</div>
+        <div className={styles.add_box}>
+          <div className={styles.delete_container}>
+            <div
+              className={`${styles.add_button} ${
+                !uploadedImages.length && styles.with_image_add_button
+              }`}
+              onClick={handleClick}
+            >
+              {!uploadedImages.length ? "Add Image" : "Add more images"}
+            </div>
+            {uploadedImages.length ? (
+              <div className={styles.delete} onClick={handleDelete}>
+                Delete
               </div>
-              {uploadedImages.length && (
-                <div className={styles.delete} onClick={handleDelete}>
-                  Delete
-                </div>
-              )}
-            </div>
+            ) : null}
+          </div>
 
-            <div style={{ display: "none" }}>
-              <input
-                onChange={handleImageSelect}
-                ref={inputref}
-                type="file"
-                name=""
-                id=""
-                multiple
+          <div style={{ display: "none" }}>
+            <input
+              onChange={handleImageSelect}
+              ref={inputref}
+              type="file"
+              name=""
+              id=""
+              multiple
+            />
+          </div>
+          <div className={styles.images_box}>
+            {uploadedImages.length ? (
+              <PostImages
+                Images={uploadedImages}
+                setSelectedImages={setSelectedImages}
+                selectedImages={selectedImages}
               />
-            </div>
-            <div className={styles.images_box}>
-              {uploadedImages.length && (
-                <PostImages
-                  Images={uploadedImages}
-                  setSelectedImages={setSelectedImages}
-                  selectedImages={selectedImages}
-                />
-              )}
-            </div>
+            ) : null}
           </div>
         </div>
       </div>
-      <div className={styles.right_box}>
-        <button className={styles.delete} onClick={handlePost}>
-          Post
-        </button>
-      </div>
+      <button className={styles.post} onClick={handlePost}>
+        Post
+      </button>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   Profile_Route,
 } from "../Utils/Constant";
 import Add from "../Pages/Add";
+import ErrorFallback from "../Error/ErrorFallback";
 
 function ProjectRoutes() {
   return (
@@ -65,6 +66,7 @@ function ProjectRoutes() {
           </PublicRoutes>
         }
       />
+      <Route path="*" element={<ErrorFallback />} />
     </Routes>
   );
 }

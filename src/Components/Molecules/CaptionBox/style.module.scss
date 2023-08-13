@@ -1,0 +1,19 @@
+@import "../../../Variable.scss";
+.input_box {
+  //   border: 1px solid grey;
+  font-family: $font_family;
+  font-size: 16px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+.input_box:focus {
+  outline: none;
+  border: none;
+}
+
+.heading {
+  font-size: 16px;
+  // font-weight: bolder;
+  color: rgb(238, 236, 236);
+}

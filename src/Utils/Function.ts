@@ -13,7 +13,7 @@ type ImageProps = {
   file: File;
   width: number;
   height: number;
-  type:string
+  type: string;
 };
 
 export const Image_Compresser = (props: ImageProps): Promise<string> => {
@@ -28,8 +28,17 @@ export const Image_Compresser = (props: ImageProps): Promise<string> => {
       (uri: any) => {
         resolve(uri);
       },
-      "file", // output type
+      "file" // output type
     );
   });
 };
-
+export const BlobToFile = (
+  blobUrl: string,
+  fileName: string
+): Promise<File> => {
+  return fetch(blobUrl)
+    .then((response) => response.blob())
+    .then(
+      (blobData) => new File([blobData], fileName, { type: blobData.type })
+    );
+};

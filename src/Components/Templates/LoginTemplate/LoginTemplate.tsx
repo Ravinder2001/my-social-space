@@ -10,6 +10,7 @@ import Logo from "../../../Assets/Images/Logo_3.png";
 import { RootState } from "../../../store/store";
 
 import styles from "./styles.module.scss";
+import SVGIcons from "../../../Assets/SVG/SvgIcon";
 
 function LoginTemplate() {
   const SelectedIndex = useSelector(
@@ -21,19 +22,24 @@ function LoginTemplate() {
         <LoginPageLogo />
       </div>
       <div className={styles.right_container}>
-        <LoginNavBar />
-        <div className={styles.content_box}>
-          {SelectedIndex === "0" && <LoginBox />}
-          {SelectedIndex === "1" && <SignUpBox />}
-          {SelectedIndex === "2" && <About />}
-          {SelectedIndex === "3" && <div>Contact Us Page</div>}
+        <div className={styles.dot_logo}>
+          <SVGIcons name="Dot_Login_Background" />
+        </div>
+        <div className={styles.main_box}>
+          <LoginNavBar />
+          <div className={styles.content_box}>
+            {SelectedIndex === "0" && <LoginBox />}
+            {SelectedIndex === "1" && <SignUpBox />}
+            {SelectedIndex === "2" && <About />}
+            {SelectedIndex === "3" && <div>Contact Us Page</div>}
+          </div>
         </div>
 
-        <div className={styles.bottom_box}>
+        {/* <div className={styles.bottom_box}>
           <div>
             <img src={Logo} alt="" width="70px" height="30px" />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
