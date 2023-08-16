@@ -33,6 +33,7 @@ function CaptionBox(props: CaptionProps) {
         className={styles.input_box}
         style={{ width: "100%" }}
         rows={6}
+        maxLength={255}
         value={value}
         onChange={handleCaption}
         onSearch={(text, prefix) => {

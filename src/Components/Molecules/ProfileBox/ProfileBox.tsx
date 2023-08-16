@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import styles from "./styles.module.scss";
 import { RootState } from "../../../store/store";
-import invalid_user from "../../../Assets/Images/invalid_user.png";
 
 function ProfileBox() {
   const image = useSelector((state: RootState) => state.UserReducer.image);
@@ -12,9 +11,6 @@ function ProfileBox() {
           src={image}
           alt=""
           className={styles.img}
-          onError={({ currentTarget }) => {
-            currentTarget.src = invalid_user;
-          }}
         />
       </div>
       <div className={styles.name}>Ravinder Singh Negi</div>

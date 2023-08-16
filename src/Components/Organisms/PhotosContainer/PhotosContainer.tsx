@@ -22,7 +22,7 @@ function PhotosContainer() {
   return (
     <div className={styles.container}>
       <Gallery photos={images} direction="row" onClick={handleModal} />
-      <PostModal handleModal={handleModal} open={open} />
+      <PostModal post_id="" handleModal={handleModal} open={open} />
     </div>
   );
 }

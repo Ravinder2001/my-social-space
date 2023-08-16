@@ -16,6 +16,7 @@ import AddProfilePictureModal from "../AddProfilePictureModal/AddProfilePictureM
 import GetProfilePicture from "../../../APIs/GetProfilePicture";
 import { RootState } from "../../../store/store";
 import SVGIcons from "../../../Assets/SVG/SvgIcon";
+import invalid_user from "../../../Assets/Images/invalid_user.png";
 
 function Drawer() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function Drawer() {
       if (image.data.length) {
         dispatch(AddPicture(image.data));
       } else {
+        dispatch(AddPicture(invalid_user));
         setOpen(true);
         setCloseable(image.data.closeable);
       }

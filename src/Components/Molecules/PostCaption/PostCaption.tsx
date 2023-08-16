@@ -1,10 +1,12 @@
 import styles from "./styles.module.scss";
-
-function PostCaption() {
+type PostCaptionProps = {
+  caption: string;
+};
+function PostCaption(props: PostCaptionProps) {
   return (
-    <div className={styles.container}>
-      दक्षिणेश्वर काली मन्दिर🙏 #kolkata #kolkatadiaries #dakshineswarkalitemple
-    </div>
+    <pre style={{ whiteSpace: "pre-line" }} className={styles.container}>
+      {props.caption}
+    </pre>
   );
 }
 

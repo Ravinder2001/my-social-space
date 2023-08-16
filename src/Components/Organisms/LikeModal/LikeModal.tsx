@@ -7,34 +7,35 @@ import PostCommentBox from "../../Molecules/PostCommentBox/PostCommentBox";
 
 import styles from "./styles.module.scss";
 
-type PostModalType = {
+type LikeModalType = {
   handleModal: (e: string) => void;
   open: boolean;
-  post_id: string;
+  list: { username: string; image_url: string }[];
 };
-const PostModal = (props: PostModalType) => {
-  const { handleModal, open,post_id } = props;
+const LikeModal = (props: LikeModalType) => {
+  const { handleModal, open, list } = props;
+  console.log(list);
   return (
     <Modal
       //   title="Basic Modal"
       open={open}
       onOk={() => handleModal("")}
       onCancel={() => handleModal("")}
-      width={1000}
+      width={400}
       footer={null}
     >
       <div className={styles.container}>
-        <div className={styles.left_box}>
-          <CarouselBox images={Data.images} />
-        </div>
-        <div className={styles.right_box}>
-          {post_id}
-          <div className={styles.comment_box}></div>
-          <PostCommentBox post_id="" />
-        </div>
+        {list.map((item) => (
+          <div className={styles.list_box}>
+            <div className={styles.img_box}>
+              <img src={item.image_url} alt="" className={styles.img} />
+            </div>
+            <div className={styles.name}>{item.username}</div>
+          </div>
+        ))}
       </div>
     </Modal>
   );
 };
 
-export default PostModal;
+export default LikeModal;
