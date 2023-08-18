@@ -8,13 +8,12 @@ import {
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 type AddCommentProps = {
   post_id: string;
-  user_id: string;
   content: string;
 };
 
 const AddComment = async (props: AddCommentProps) => {
   try {
-    const body = { content: props.content, user_id: props.user_id };
+    const body = { content: props.content };
     const response = await axiosInstance.post(
       `/post/comment/add/${props.post_id}`,
       body

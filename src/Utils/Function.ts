@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import moment from "moment";
 import Resizer from "react-image-file-resizer";
 interface decode {
   id: string;
@@ -41,4 +42,25 @@ export const BlobToFile = (
     .then(
       (blobData) => new File([blobData], fileName, { type: blobData.type })
     );
+};
+
+export const formatTime = (time: string) => {
+  const currentTime = time; // Convert to Indian Standard Time
+  // const currentTime = moment.utc(time).utcOffset("+05:30"); // Convert to Indian Standard Time
+
+  const duration = moment.duration(moment().diff(currentTime));
+
+  if (duration.asHours() < 1) {
+    return moment(currentTime).format("HH:mm");
+  } else if (duration.asDays() < 1) {
+    return `${Math.floor(duration.asHours())} h`;
+  } else if (duration.asWeeks() < 1) {
+    return `${Math.floor(duration.asDays())} d`;
+  } else if (duration.asMonths() < 1) {
+    return `${Math.floor(duration.asWeeks())} w`;
+  } else if (duration.asYears() < 1) {
+    return `${Math.floor(duration.asMonths())} m`;
+  } else if (duration.asYears() > 1) {
+    return `${Math.floor(duration.asYears())} y`;
+  }
 };

@@ -9,15 +9,11 @@ import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 type AddPostProps = {
   post_id: string;
-  user_id: string;
 };
 const AddPostLike = async (props: AddPostProps) => {
   try {
     const response = await axiosInstance.post(
-      `/post/like/add/${props.post_id}`,
-      {
-        user_id: props.user_id,
-      }
+      `/post/like/add/${props.post_id}`
     );
     if (response.status === Request_Succesfull) {
       return response.data;

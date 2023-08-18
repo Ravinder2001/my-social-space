@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 import CaptionBox from "../../Molecules/CaptionBox/CaptionBox";
 import styles from "./style.module.scss";
-import PostImages from "../../Molecules/PostImages/PostImages";
+
 import { PhotoProps } from "react-photo-gallery";
 import { nanoid } from "nanoid";
 import { message } from "antd";
@@ -106,7 +106,7 @@ function AddPostBox() {
       }
 
       formdata.append("caption", caption);
-      const image_res = await AddPost({ id: User_id, formdata: formdata });
+      const image_res = await AddPost({ formdata: formdata });
       if (image_res?.status === 200) {
         message.success(image_res.message);
       }
@@ -148,7 +148,7 @@ function AddPostBox() {
               multiple
             />
           </div>
-          <div className={styles.images_box}>
+          {/* <div className={styles.images_box}>
             {uploadedImages.length ? (
               <PostImages
                 Images={uploadedImages}
@@ -156,7 +156,7 @@ function AddPostBox() {
                 selectedImages={selectedImages}
               />
             ) : null}
-          </div>
+          </div> */}
         </div>
       </div>
       <button className={styles.post} onClick={handlePost}>

@@ -7,9 +7,9 @@ import {
 } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
-const GetProfilePicture = async (props: string) => {
+const GetProfilePicture = async () => {
   try {
-    const response = await axiosInstance.get(`/getProfilePicture/${props}`);
+    const response = await axiosInstance.get(`/getProfilePicture`);
     if (response.status === Request_Succesfull) {
       return response.data;
     }

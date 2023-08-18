@@ -8,10 +8,10 @@ import {
   Unauthorized,
 } from "../Utils/Constant";
 
-const AddPost = async (data: { id: string; formdata: FormData }) => {
+const AddPost = async (data: { formdata: FormData }) => {
   try {
     const response = await axiosInstanceFormdata.post(
-      `/post/add/${data.id}`,
+      `/post/add`,
       data.formdata
     );
     if (response.status === Request_Succesfull) {

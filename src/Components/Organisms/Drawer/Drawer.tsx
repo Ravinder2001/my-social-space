@@ -25,8 +25,8 @@ function Drawer() {
 
   const [open, setOpen] = useState(false);
   const [closeable, setCloseable] = useState(true);
-  const FetchProfilePicture = async (id: string) => {
-    const image = await GetProfilePicture(id);
+  const FetchProfilePicture = async () => {
+    const image = await GetProfilePicture();
     if (image?.status === Request_Succesfull) {
       if (image.data.length) {
         dispatch(AddPicture(image.data));
@@ -38,7 +38,7 @@ function Drawer() {
     }
   };
   useEffect(() => {
-    FetchProfilePicture(User_id);
+    FetchProfilePicture();
   }, [User_id]);
   return (
     <div className={styles.container}>
