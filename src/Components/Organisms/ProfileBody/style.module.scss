@@ -20,12 +20,12 @@
 .left_box{
   width: 35%;
   height: 300px;
-  border: 1px solid black;
+  // border: 1px solid black;
 }
 .right_box {
   width: 45%;
   height: 100%;
-  border: 1px solid red;
+  // border: 1px solid red;
   overflow: auto;
   scrollbar-width: none; /* Hide the scrollbar on Firefox */
   -ms-overflow-style: none; 
@@ -38,6 +38,6 @@
 .suggest{
   width: 20%;
   height: 300px;
-  border: 1px solid black;
+  // border: 1px solid black;
 }
 

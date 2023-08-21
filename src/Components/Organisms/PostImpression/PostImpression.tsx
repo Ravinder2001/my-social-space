@@ -1,32 +1,105 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./style.module.scss";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
+import GetPostLikes from "../../../APIs/GetPostLikes";
+import { Request_Succesfull } from "../../../Utils/Constant";
+import RemovePostLike from "../../../APIs/RemovePostLike";
+import AddPostLike from "../../../APIs/AddPostLike";
+import LikeModal from "../LikeModal/LikeModal";
 
 type props = {
-  handleModal?: () => void;
+  handleModal?: (e: string) => void;
+  post_id: string;
+  open: boolean;
+};
+
+type impressionData = {
+  list: { user_name: string; image_url: string }[];
+  user_like: boolean;
 };
 function PostImpression(props: props) {
-  const { handleModal } = props;
+  const { handleModal, post_id, open } = props;
+  const [impressionData, setImpressionData] = useState<impressionData>({
+    list: [],
+    user_like: false,
+  });
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleLikeModal = () => {
+    setModalOpen(!modalOpen);
+  };
+
+  const FetchLikes = async () => {
+    const res = await GetPostLikes(post_id);
+    if (res.status == Request_Succesfull) {
+      setImpressionData(res.data);
+    }
+  };
+  const ToogleLike = async () => {
+    if (impressionData?.user_like) {
+      const res = await RemovePostLike(post_id);
+      if (res.status == Request_Succesfull) {
+        FetchLikes();
+      }
+    } else {
+      const res = await AddPostLike(post_id);
+      if (res.status == Request_Succesfull) {
+        FetchLikes();
+      }
+    }
+  };
+  useEffect(() => {
+    FetchLikes();
+  }, [post_id]);
+
   return (
     <div className={styles.container}>
       <div className={styles.box}>
-        <div className={styles.icon}>
+        <div
+          className={`${styles.icon} ${
+            impressionData?.user_like && styles.liked
+          }`}
+          onClick={ToogleLike}
+        >
           <LucideIcons name="Heart" color="#494849" size={22} />
         </div>
-        <div className={styles.text}>Like</div>
+        <div
+          className={styles.text}
+          onClick={() => impressionData.list.length && handleLikeModal()}
+        >
+          {impressionData?.list.length == 0
+            ? "Like"
+            : impressionData?.list.length == 1
+            ? `${impressionData?.list.length} Like`
+            : impressionData?.list.length == 0}
+        </div>
       </div>
-      <div className={styles.box}>
+      <div
+        className={styles.box}
+        onClick={() => handleModal && handleModal(post_id ?? "")}
+      >
         <div className={styles.icon}>
           <LucideIcons name="MessageCircleIcon" color="#494849" size={22} />
         </div>
         <div className={styles.text}>Comments</div>
       </div>
-      <div className={styles.box} onClick={handleModal}>
-        <div className={styles.icon}>
-          <LucideIcons name="Hash" color="#494849" size={22} />
+      {!open ? (
+        <div
+          className={styles.box}
+          onClick={() => handleModal && handleModal(post_id ?? "")}
+        >
+          <div className={styles.icon}>
+            <LucideIcons name="Hash" color="#494849" size={22} />
+          </div>
+          <div className={styles.text}>See Post</div>
         </div>
-        <div className={styles.text}>See Post</div>
-      </div>
+      ) : null}
+
+      <LikeModal
+        open={modalOpen}
+        handleModal={handleLikeModal}
+        list={impressionData.list}
+      />
     </div>
   );
 }

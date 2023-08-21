@@ -49,7 +49,7 @@ function LoginBox() {
       if (res) {
         res.user?.getIdToken().then(async (token) => {
           const res = await LoginWithToken({ token });
-          if (res.status === Request_Succesfull) {
+          if (res?.status === Request_Succesfull) {
             const decode = JWT_Decode(res.token);
             dispatch(LoginUser(decode));
       
@@ -76,7 +76,7 @@ function LoginBox() {
       rememberMe: RememberMeState,
     };
     const res = await LoginWithEmailAndPassword(data);
-    if (res.status === Request_Succesfull) {
+    if (res?.status === Request_Succesfull) {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
     

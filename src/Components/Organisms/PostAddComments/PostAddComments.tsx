@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import styles from "./style.module.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import MessageInputBox from "../../Molecules/MessageInputBox/MessageInputBox";
 import { EmojiClickData } from "emoji-picker-react";
-function PostAddComments() {
+import AddComment from "../../../APIs/AddComment";
+import { Request_Succesfull } from "../../../Utils/Constant";
+import { message } from "antd";
+
+type props = {
+  post_id: string;
+  open: boolean;
+  FetchComments?: () => void;
+};
+function PostAddComments(props: props) {
   const User = useSelector((state: RootState) => state.UserReducer);
   const [comment, setComment] = useState<string>("");
-
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  };
   const handleEmoji = (emojiData: EmojiClickData) => {
     setComment(comment + emojiData.emoji);
+  };
+
+  const handleComment = async (gif?: string) => {
+    const res = await AddComment({
+      post_id: props.post_id,
+      content: gif ?? comment,
+    });
+    if (res?.status == Request_Succesfull) {
+      setComment("");
+      if (props.open && props.FetchComments) {
+        props.FetchComments();
+      } else {
+        message.success("Comment added successfully");
+      }
+    }
   };
   return (
     <div className={styles.container}>
@@ -17,9 +43,16 @@ function PostAddComments() {
         <img src={User.image} alt="" className={styles.img} />
       </div>
       <div className={styles.input_box}>
-        <MessageInputBox handleEmoji={handleEmoji} />
+        <MessageInputBox
+          handleEmoji={handleEmoji}
+          handleChange={handleChange}
+          value={comment}
+          handleComment={handleComment}
+        />
       </div>
-      <div className={styles.button}>Send</div>
+      <div className={styles.button} onClick={() => handleComment()}>
+        Send
+      </div>
     </div>
   );
 }

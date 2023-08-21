@@ -19,9 +19,14 @@
   align-items: center;
   justify-content: center;
 }
-.text{
-    margin-left: 2px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #494849;  font-family: $font_family;
+.liked svg {
+  fill: red;
+  stroke: red;
+}
+.text {
+  margin-left: 2px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #494849;
+  font-family: $font_family;
 }

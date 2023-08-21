@@ -1,7 +1,11 @@
 import React from "react";
-import styles from "./style.module.scss"
-function PostCaption() {
-  return <pre className={styles.container}>Hey my name is ravi</pre>;
+import styles from "./style.module.scss";
+
+type props = {
+  Caption: string;
+};
+function PostCaption(props: props) {
+  return <pre className={styles.container}>{props.Caption}</pre>;
 }
 
 export default PostCaption;

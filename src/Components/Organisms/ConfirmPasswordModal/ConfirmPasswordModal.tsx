@@ -54,7 +54,7 @@ const ConfirmPasswordModal = (props: ConfirmModalType) => {
             token,
             password: values.password,
           });
-          if (res.status === Request_Succesfull) {
+          if (res?.status === Request_Succesfull) {
             const decode = JWT_Decode(res.token);
             dispatch(LoginUser(decode));
             localStorage.setItem(LocalStorageKey, res.token);

@@ -6,12 +6,13 @@ import {
   Unauthorized,
 } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
-
-
-const AddPostLike = async (post_id: string) => {
+// type RemovePostProps = {
+//   post_id: string;
+// };
+const RemoveComment = async (comment_id: number) => {
   try {
-    const response = await axiosInstance.post(
-      `/post/like/add/${post_id}`
+    const response = await axiosInstance.delete(
+      `/post/comment/delete/${comment_id}`
     );
     if (response.status === Request_Succesfull) {
       return response.data;
@@ -27,4 +28,4 @@ const AddPostLike = async (post_id: string) => {
     }
   }
 };
-export default AddPostLike;
+export default RemoveComment;

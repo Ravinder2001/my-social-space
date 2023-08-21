@@ -6,13 +6,13 @@ import {
   Unauthorized,
 } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
-type RemovePostProps = {
-  post_id: string;
-};
-const RemovePostLike = async (props: RemovePostProps) => {
+// type RemovePostProps = {
+//   post_id: string;
+// };
+const RemovePostLike = async (post_id: string) => {
   try {
-    const response = await axiosInstance.post(
-      `/post/like/remove/${props.post_id}`
+    const response = await axiosInstance.delete(
+      `/post/like/remove/${post_id}`
     );
     if (response.status === Request_Succesfull) {
       return response.data;

@@ -74,7 +74,7 @@ function SignUpBox() {
       email: data.email,
       password: data.password,
     });
-    if (res.status === Request_Succesfull) {
+    if (res?.status === Request_Succesfull) {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
       localStorage.setItem(LocalStorageKey, res.token);

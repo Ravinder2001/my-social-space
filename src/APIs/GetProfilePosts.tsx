@@ -9,7 +9,7 @@ import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 const GetProfilePosts = async () => {
   try {
-    const response = await axiosInstance.get(`/post/all`);
+    const response = await axiosInstance.get(`/post/all/self`);
     if (response.status === Request_Succesfull) {
       return response.data;
     }

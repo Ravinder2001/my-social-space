@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./style.module.scss";
 import { Carousel } from "react-responsive-carousel";
 type PostProps = {
-  images: string[];
+  images: { image_url: string }[];
 };
 
 function PostImages({ images }: PostProps) {
@@ -10,7 +10,11 @@ function PostImages({ images }: PostProps) {
     <div className={styles.container}>
       <Carousel showThumbs={false}>
         {images.map((image) => (
-          <img src={image} alt="carosuel_image" className={styles.image} />
+          <img
+            src={image.image_url}
+            alt="carosuel_image"
+            className={styles.image}
+          />
         ))}
       </Carousel>
     </div>

@@ -9,6 +9,9 @@ import { LocalStorageKey } from "./Utils/Constant";
 import { LoginUser, Logout } from "./store/Slices/UserSlice";
 import { withSuspense } from "./HOC/withSuspense";
 import GetServerHealth from "./APIs/GetServerHealth";
+import Server from "./Assets/Images/Server.png";
+
+import styles from "./App.module.scss"
 
 interface decode {
   exp: number;
@@ -63,7 +66,9 @@ function App() {
       ) : ServerHealth === "OK" ? (
         <ComponentWithSuspense />
       ) : (
-        <div>server is down</div>
+        <div className={styles.server_con}>
+          <img src={Server} alt=""  className={styles.server_img}/>
+        </div>
       )}
     </>
   );

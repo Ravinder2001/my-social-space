@@ -1,7 +1,18 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useEffect,
+  useState,
+  SetStateAction,
+  Dispatch,
+} from "react";
 import styles from "./style.module.scss";
 import axios from "axios";
-function GifBox() {
+type props = {
+  handleComment: (gif?: string) => void;
+  setVisible: Dispatch<SetStateAction<string>>;
+};
+function GifBox(props: props) {
   const [data, setData] = useState([]);
   const [query, setQuery] = useState("webdeveloper");
   const [loading, setLoading] = useState(true);
@@ -51,9 +62,14 @@ function GifBox() {
           <>
             {data.map((gif: any) => (
               <img
+                key={gif.id}
                 src={gif.images.fixed_height.url}
                 alt=""
                 className={styles.gif}
+                onClick={() => {
+                  props.handleComment(gif.images.fixed_height.url);
+                  props.setVisible("");
+                }}
               />
             ))}
           </>

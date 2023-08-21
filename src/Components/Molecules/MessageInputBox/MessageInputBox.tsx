@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import MessageInput from "../../Atoms/InputBox/MessageInput/MessageInput";
 import styles from "./style.module.scss";
 import ReactIcons from "../../../Utils/Icons/ReactIcons";
@@ -7,15 +7,23 @@ import axios from "axios";
 import GifBox from "../GifBox/GifBox";
 type props = {
   handleEmoji: (emojiData: EmojiClickData) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleComment: (gif?: string) => void;
+  value: string;
 };
 function MessageInputBox(props: props) {
-  const { handleEmoji } = props;
+  const { handleEmoji, handleChange, value,handleComment } = props;
   const [Visible, setVisible] = useState<string>("");
-
 
   return (
     <div className={styles.container}>
-      <MessageInput placeholder="Write your comment" />
+      <MessageInput
+        type="text"
+        max_length={30}
+        placeholder="Write your comment"
+        value={value}
+        onChange={handleChange}
+      />
       <div className={styles.icons}>
         <div className={styles.emoji}>
           {Visible === "emoji" && (
@@ -38,7 +46,7 @@ function MessageInputBox(props: props) {
       </div>
 
       <div className={styles.icons}>
-        {Visible === "gif" && <GifBox />}
+        {Visible === "gif" && <GifBox handleComment={handleComment} setVisible={setVisible} />}
         {Visible === "gif" ? (
           <div onClick={() => setVisible("")}>
             <ReactIcons name="RxCross2" size={20} color="grey" />

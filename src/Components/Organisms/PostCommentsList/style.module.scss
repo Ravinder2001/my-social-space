@@ -30,10 +30,14 @@
   background-color: rgb(244, 240, 240);
   border-radius: 4px;
   padding: 3px 10px;
-  max-width: 75%;
+  width: 75%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
   font-family: $font_family;
 }
@@ -43,6 +47,8 @@
   color: rgb(1, 51, 99);
   font-weight: 700;
   font-family: $font_family;
+
+
 }
 .time {
   font-size: 10px;
@@ -50,4 +56,14 @@
 }
 .icon {
   cursor: pointer;
+}
+.left_box{
+  width: 90%;
+}
+.right_box{
+  width: 6%;
+}
+.gif{
+  width: 70px;
+  height: 70px;
 }

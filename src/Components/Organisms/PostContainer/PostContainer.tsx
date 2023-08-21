@@ -6,27 +6,50 @@ import PostImages from "../PostImages/PostImages";
 import PostImpression from "../PostImpression/PostImpression";
 import PostAddComments from "../PostAddComments/PostAddComments";
 import PostModal from "../PostModal/PostModal";
-function PostContainer() {
-  let images = [
-    "https://my-social-space.s3.ap-south-1.amazonaws.com/Posts/6f5d0def-62b9-4931-a2e9-538ec2ae693d/2d6196ff-a406-4f3e-a808-f3329afc5727/image_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNYR76XNJX%2F20230820%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20230820T122611Z&X-Amz-Expires=86400&X-Amz-Signature=8ef44259b987e937ef1350911572e672320c506229ecda8ce9715bb4422a94f7&X-Amz-SignedHeaders=host&x-id=GetObject",
-    "https://my-social-space.s3.ap-south-1.amazonaws.com/Posts/6f5d0def-62b9-4931-a2e9-538ec2ae693d/2d6196ff-a406-4f3e-a808-f3329afc5727/image_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNYR76XNJX%2F20230820%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20230820T122611Z&X-Amz-Expires=86400&X-Amz-Signature=8ef44259b987e937ef1350911572e672320c506229ecda8ce9715bb4422a94f7&X-Amz-SignedHeaders=host&x-id=GetObject",
-    "https://my-social-space.s3.ap-south-1.amazonaws.com/Posts/6f5d0def-62b9-4931-a2e9-538ec2ae693d/2d6196ff-a406-4f3e-a808-f3329afc5727/image_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNYR76XNJX%2F20230820%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20230820T122611Z&X-Amz-Expires=86400&X-Amz-Signature=8ef44259b987e937ef1350911572e672320c506229ecda8ce9715bb4422a94f7&X-Amz-SignedHeaders=host&x-id=GetObject",
-    "https://my-social-space.s3.ap-south-1.amazonaws.com/Posts/6f5d0def-62b9-4931-a2e9-538ec2ae693d/2d6196ff-a406-4f3e-a808-f3329afc5727/image_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNYR76XNJX%2F20230820%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20230820T122611Z&X-Amz-Expires=86400&X-Amz-Signature=8ef44259b987e937ef1350911572e672320c506229ecda8ce9715bb4422a94f7&X-Amz-SignedHeaders=host&x-id=GetObject",
-    "https://my-social-space.s3.ap-south-1.amazonaws.com/Posts/6f5d0def-62b9-4931-a2e9-538ec2ae693d/2d6196ff-a406-4f3e-a808-f3329afc5727/image_1.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNYR76XNJX%2F20230820%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20230820T122611Z&X-Amz-Expires=86400&X-Amz-Signature=8ef44259b987e937ef1350911572e672320c506229ecda8ce9715bb4422a94f7&X-Amz-SignedHeaders=host&x-id=GetObject",
-  ];
 
-  const [open, setOpen] = useState<boolean>(true);
-  const handleModal = () => {
-    setOpen(!open);
+type props = {
+  Data: {
+    user_name: string;
+    profile_picture: string;
+    post_id: string;
+    caption: string;
+    created_at: string;
+    images: { image_url: string }[];
+    editable: boolean;
+  };
+};
+function PostContainer(props: props) {
+  const { Data } = props;
+  const [ModalStatus, setModalStatus] = useState<{
+    open: boolean;
+    post_id: string;
+  }>({
+    open: false,
+    post_id: "",
+  });
+  const handleModal = (e?: string) => {
+    setModalStatus({
+      open: !ModalStatus.open,
+      post_id: e ?? "",
+    });
   };
   return (
     <div className={styles.container}>
-      <PostHeader />
-      <PostCaption />
-      <PostImages images={images} />
-      <PostImpression handleModal={handleModal} />
-      <PostAddComments />
-      <PostModal open={open} handleModal={handleModal} />
+      <PostHeader
+        user_name={Data.user_name}
+        profile_picture={Data.profile_picture}
+        created_at={Data.created_at}
+        editable={Data.editable}
+      />
+      <PostCaption Caption={Data.caption} />
+      <PostImages images={Data.images} />
+      <PostImpression
+        handleModal={handleModal}
+        post_id={Data.post_id}
+        open={ModalStatus.open}
+      />
+      <PostAddComments post_id={Data.post_id} open={ModalStatus.open} />
+      <PostModal open={ModalStatus} handleModal={handleModal} />
     </div>
   );
 }
