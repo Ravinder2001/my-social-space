@@ -1,0 +1,9 @@
+@import "../../../Variable.scss";
+.container {
+  white-space: pre-line;
+  font-family: $font_family;
+  max-height: 45px;
+  // border: 1px solid red;
+  margin: 0px;
+  margin-top:5px;
+}

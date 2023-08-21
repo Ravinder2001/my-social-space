@@ -4,14 +4,14 @@ import styles from "./style.module.scss";
 
 type InputBoxType = {
   name?: string;
-  type: string;
+  type?: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   max_length?: number;
   placeholder?: string;
 };
 
-function InputBox1(props: InputBoxType) {
+function MessageInput(props: InputBoxType) {
   return (
     <input
       name={props.name}
@@ -25,4 +25,4 @@ function InputBox1(props: InputBoxType) {
   );
 }
 
-export default InputBox1;
+export default MessageInput;
