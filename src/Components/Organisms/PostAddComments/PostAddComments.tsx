@@ -7,6 +7,7 @@ import { EmojiClickData } from "emoji-picker-react";
 import AddComment from "../../../APIs/AddComment";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import { message } from "antd";
+import UserImage from "../../Atoms/UserImage/UserImage";
 
 type props = {
   post_id: string;
@@ -40,7 +41,7 @@ function PostAddComments(props: props) {
   return (
     <div className={styles.container}>
       <div className={styles.img_box}>
-        <img src={User.image} alt="" className={styles.img} />
+        <UserImage />
       </div>
       <div className={styles.input_box}>
         <MessageInputBox

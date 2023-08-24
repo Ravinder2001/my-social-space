@@ -11,7 +11,7 @@ function AddTemplate() {
         <AddPostBox />
       </div>
       <div className={styles.right_box}>
-        <AddPostBox />
+        {/* <AddPostBox /> */}
       </div>
     </div>
   );

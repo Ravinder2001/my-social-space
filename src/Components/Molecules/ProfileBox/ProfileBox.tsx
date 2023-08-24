@@ -1,17 +1,12 @@
-import { useSelector } from "react-redux";
 import styles from "./styles.module.scss";
 import { RootState } from "../../../store/store";
+import UserImage from "../../Atoms/UserImage/UserImage";
 
 function ProfileBox() {
-  const image = useSelector((state: RootState) => state.UserReducer.image);
   return (
     <div className={styles.container}>
       <div className={styles.img_box}>
-        <img
-          src={image}
-          alt=""
-          className={styles.img}
-        />
+        <UserImage />
       </div>
       <div className={styles.name}>Ravinder Singh Negi</div>
       <div className={styles.id}>@ravinder</div>

@@ -10,7 +10,7 @@ import DrawerReducer from "./Slices/DrawerSlice";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["DrawerReducer"],
+  blacklist: [""],
 };
 
 const rootReducer = combineReducers({

@@ -38,12 +38,12 @@ function PostImpression(props: props) {
   const ToogleLike = async () => {
     if (impressionData?.user_like) {
       const res = await RemovePostLike(post_id);
-      if (res.status == Request_Succesfull) {
+      if (res?.status == Request_Succesfull) {
         FetchLikes();
       }
     } else {
       const res = await AddPostLike(post_id);
-      if (res.status == Request_Succesfull) {
+      if (res?.status == Request_Succesfull) {
         FetchLikes();
       }
     }
@@ -71,7 +71,7 @@ function PostImpression(props: props) {
             ? "Like"
             : impressionData?.list.length == 1
             ? `${impressionData?.list.length} Like`
-            : impressionData?.list.length == 0}
+            : `${impressionData?.list.length} Likes`}
         </div>
       </div>
       <div

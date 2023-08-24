@@ -1,18 +1,18 @@
 import { message } from "antd";
+import axiosInstanceFormdata from "../Utils/axiosInstance/axiosInstanceFormdata";
+import { AxiosError } from "axios";
 import {
   Bad_Request,
   LocalStorageKey,
   Request_Succesfull,
   Unauthorized,
 } from "../Utils/Constant";
-import axiosInstance from "../Utils/axiosInstance/axiosInstance";
-// type RemovePostProps = {
-//   post_id: string;
-// };
-const RemovePostLike = async (post_id: string) => {
+
+const AddProfileData = async (data: { formdata: FormData }) => {
   try {
-    const response = await axiosInstance.delete(
-      `/post/like/delete/${post_id}`
+    const response = await axiosInstanceFormdata.post(
+      `/addProfilePicture`,
+      data.formdata
     );
     if (response.status === Request_Succesfull) {
       return response.data;
@@ -28,4 +28,4 @@ const RemovePostLike = async (post_id: string) => {
     }
   }
 };
-export default RemovePostLike;
+export default AddProfileData;

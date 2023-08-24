@@ -27,13 +27,15 @@ function Drawer() {
   const [closeable, setCloseable] = useState(true);
   const FetchProfilePicture = async () => {
     const image = await GetProfilePicture();
+    console.log("🚀  file: Drawer.tsx:30  image:", image)
+
     if (image?.status === Request_Succesfull) {
-      if (image.data.length) {
+      if (image?.data?.length) {
         dispatch(AddPicture(image.data));
       } else {
         dispatch(AddPicture(invalid_user));
         setOpen(true);
-        setCloseable(image.data.closeable);
+        setCloseable(image.closeable);
       }
     }
   };

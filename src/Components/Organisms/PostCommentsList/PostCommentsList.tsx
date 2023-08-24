@@ -15,6 +15,7 @@ type commentType = {
     content: string;
     created_at: string;
     comment_id: number;
+    editable: boolean;
   }[];
   editable: boolean;
   FetchComments: () => void;
@@ -49,7 +50,7 @@ function PostCommentsList(props: commentType) {
                 </div>
               </div>
               <div className={styles.right_box}>
-                {props.editable ? (
+                {comment.editable ? (
                   <div
                     className={styles.icon}
                     onClick={() => handleDelete(comment.comment_id)}

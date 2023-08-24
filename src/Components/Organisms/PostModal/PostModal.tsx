@@ -27,7 +27,8 @@ type commentType = {
   image_url: string;
   content: string;
   created_at: string;
-  comment_id:number
+  comment_id: number;
+  editable: boolean;
 };
 const PostModal = (props: props) => {
   const { open, handleModal } = props;
@@ -36,13 +37,13 @@ const PostModal = (props: props) => {
 
   const FetchPost = async () => {
     const res = await GetSinglePostById(open.post_id);
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
   };
   const FetchComments = async () => {
     const res = await GetPostComments(open.post_id);
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setComments(res.data);
     }
   };
@@ -70,7 +71,11 @@ const PostModal = (props: props) => {
           </div>
           <div className={styles.right_box}>
             <PostImpression post_id={data.post_id} open={open.open} />
-            <PostCommentsList  FetchComments={FetchComments} data={comments} editable={data.editable} />
+            <PostCommentsList
+              FetchComments={FetchComments}
+              data={comments}
+              editable={data.editable}
+            />
             <PostAddComments
               post_id={data.post_id}
               open={open.open}

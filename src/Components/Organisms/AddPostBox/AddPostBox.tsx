@@ -2,7 +2,6 @@ import React, { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 import CaptionBox from "../../Molecules/CaptionBox/CaptionBox";
 import styles from "./style.module.scss";
 
-import { PhotoProps } from "react-photo-gallery";
 import { nanoid } from "nanoid";
 import { message } from "antd";
 import { BlobToFile, Image_Compresser } from "../../../Utils/Function";
@@ -12,84 +11,46 @@ import { RootState } from "../../../store/store";
 import AddPost from "../../../APIs/AddPost";
 import { ImageSizeError } from "../../../Utils/Message";
 import { File_Extension, Max_Image_Size } from "../../../Utils/Constant";
+import PostImages from "../PostImages/PostImages";
 function AddPostBox() {
   const inputref = useRef<HTMLInputElement>(null);
-  const User_id = useSelector((state: RootState) => state.UserReducer.id);
 
   const handleClick = () => {
     if (inputref) {
       inputref.current?.click();
     }
   };
-  const [uploadedImages, setUploadedImages] = useState<PhotoProps[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [caption, setCaption] = useState<string>("");
   const handleCaption = (text: string) => {
     setCaption(text);
   };
 
-  const handleImageSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      const selected: PhotoProps[] = [];
-      let over_size_image = false;
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.size < Max_Image_Size * 1024 * 1024) {
-          const url = URL.createObjectURL(file);
-          const img = new Image();
-          await new Promise<void>((resolve) => {
-            img.onload = () => {
-              selected.push({
-                src: url,
-                width: img.width,
-                height: img.height,
-                key: nanoid(),
-                alt: file.name,
-              });
-              resolve();
-            };
-            img.src = url;
-          });
-        } else {
-          over_size_image = true;
-        }
-      }
-      if (over_size_image) {
-        message.error(ImageSizeError);
-      }
-      setUploadedImages((prev) => [...prev, ...selected]);
+      // Convert FileList to an array of Files
+      const fileArray = Array.from(files);
+      setUploadedImages((prev) => [...prev, ...fileArray]);
     }
   };
-  const handleDelete = () => {
-    console.log(selectedImages);
-    const filteredImages = uploadedImages.filter(
-      (el) => el.key && !selectedImages.includes(el?.key)
-    );
-    console.log("🚀  file: AddPostBox.tsx:45  filteredImages:", filteredImages);
-    setUploadedImages(filteredImages);
-  };
+
   const handlePost = async () => {
     let image_stack: any = [];
     if (uploadedImages.length) {
       await Promise.all(
         uploadedImages.map(async (image, index) => {
           try {
-            const convertedFile = await BlobToFile(
-              image.src,
-              image.alt ?? `image_${index}.png`
-            );
+            // console.log("ayaa", image);
 
-            let object = {
-              file: convertedFile,
-              width: image.width,
-              height: image.height,
-              type: image.alt?.split(".")[1] ?? "JPEG",
-            };
-            const newImage = await Image_Compresser(object);
-            image_stack.push(newImage);
+            // let object = {
+            //   file: image,
+            //   width: image.width,
+            //   height: image.height,
+            // };
+            // const newImage = await Image_Compresser(object);
+            // image_stack.push(newImage);
           } catch (error) {
             console.error("Error converting Blob to File:", error);
           }
@@ -97,20 +58,20 @@ function AddPostBox() {
       );
     }
 
-    if (caption.length > 0 || image_stack.length) {
-      let formdata = new FormData();
-      if (image_stack.length) {
-        image_stack.map((image: any) => {
-          formdata.append(File_Extension, image);
-        });
-      }
+    // if (caption.length > 0 || image_stack.length) {
+    //   let formdata = new FormData();
+    //   if (image_stack.length) {
+    //     image_stack.map((image: any) => {
+    //       formdata.append(File_Extension, image);
+    //     });
+    //   }
 
-      formdata.append("caption", caption);
-      const image_res = await AddPost({ formdata: formdata });
-      if (image_res?.status === 200) {
-        message.success(image_res.message);
-      }
-    }
+    //   formdata.append("caption", caption);
+    //   const image_res = await AddPost({ formdata: formdata });
+    //   if (image_res?.status === 200) {
+    //     message.success(image_res.message);
+    //   }
+    // }
   };
 
   return (
@@ -132,9 +93,7 @@ function AddPostBox() {
               {!uploadedImages.length ? "Add Image" : "Add more images"}
             </div>
             {uploadedImages.length ? (
-              <div className={styles.delete} onClick={handleDelete}>
-                Delete
-              </div>
+              <div className={styles.delete}>Delete</div>
             ) : null}
           </div>
 
@@ -148,15 +107,11 @@ function AddPostBox() {
               multiple
             />
           </div>
-          {/* <div className={styles.images_box}>
+          <div className={styles.images_box}>
             {uploadedImages.length ? (
-              <PostImages
-                Images={uploadedImages}
-                setSelectedImages={setSelectedImages}
-                selectedImages={selectedImages}
-              />
+              <PostImages files={uploadedImages} />
             ) : null}
-          </div> */}
+          </div>
         </div>
       </div>
       <button className={styles.post} onClick={handlePost}>

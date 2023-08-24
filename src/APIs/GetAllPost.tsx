@@ -7,9 +7,9 @@ import {
 } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
-const GetProfilePosts = async () => {
+const GetAllPost = async () => {
   try {
-    const response = await axiosInstance.get(`/post/all/self`);
+    const response = await axiosInstance.get(`/post/all`);
     if (response.status === Request_Succesfull) {
       return response.data;
     }
@@ -24,4 +24,4 @@ const GetProfilePosts = async () => {
     }
   }
 };
-export default GetProfilePosts;
+export default GetAllPost;

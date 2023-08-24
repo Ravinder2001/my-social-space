@@ -6,7 +6,7 @@ export interface PageState {
 }
 
 const initialState: PageState = {
-  index: 5,
+  index: 0,
 };
 
 export const DrawerSlice = createSlice({

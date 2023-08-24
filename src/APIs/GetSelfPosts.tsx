@@ -6,14 +6,10 @@ import {
   Unauthorized,
 } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
-// type RemovePostProps = {
-//   post_id: string;
-// };
-const RemovePostLike = async (post_id: string) => {
+
+const GetSelfPosts = async () => {
   try {
-    const response = await axiosInstance.delete(
-      `/post/like/delete/${post_id}`
-    );
+    const response = await axiosInstance.get(`/post/all/self`);
     if (response.status === Request_Succesfull) {
       return response.data;
     }
@@ -28,4 +24,4 @@ const RemovePostLike = async (post_id: string) => {
     }
   }
 };
-export default RemovePostLike;
+export default GetSelfPosts;

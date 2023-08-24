@@ -1,5 +1,5 @@
 import React from "react";
-import { AiFillEye, AiFillEyeInvisible,AiOutlineFileGif } from "react-icons/ai";
+import { AiFillEye, AiFillEyeInvisible,AiOutlineFileGif,AiOutlinePlus } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
 import { RxCross2 } from "react-icons/rx";
 import { MdDelete } from "react-icons/md";
@@ -23,6 +23,8 @@ function ReactIcons(props: IconsType) {
       return <RxCross2 size={props.size} color={props.color} />;
     case "MdDelete":
       return <MdDelete size={props.size} color={props.color} />;
+    case "AiOutlinePlus":
+      return <AiOutlinePlus size={props.size} color={props.color} />;
     default:
       return <></>;
   }

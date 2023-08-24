@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./style.module.scss";
 import posts from "../../../Assets/Images/posts.png";
 import friends from "../../../Assets/Images/friends.png";
@@ -6,6 +6,8 @@ import work from "../../../Assets/Images/work.png";
 import location from "../../../Assets/Images/location.png";
 import time from "../../../Assets/Images/time.png";
 import edit from "../../../Assets/Images/edit.png";
+import AddProfilePictureModal from "../AddProfilePictureModal/AddProfilePictureModal";
+import UserImage from "../../Atoms/UserImage/UserImage";
 type headerProps = {
   User: {
     id: string;
@@ -18,10 +20,14 @@ type headerProps = {
 
 function ProfileHeader(props: headerProps) {
   const { image } = props.User;
+  const [open, setOpen] = useState<boolean>(false);
+  const handleModal = () => {
+    setOpen(!open);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.user_image}>
-        <img src={image} alt="user_profile_pic" className={styles.img} />
+        <UserImage />
       </div>
       <div className={styles.menu}>
         <div className={styles.box}>
@@ -54,13 +60,14 @@ function ProfileHeader(props: headerProps) {
           </div>
           <div className={styles.text}>Joined from March</div>
         </div>
-        <div className={`${styles.box} ${styles.edit}`}>
+        <div className={`${styles.box} ${styles.edit}`} onClick={handleModal}>
           <div className={styles.icon}>
             <img src={edit} alt="profile_icon" />
           </div>
           <div className={styles.text}>Edit</div>
         </div>
       </div>
+      <AddProfilePictureModal open={open} setOpen={setOpen} closeable={true} />
     </div>
   );
 }
