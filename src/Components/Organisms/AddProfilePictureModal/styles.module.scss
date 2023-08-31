@@ -2,15 +2,64 @@
 .modal{
   backdrop-filter: blur(5px) !important;
 }
-.input_box {
+.container{
   width: 100%;
+  height: 100%;
 }
-.error {
-  color: red;
-  font-size: 12px;
+.avatar_box{
+  display: flex;
+  justify-content: space-between;
 }
-.button {
+.img{
+  width: 200px;
+  height: 200px;
+}
+.label{
+  font-family: $font_family;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.btn {
   background-color: $button_color;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  font-family: $font_family;
+  font-size: 16px;
+}
+.img_box{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.img{
+  width: 200px;
+  height: 200px;
+}
+.left_box{
+margin-right: 20px;
+}
+.upload{
+  background-color: rgb(15, 115, 169);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  font-family: $font_family;
+  font-size: 16px;
+}
+.remove{
+  background-color: rgb(193, 18, 18);
   color: white;
   text-align: center;
   padding: 10px;

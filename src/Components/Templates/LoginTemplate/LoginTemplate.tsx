@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
 import LoginPageLogo from "../../Molecules/LoginPageLogo/LoginPageLogo";
-import LoginNavBar from "../../Organisms/NavBar/LoginNavBar";
+import LoginNavBar from "../../Organisms/LoginNavBar/LoginNavBar";
 import LoginBox from "../../Organisms/LoginBox/LoginBox";
 import SignUpBox from "../../Organisms/SignUpBox/SignUpBox";
 import About from "../../Organisms/About/About";

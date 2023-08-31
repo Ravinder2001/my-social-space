@@ -64,3 +64,44 @@ export const formatTime = (time: string) => {
     return `${Math.floor(duration.asYears())} y`;
   }
 };
+
+export const getImageDimensions = async (
+  imageBase64: string
+): Promise<{ width: number; height: number }> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const { naturalWidth, naturalHeight } = img;
+      resolve({ width: naturalWidth, height: naturalHeight });
+    };
+    img.onerror = () => {
+      reject(new Error("Unable to load image"));
+    };
+    img.src = imageBase64;
+  });
+};
+
+export const base64toFileWithDimensions =async (
+  base64String: string,
+  fileName: string,
+  mimeType: string
+): Promise<{ file: File; dimensions: { width: number; height: number } }> => {
+  try {
+    const arr = base64String.split(",");
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const blob = new Blob([u8arr], { type: mimeType });
+
+    const dimensions = await getImageDimensions(base64String);
+
+    const file = new File([blob], fileName, { type: mimeType });
+
+    return { file, dimensions };
+  } catch (error: any) {
+    throw new Error("Error converting base64 to file: " + error.message);
+  }
+};

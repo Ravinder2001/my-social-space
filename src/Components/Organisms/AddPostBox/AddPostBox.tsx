@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import AddPost from "../../../APIs/AddPost";
 import { ImageSizeError } from "../../../Utils/Message";
-import { File_Extension, Max_Image_Size } from "../../../Utils/Constant";
+import { File_Extension, Max_Image_Upload_Size } from "../../../Utils/Constant";
 import PostImages from "../PostImages/PostImages";
 function AddPostBox() {
   const inputref = useRef<HTMLInputElement>(null);

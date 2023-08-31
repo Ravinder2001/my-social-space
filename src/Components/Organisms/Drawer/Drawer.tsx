@@ -27,7 +27,6 @@ function Drawer() {
   const [closeable, setCloseable] = useState(true);
   const FetchProfilePicture = async () => {
     const image = await GetProfilePicture();
-    console.log("🚀  file: Drawer.tsx:30  image:", image)
 
     if (image?.status === Request_Succesfull) {
       if (image?.data?.length) {

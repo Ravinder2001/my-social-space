@@ -12,7 +12,7 @@ import {
   Palette,
   PlusSquare,
   UserCircle,
-  Hash
+  Hash,Bell,Users
 } from "lucide-react";
 
 type IconsType = {
@@ -48,6 +48,10 @@ function LucideIcons(props: IconsType) {
       return <Palette color={props.color} size={props.size} />;
     case "Hash":
       return <Hash color={props.color} size={props.size} />;
+    case "Bell":
+      return <Bell color={props.color} size={props.size} />;
+    case "Users":
+      return <Users color={props.color} size={props.size} />;
     default:
       return <></>;
   }

@@ -17,7 +17,7 @@ function ProfileTemplate() {
       <div className={styles.main_container}>
         <ProfileHeader User={User}/>
         <ProfileBody/>
-      </div>
+      </div>  
     </div>
   );
 }
