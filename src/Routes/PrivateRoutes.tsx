@@ -20,8 +20,10 @@ function PrivateRoutes({ children }: PrivateRoutesType) {
         <Drawer />
       </div>
       <div className={styles.children_box}>
-        <NavBar />
-        {children}
+        <div className={styles.navbar}>
+          <NavBar />
+        </div>
+        <div className={styles.children}>{children}</div>
       </div>
     </div>
   ) : (

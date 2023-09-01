@@ -1,5 +1,5 @@
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
-import ThemeToogleButton from "../../Atoms/ThemeToogleButton/ThemeToogleButton";
+import ThemeToogleButton from "../../Atoms/ToogleButton/ThemeToogleButton/ThemeToogleButton";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
