@@ -26,7 +26,7 @@ function CaptionBox(props: CaptionProps) {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.heading}>Caption</div>
       <Mentions
         prefix={["@", "#"]}

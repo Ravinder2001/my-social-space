@@ -1,6 +1,10 @@
 @import "../../../Variable.scss";
+.container{
+  // border: 1px solid red;
+}
 .input_box {
-  //   border: 1px solid grey;
+  margin-top: 10px;
+    border: 1px solid grey;
   font-family: $font_family;
   font-size: 16px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
@@ -15,5 +19,5 @@
 .heading {
   font-size: 16px;
   // font-weight: bolder;
-  color: rgb(238, 236, 236);
+  // color: rgb(238, 236, 236);
 }

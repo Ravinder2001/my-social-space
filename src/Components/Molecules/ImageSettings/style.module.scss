@@ -1,0 +1,13 @@
+@import "../.././../Variable.scss";
+.post {
+  background-color: rgb(3, 28, 91);
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  border: none;
+  font-family: $font_family;
+}

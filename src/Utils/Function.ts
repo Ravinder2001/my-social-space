@@ -1,6 +1,7 @@
 import jwtDecode from "jwt-decode";
 import moment from "moment";
 import Resizer from "react-image-file-resizer";
+import { Max_Server_Image_Upload_Size } from "./Constant";
 interface decode {
   id: string;
   name: string;
@@ -17,22 +18,28 @@ type ImageProps = {
   type: string;
 };
 
-export const Image_Compresser = (props: ImageProps): Promise<string> => {
+export const Image_Compresser = async (props: ImageProps): Promise<string> => {
+  if (props.file.size <= Max_Server_Image_Upload_Size * 1024 * 1024) {
+    // If the image is 1 MB or smaller, no need to compress
+    return URL.createObjectURL(props.file);
+  }
+
   return new Promise<string>((resolve) => {
     Resizer.imageFileResizer(
       props.file,
       props.width, // desired width
       props.height, // desired height
       props.type, // output format
-      80, // quality
+      60, // quality
       0, // rotation
       (uri: any) => {
         resolve(uri);
       },
-      "file" // output type
+      "file" // output type as base64
     );
   });
 };
+
 export const BlobToFile = (
   blobUrl: string,
   fileName: string
@@ -66,7 +73,7 @@ export const formatTime = (time: string) => {
 };
 
 export const getImageDimensions = async (
-  imageBase64: string
+  image: string | File
 ): Promise<{ width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -77,11 +84,25 @@ export const getImageDimensions = async (
     img.onerror = () => {
       reject(new Error("Unable to load image"));
     };
-    img.src = imageBase64;
+
+    if (typeof image === "string") {
+      img.src = image; // If the input is a base64-encoded image
+    } else if (image instanceof File) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        img.src = reader.result as string; // If the input is a File object
+      };
+      reader.onerror = () => {
+        reject(new Error("Unable to read image file"));
+      };
+      reader.readAsDataURL(image);
+    } else {
+      reject(new Error("Invalid input type"));
+    }
   });
 };
 
-export const base64toFileWithDimensions =async (
+export const base64toFileWithDimensions = async (
   base64String: string,
   fileName: string,
   mimeType: string

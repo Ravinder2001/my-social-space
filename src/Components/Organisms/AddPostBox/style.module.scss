@@ -1,21 +1,29 @@
 @import "../../../Variable.scss";
 .container {
   font-family: $font_family;
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  // border: 1px solid red;
+}
+.left_box {
+  width: 50%;
+  height: 100%;
+}
+.right_box {
+  width: 50%;
+  height: 100%;
 }
 .add_container {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .heading {
   font-size: 16px;
-  // font-weight: bold;
-  color: rgb(238, 236, 236);
 }
-.caption_container{
+.caption_container {
   margin-top: 10px;
 }
 .add_box {
-
   // padding-bottom: 0px;
   margin-top: 5px;
   width: 98%;
@@ -24,7 +32,9 @@
   padding: 5px;
   height: calc(100vh - 350px);
   position: relative;
-  background: linear-gradient(to right, rgb(9, 117, 194), rgb(8, 148, 166));
+  // border: 1px solid grey;
+  background-color: white;
+  // background: linear-gradient(to right, rgb(9, 117, 194), rgb(8, 148, 166));
   box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
@@ -66,22 +76,11 @@
   border: none;
   font-family: $font_family;
 }
-.post {
-  background-color: rgb(3, 28, 91);
-  width: 100%;
-  text-align: center;
-  padding: 10px;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-  border: none;
-  font-family: $font_family;
-}
 
 
-.main_heading{
+.main_heading {
   font-size: 20px;
-  color: white;
-  margin-top: 5px;
+  color: black;
+  font-weight: bold;
+  // margin-top: 5px;
 }
