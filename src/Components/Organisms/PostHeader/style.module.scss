@@ -18,7 +18,7 @@
   height: 40px;
 }
 .middle_box {
-  width: 80%;
+  width: 70%;
   height: 100%;
   margin-left: 10px;
   display: flex;
@@ -42,4 +42,11 @@
   font-size: 12px;
   color: rgb(87, 86, 86);
   font-family: $font_family;
+}
+.private {
+  color: red;
+  font-size: 12px;
+  // border: 1px solid red;
+  width: 100px;
+  font-weight: bold;
 }

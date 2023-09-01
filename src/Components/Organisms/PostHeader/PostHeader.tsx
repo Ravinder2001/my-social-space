@@ -9,6 +9,7 @@ type props = {
   profile_picture: string;
   created_at: string;
   editable: boolean;
+  private?: boolean;
 };
 function PostHeader(props: props) {
   return (
@@ -20,6 +21,8 @@ function PostHeader(props: props) {
         <div className={styles.name}>{props.user_name}</div>
         <div className={styles.time}>{props.created_at}</div>
       </div>
+      {props.private && <div className={styles.private}>Private Post</div>}
+
       {props.editable ? (
         <div className={styles.left_box}>
           <MenuBox />

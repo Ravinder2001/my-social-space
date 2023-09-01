@@ -25,10 +25,23 @@ import {
   File_Extension,
   Image_Output_Format,
   Max_Image_Upload_Size,
+  Request_Succesfull,
 } from "../../../Utils/Constant";
 import PostImages from "../PostImages/PostImages";
-import ImageSettings from "../../Molecules/ImageSettings/ImageSettings";
-function AddPostBox() {
+import PostPrivacy from "../../Molecules/PostPrivacy/PostPrivacy";
+import GetEditPostData from "../../../APIs/GetEditPostData";
+type props = {
+  isEdit: {
+    edit: boolean;
+    post_id: string;
+  };
+};
+const VisibilityOptions = [
+  { value: "Public", label: "Public" },
+  { value: "Friends", label: "Friends" },
+  { value: "Private", label: "Private" },
+];
+function AddPostBox(props: props) {
   const inputref = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -41,6 +54,19 @@ function AddPostBox() {
     []
   );
   const [caption, setCaption] = useState<string>("");
+  const [Values, setValues] = useState({
+    comment: true,
+    like: true,
+    share: true,
+  });
+  const [visibility, setVisibility] = useState<{
+    value: string;
+    label: string;
+  }>(VisibilityOptions[0]);
+
+  const handleToogle = (e: ChangeEvent<HTMLInputElement>) => {
+    setValues((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
+  };
   const handleCaption = (text: string) => {
     setCaption(text);
   };
@@ -56,7 +82,7 @@ function AddPostBox() {
 
   const handlePost = async () => {
     let image_stack: any = [];
-    
+
     if (uploadedImages.length) {
       await Promise.all(
         uploadedImages.map(async (image, index) => {
@@ -92,6 +118,23 @@ function AddPostBox() {
     }
   };
 
+  const FetchEditPostDetails = async () => {
+    const res = await GetEditPostData(props.isEdit.post_id);
+    if (res?.status === Request_Succesfull) {
+      console.log("res", res?.data);
+      setCaption(res?.data?.caption);
+      setValues({
+        like: res?.data.like_allowed,
+        comment: res?.data.comment_allowed,
+        share: res?.data.share_allowed,
+      });
+      setVisibility({
+        label: res?.data.visibility,
+        value: res?.data.visibility,
+      });
+    }
+  };
+
   useEffect(() => {
     uploadedImages.map((image) => {
       setCarouselImages((prev) => [
@@ -101,6 +144,11 @@ function AddPostBox() {
     });
   }, [uploadedImages]);
 
+  useEffect(() => {
+    if (props.isEdit.edit) {
+      FetchEditPostDetails();
+    }
+  }, [props.isEdit.edit]);
   return (
     <div className={styles.container}>
       <div className={styles.left_box}>
@@ -139,7 +187,15 @@ function AddPostBox() {
         </div>
       </div>
       <div className={styles.right_box}>
-        <ImageSettings handlePost={handlePost} />
+        <PostPrivacy
+          handlePost={handlePost}
+          edit={props.isEdit.edit}
+          Values={Values}
+          handleToogle={handleToogle}
+          VisibilityOptions={VisibilityOptions}
+          value={visibility}
+          setVisibilityOptions={setVisibility}
+        />
       </div>
     </div>
   );

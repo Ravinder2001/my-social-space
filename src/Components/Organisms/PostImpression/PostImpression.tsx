@@ -11,6 +11,10 @@ type props = {
   handleModal?: (e: string) => void;
   post_id: string;
   open: boolean;
+  privacy: {
+    like: boolean;
+    share: boolean;
+  };
 };
 
 type impressionData = {
@@ -18,7 +22,7 @@ type impressionData = {
   user_like: boolean;
 };
 function PostImpression(props: props) {
-  const { handleModal, post_id, open } = props;
+  const { handleModal, post_id, open, privacy } = props;
   const [impressionData, setImpressionData] = useState<impressionData>({
     list: [],
     user_like: false,
@@ -36,16 +40,20 @@ function PostImpression(props: props) {
     }
   };
   const ToogleLike = async () => {
-    if (impressionData?.user_like) {
-      const res = await RemovePostLike(post_id);
-      if (res?.status == Request_Succesfull) {
-        FetchLikes();
+    if (privacy.like) {
+      if (impressionData?.user_like) {
+        const res = await RemovePostLike(post_id);
+        if (res?.status == Request_Succesfull) {
+          FetchLikes();
+        }
+      } else {
+        const res = await AddPostLike(post_id);
+        if (res?.status == Request_Succesfull) {
+          FetchLikes();
+        }
       }
     } else {
-      const res = await AddPostLike(post_id);
-      if (res?.status == Request_Succesfull) {
-        FetchLikes();
-      }
+      alert("Admin has disabled like");
     }
   };
   useEffect(() => {

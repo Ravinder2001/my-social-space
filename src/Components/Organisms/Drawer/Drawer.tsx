@@ -58,7 +58,7 @@ function Drawer() {
           handleClick={() => navigate("/")}
         />
         <DrawerItems
-          label="Add Post / Status"
+          label="Add Post"
           IconColor="#36f202"
           IconName="PlusSquare"
           IconSize={20}

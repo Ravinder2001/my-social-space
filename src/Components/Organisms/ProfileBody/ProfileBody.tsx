@@ -13,11 +13,12 @@ type postData = {
   created_at: string;
   images: { image_url: string }[];
   editable: boolean;
+  private: boolean;
 };
-function HomeBody() {
+function ProfileBody() {
   const [data, setData] = useState<postData[]>([]);
   const FetchPost = async () => {
-    const res = await GetAllPost();
+    const res = await GetSelfPosts();
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
@@ -38,4 +39,4 @@ function HomeBody() {
   );
 }
 
-export default HomeBody;
+export default ProfileBody;

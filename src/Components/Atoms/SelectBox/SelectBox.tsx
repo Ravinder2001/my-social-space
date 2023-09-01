@@ -1,7 +1,14 @@
-import React from "react";
+import React, { ChangeEvent, Dispatch } from "react";
 import Select, { StylesConfig } from "react-select";
+
 type props = {
   options: { value: string; label: string }[];
+  setVisibilityOptions: (newValue: OptionType) => void;
+  value: { value: string; label: string };
+};
+type OptionType = {
+  value: string;
+  label: string;
 };
 function SelectBox(props: props) {
   const customStyles: StylesConfig = {
@@ -9,7 +16,7 @@ function SelectBox(props: props) {
       ...provided,
       width: "150px",
       fontSize: "14px",
-    //   fontWeight: "bold",
+      //   fontWeight: "bold",
     }),
     control: (provided) => ({
       ...provided,
@@ -27,13 +34,17 @@ function SelectBox(props: props) {
     }),
     // Add more styles for other components like dropdown indicator, menu, etc.
   };
+  const handleSelectChange = (newValue: any) => {
+    props.setVisibilityOptions(newValue);
+  };
 
   return (
     <Select
       options={props.options}
       styles={customStyles}
       isSearchable={false}
-      defaultValue={props.options[0]}
+      value={props.value}
+      onChange={handleSelectChange}
     />
   );
 }

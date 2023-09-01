@@ -4,6 +4,7 @@ import Gallery from "react-photo-gallery";
 import PostContainer from "../PostContainer/PostContainer";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import GetSelfPosts from "../../../APIs/GetSelfPosts";
+import GetAllPost from "../../../APIs/GetAllPost";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -12,11 +13,15 @@ type postData = {
   created_at: string;
   images: { image_url: string }[];
   editable: boolean;
+  like_allowed: boolean;
+  comment_allowed: boolean;
+  share_allowed: boolean;
 };
-function ProfileBody() {
+function HomeBody() {
   const [data, setData] = useState<postData[]>([]);
   const FetchPost = async () => {
-    const res = await GetSelfPosts();
+    const res = await GetAllPost();
+  
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
@@ -37,4 +42,4 @@ function ProfileBody() {
   );
 }
 
-export default ProfileBody;
+export default HomeBody;

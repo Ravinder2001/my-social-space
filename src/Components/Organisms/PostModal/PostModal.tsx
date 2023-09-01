@@ -21,6 +21,9 @@ type dataType = {
   created_at: string;
   images: { image_url: string }[];
   editable: boolean;
+  like_allowed: boolean;
+  comment_allowed: boolean;
+  share_allowed: boolean;
 };
 type commentType = {
   user_name: string;
@@ -70,17 +73,22 @@ const PostModal = (props: props) => {
             <PostModalImages data={data} editable={data.editable} />
           </div>
           <div className={styles.right_box}>
-            <PostImpression post_id={data.post_id} open={open.open} />
+            <PostImpression
+              privacy={{ like: data.like_allowed, share: data.share_allowed }}
+              post_id={data.post_id}
+              open={open.open}
+            />
             <PostCommentsList
               FetchComments={FetchComments}
               data={comments}
               editable={data.editable}
             />
-            <PostAddComments
+            {data.comment_allowed && <PostAddComments
               post_id={data.post_id}
               open={open.open}
               FetchComments={FetchComments}
-            />
+            />}
+            
           </div>
         </div>
       ) : null}
