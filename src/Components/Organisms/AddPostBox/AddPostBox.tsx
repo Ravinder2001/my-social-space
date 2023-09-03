@@ -132,6 +132,7 @@ function AddPostBox(props: props) {
         label: res?.data.visibility,
         value: res?.data.visibility,
       });
+      setCarouselImages(res?.data?.images);
     }
   };
 
@@ -149,6 +150,7 @@ function AddPostBox(props: props) {
       FetchEditPostDetails();
     }
   }, [props.isEdit.edit]);
+  console.log("carouselImages", carouselImages);
   return (
     <div className={styles.container}>
       <div className={styles.left_box}>
@@ -159,14 +161,16 @@ function AddPostBox(props: props) {
         <div className={styles.add_container}>
           <div className={styles.heading}>Add Images</div>
           <div className={styles.add_box}>
-            <div
-              className={`${styles.add_button} ${
-                !uploadedImages.length && styles.with_image_add_button
-              }`}
-              onClick={handleClick}
-            >
-              {!uploadedImages.length ? "Add Image" : "Add more images"}
-            </div>
+            {!props.isEdit.edit && (
+              <div
+                className={`${styles.add_button} ${
+                  !uploadedImages.length && styles.with_image_add_button
+                }`}
+                onClick={handleClick}
+              >
+                {!uploadedImages.length ? "Add Image" : "Add more images"}
+              </div>
+            )}
 
             <div style={{ display: "none" }}>
               <input
@@ -179,7 +183,7 @@ function AddPostBox(props: props) {
               />
             </div>
             <div className={styles.images_box}>
-              {uploadedImages.length ? (
+              {uploadedImages.length || carouselImages.length ? (
                 <PostImages images={carouselImages} />
               ) : null}
             </div>

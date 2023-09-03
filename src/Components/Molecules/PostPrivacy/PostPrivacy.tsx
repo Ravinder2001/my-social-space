@@ -102,9 +102,15 @@ function PostPrivacy(props: ImageProps) {
           </>
         )}
       </div>
-      <button className={styles.btn} onClick={handlePost}>
-        Post
-      </button>
+      {edit ? (
+        <button className={styles.btn} onClick={handlePost}>
+          Edit
+        </button>
+      ) : (
+        <button className={styles.btn} onClick={handlePost}>
+          Post
+        </button>
+      )}
     </div>
   );
 }

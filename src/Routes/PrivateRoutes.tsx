@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
@@ -14,16 +14,19 @@ type PrivateRoutesType = { children: ReactNode };
 
 function PrivateRoutes({ children }: PrivateRoutesType) {
   const User = useSelector((state: RootState) => state.UserReducer.user);
+  const [isSearchUser, setIsSearchUser] = useState<boolean>(true);
   return User ? (
     <div className={styles.container}>
       <div className={styles.drawer_box}>
-        <Drawer />
+        <Drawer isSearchUser={isSearchUser} setIsSearchUser={setIsSearchUser} />
       </div>
       <div className={styles.children_box}>
         <div className={styles.navbar}>
           <NavBar />
         </div>
-        <div className={styles.children}>{children}</div>
+        <div className={styles.children} onClick={() => setIsSearchUser(false)}>
+          {children}
+        </div>
       </div>
     </div>
   ) : (

@@ -336,6 +336,61 @@ const Drawer_Background = (
     </defs>
   </svg>
 );
+const Sub_Drawer_Background = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="100%"
+    height="100%"
+    preserveAspectRatio="none"
+    viewBox="0 0 400 800"
+  >
+    <g fill="none" mask='url("#SvgjsMask1204")'>
+      <path fill='url("#SvgjsLinearGradient1205")' d="M0 0H400V800H0z"></path>
+      <path fill="rgba(255, 255, 255, .1)" d="M400 0h-62.09L400 372.25z"></path>
+      <path
+        fill="rgba(255, 255, 255, .075)"
+        d="M337.91 0L400 372.25v98.42L307.99 0z"
+      ></path>
+      <path
+        fill="rgba(255, 255, 255, .05)"
+        d="M307.99 0L400 470.67v132.2L293.64 0z"
+      ></path>
+      <path
+        fill="rgba(255, 255, 255, .025)"
+        d="M293.64 0L400 602.87v25.05L128.69 0z"
+      ></path>
+      <path fill="rgba(0, 0, 0, .1)" d="M0 800h125.86L0 428.46z"></path>
+      <path
+        fill="rgba(0, 0, 0, .075)"
+        d="M0 428.46L125.86 800h62.38L0 260.81z"
+      ></path>
+      <path
+        fill="rgba(0, 0, 0, .05)"
+        d="M0 260.81L188.24 800h116.94L0 220.53z"
+      ></path>
+      <path
+        fill="rgba(0, 0, 0, .025)"
+        d="M0 220.53L305.18 800h20.04L0 136.19z"
+      ></path>
+    </g>
+    <defs>
+      <mask id="SvgjsMask1204">
+        <path fill="#fff" d="M0 0H400V800H0z"></path>
+      </mask>
+      <linearGradient
+        id="SvgjsLinearGradient1205"
+        x1="-25%"
+        x2="125%"
+        y1="12.5%"
+        y2="87.5%"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset="0" stopColor="#0e2a47"></stop>
+        <stop offset="1" stopColor="rgba(74, 9, 66, 1)"></stop>
+      </linearGradient>
+    </defs>
+  </svg>
+);
 const Profile_Background = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -449,6 +504,8 @@ const SVGIcons = (props: SVGProps) => {
       return Profile_Background;
     case "Home_Background":
       return Home_Background;
+    case "Sub_Drawer_Background":
+      return Sub_Drawer_Background;
     default:
       return <></>;
   }

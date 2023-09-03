@@ -5,6 +5,7 @@ import PostContainer from "../PostContainer/PostContainer";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import GetSelfPosts from "../../../APIs/GetSelfPosts";
 import GetAllPost from "../../../APIs/GetAllPost";
+import FriendRequestList from "../FriendRequestList/FriendRequestList";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -21,7 +22,7 @@ function HomeBody() {
   const [data, setData] = useState<postData[]>([]);
   const FetchPost = async () => {
     const res = await GetAllPost();
-  
+
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
@@ -31,7 +32,9 @@ function HomeBody() {
   }, []);
   return (
     <div className={styles.container}>
-      <div className={styles.left_box}></div>
+      <div className={styles.left_box}>
+        <FriendRequestList />
+      </div>
       <div className={styles.right_box}>
         {data.map((post) => (
           <PostContainer key={post.post_id} Data={post} />

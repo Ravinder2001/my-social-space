@@ -1,6 +1,13 @@
 @import "../../../Variable.scss";
 .container {
   height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+.drawer {
+  // border: 1px solid red;
+  height: 100%;
   background-color: $Blue_Background_color;
   width: 100%;
   color: white;
@@ -9,14 +16,18 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  z-index: 999;
 }
-.background {
 
+
+.background {
   width: 100%;
   height: 100%;
 }
 .header_items {
   position: absolute;
+  // border: 1px solid red;
+  width: 100%;
 }
 .footer_items {
   position: absolute;
