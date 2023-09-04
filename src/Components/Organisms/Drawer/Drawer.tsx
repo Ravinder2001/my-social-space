@@ -32,7 +32,6 @@ function Drawer(props: props) {
   const [closeable, setCloseable] = useState(true);
   const FetchProfilePicture = async () => {
     const image = await GetProfilePicture();
-
     if (image?.status === Request_Succesfull) {
       if (image?.data?.length) {
         dispatch(AddPicture(image.data));
@@ -42,6 +41,10 @@ function Drawer(props: props) {
         setCloseable(image.closeable);
       }
     }
+  };
+  const handleNavigate = (id: string) => {
+    props.setIsSearchUser(false);
+    navigate(id);
   };
   useEffect(() => {
     FetchProfilePicture();
@@ -132,7 +135,7 @@ function Drawer(props: props) {
           closeable={closeable}
         />
       </div>
-      {props.isSearchUser && <SubDrawer  />}
+      {props.isSearchUser && <SubDrawer handleNavigate={handleNavigate} />}
     </div>
   );
 }

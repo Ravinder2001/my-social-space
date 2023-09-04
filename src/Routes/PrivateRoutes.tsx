@@ -14,7 +14,7 @@ type PrivateRoutesType = { children: ReactNode };
 
 function PrivateRoutes({ children }: PrivateRoutesType) {
   const User = useSelector((state: RootState) => state.UserReducer.user);
-  const [isSearchUser, setIsSearchUser] = useState<boolean>(true);
+  const [isSearchUser, setIsSearchUser] = useState<boolean>(false);
   return User ? (
     <div className={styles.container}>
       <div className={styles.drawer_box}>

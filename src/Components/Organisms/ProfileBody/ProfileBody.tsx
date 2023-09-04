@@ -5,6 +5,8 @@ import PostContainer from "../PostContainer/PostContainer";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import GetSelfPosts from "../../../APIs/GetSelfPosts";
 import GetAllPost from "../../../APIs/GetAllPost";
+import { useLocation } from "react-router-dom";
+import GetAllPostOfAnotherUser from "../../../APIs/GetAllPostOfAnotherUser";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -15,17 +17,42 @@ type postData = {
   editable: boolean;
   private: boolean;
 };
+type AnotherUserPostData = {
+  user_name: string;
+  profile_picture: string;
+  post_id: string;
+  caption: string;
+  created_at: string;
+  images: { image_url: string }[];
+  editable: boolean;
+  like_allowed: boolean;
+  comment_allowed: boolean;
+  share_allowed: boolean;
+};
 function ProfileBody() {
-  const [data, setData] = useState<postData[]>([]);
+  const location = useLocation();
+  console.log("🚀  file: ProfileTemplate.tsx:12  location:", location);
+  const [data, setData] = useState<postData[] | AnotherUserPostData[]>([]);
   const FetchPost = async () => {
     const res = await GetSelfPosts();
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
   };
+  const FetchPostOfAnotherUser = async (user_id: string) => {
+    const res = await GetAllPostOfAnotherUser(user_id);
+    if (res.status == Request_Succesfull) {
+      setData(res.data);
+    }
+  };
   useEffect(() => {
-    FetchPost();
-  }, []);
+    if (location.search.includes("user")) {
+      let user_id = location.search.split("=")[1];
+      FetchPostOfAnotherUser(user_id);
+    } else {
+      FetchPost();
+    }
+  }, [location]);
   return (
     <div className={styles.container}>
       <div className={styles.left_box}></div>

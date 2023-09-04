@@ -5,8 +5,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import ProfileHeader from "../../Organisms/ProfileHeader/ProfileHeader";
 import ProfileBody from "../../Organisms/ProfileBody/ProfileBody";
+import { useLocation } from "react-router-dom";
 
 function ProfileTemplate() {
+
   const User = useSelector((state: RootState) => state.UserReducer);
   return (
     <div className={styles.container}>

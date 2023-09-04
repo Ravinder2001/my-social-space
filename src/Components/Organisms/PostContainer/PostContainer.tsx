@@ -45,7 +45,7 @@ function PostContainer(props: props) {
         profile_picture={Data.profile_picture}
         created_at={Data.created_at}
         editable={Data.editable}
-        private={Data.private}
+        private={false}
       />
       <PostCaption Caption={Data.caption} />
       <PostImages images={Data.images} />

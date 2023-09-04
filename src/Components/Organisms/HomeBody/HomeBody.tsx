@@ -20,6 +20,7 @@ type postData = {
 };
 function HomeBody() {
   const [data, setData] = useState<postData[]>([]);
+
   const FetchPost = async () => {
     const res = await GetAllPost();
 

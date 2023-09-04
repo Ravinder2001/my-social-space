@@ -7,12 +7,17 @@ import GetAllUsers from "../../../APIs/GetAllUsers";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+
 type usersType = {
   id: string;
   name: string;
   image_url: string;
 };
-function SubDrawer() {
+type props = {
+  handleNavigate: (id: string) => void;
+};
+function SubDrawer(props: props) {
+ 
   const User = useSelector((state: RootState) => state.UserReducer.id);
   const [text, setText] = useState<string>("");
   const [users, setUsers] = useState<usersType[]>([]);
@@ -50,14 +55,22 @@ function SubDrawer() {
             />
           </div>
           {text.length ? (
-            <div className={styles.icon} onClick={()=>setText("")}>
+            <div className={styles.icon} onClick={() => setText("")}>
               <ReactIcons name="RxCross2" color="white" size={25} />
             </div>
           ) : null}
         </div>
         <div className={styles.list_box}>
           {users.map((user) => (
-            <div id={user.id} className={styles.user_con}>
+            <div
+              id={user.id}
+              className={styles.user_con}
+              onClick={() =>
+                user.id == User
+                  ? props.handleNavigate("/profile")
+                  : props.handleNavigate(`/profile?user=${user.id}`)
+              }
+            >
               <div className={styles.img_box}>
                 <img src={user.image_url} alt="" className={styles.img} />
               </div>
