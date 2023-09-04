@@ -26,7 +26,7 @@ type props = {
 function Drawer(props: props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const User_id = useSelector((state: RootState) => state.UserReducer.id);
+  const flag = useSelector((state: RootState) => state.DrawerReducer.flag);
 
   const [open, setOpen] = useState(false);
   const [closeable, setCloseable] = useState(true);
@@ -43,13 +43,13 @@ function Drawer(props: props) {
     }
   };
   const handleNavigate = (id: string) => {
-    dispatch(setIndex(5))
+    dispatch(setIndex(5));
     props.setIsSearchUser(false);
     navigate(id);
   };
   useEffect(() => {
     FetchProfilePicture();
-  }, [User_id]);
+  }, [flag]);
   return (
     <div className={styles.container}>
       <div className={styles.drawer}>
