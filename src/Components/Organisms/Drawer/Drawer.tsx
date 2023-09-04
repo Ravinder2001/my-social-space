@@ -43,6 +43,7 @@ function Drawer(props: props) {
     }
   };
   const handleNavigate = (id: string) => {
+    dispatch(setIndex(5))
     props.setIsSearchUser(false);
     navigate(id);
   };
@@ -83,7 +84,7 @@ function Drawer(props: props) {
           <DrawerItems
             label="Search"
             IconColor="#024af2"
-            IconName="Compass"
+            IconName="Search"
             IconSize={20}
             index={3}
             handleClick={() => {

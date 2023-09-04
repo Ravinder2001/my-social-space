@@ -11,6 +11,8 @@ type postData = {
   user_name: string;
   profile_picture: string;
   post_id: string;
+  likes_count: string;
+  user_like: string;
   caption: string;
   created_at: string;
   images: { image_url: string }[];
@@ -23,6 +25,8 @@ type AnotherUserPostData = {
   post_id: string;
   caption: string;
   created_at: string;
+  likes_count: string;
+  user_like: string;
   images: { image_url: string }[];
   editable: boolean;
   like_allowed: boolean;

@@ -10,6 +10,8 @@ import LikeModal from "../LikeModal/LikeModal";
 type props = {
   handleModal?: (e: string) => void;
   post_id: string;
+  count: string;
+  user_like: string;
   open: boolean;
   privacy: {
     like: boolean;
@@ -17,69 +19,51 @@ type props = {
   };
 };
 
-type impressionData = {
-  list: { user_name: string; image_url: string }[];
-  user_like: boolean;
-};
 function PostImpression(props: props) {
-  const { handleModal, post_id, open, privacy } = props;
-  const [impressionData, setImpressionData] = useState<impressionData>({
-    list: [],
-    user_like: false,
-  });
+  const { handleModal, post_id, open, privacy, count, user_like } = props;
+
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleLikeModal = () => {
     setModalOpen(!modalOpen);
   };
 
-  const FetchLikes = async () => {
-    const res = await GetPostLikes(post_id);
-    if (res.status == Request_Succesfull) {
-      setImpressionData(res.data);
-    }
-  };
   const ToogleLike = async () => {
     if (privacy.like) {
-      if (impressionData?.user_like) {
+      if (user_like == "1") {
         const res = await RemovePostLike(post_id);
         if (res?.status == Request_Succesfull) {
-          FetchLikes();
+          // FetchLikes();
         }
       } else {
         const res = await AddPostLike(post_id);
         if (res?.status == Request_Succesfull) {
-          FetchLikes();
+          // FetchLikes();
         }
       }
     } else {
       alert("Admin has disabled like");
     }
   };
-  useEffect(() => {
-    FetchLikes();
-  }, [post_id]);
 
   return (
     <div className={styles.container}>
       <div className={styles.box}>
         <div
-          className={`${styles.icon} ${
-            impressionData?.user_like && styles.liked
-          }`}
+          className={`${styles.icon} ${user_like=="1" && styles.liked}`}
           onClick={ToogleLike}
         >
           <LucideIcons name="Heart" color="#494849" size={22} />
         </div>
         <div
           className={styles.text}
-          onClick={() => impressionData.list.length && handleLikeModal()}
+          onClick={() => Number(count) >= 1 && handleLikeModal()}
         >
-          {impressionData?.list.length == 0
+          {Number(count) == 0
             ? "Like"
-            : impressionData?.list.length == 1
-            ? `${impressionData?.list.length} Like`
-            : `${impressionData?.list.length} Likes`}
+            : Number(count) == 1
+            ? `${count} Like`
+            : `${count} Likes`}
         </div>
       </div>
       <div
@@ -103,11 +87,13 @@ function PostImpression(props: props) {
         </div>
       ) : null}
 
-      <LikeModal
-        open={modalOpen}
-        handleModal={handleLikeModal}
-        list={impressionData.list}
-      />
+      {post_id ? (
+        <LikeModal
+          open={modalOpen}
+          handleModal={handleLikeModal}
+          post_id={post_id}
+        />
+      ) : null}
     </div>
   );
 }

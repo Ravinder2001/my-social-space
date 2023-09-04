@@ -12,6 +12,8 @@ type postData = {
   post_id: string;
   caption: string;
   created_at: string;
+  likes_count: string;
+  user_like: string;
   images: { image_url: string }[];
   editable: boolean;
   like_allowed: boolean;
@@ -23,7 +25,6 @@ function HomeBody() {
 
   const FetchPost = async () => {
     const res = await GetAllPost();
-
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }

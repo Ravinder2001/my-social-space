@@ -14,6 +14,8 @@ type props = {
     post_id: string;
     caption: string;
     created_at: string;
+    likes_count: string;
+    user_like: string;
     images: { image_url: string }[];
     editable: boolean;
     like_allowed?: boolean;
@@ -50,6 +52,8 @@ function PostContainer(props: props) {
       <PostCaption Caption={Data.caption} />
       <PostImages images={Data.images} />
       <PostImpression
+        count={Data.likes_count}
+        user_like={Data.user_like}
         handleModal={handleModal}
         post_id={Data.post_id}
         open={ModalStatus.open}

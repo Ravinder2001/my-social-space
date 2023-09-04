@@ -19,6 +19,8 @@ type dataType = {
   post_id: string;
   caption: string;
   created_at: string;
+  likes_count: string;
+  user_like: string;
   images: { image_url: string }[];
   editable: boolean;
   like_allowed: boolean;
@@ -74,6 +76,8 @@ const PostModal = (props: props) => {
           </div>
           <div className={styles.right_box}>
             <PostImpression
+              user_like={data.user_like}
+              count={data.likes_count}
               privacy={{ like: data.like_allowed, share: data.share_allowed }}
               post_id={data.post_id}
               open={open.open}
@@ -83,12 +87,13 @@ const PostModal = (props: props) => {
               data={comments}
               editable={data.editable}
             />
-            {data.comment_allowed && <PostAddComments
-              post_id={data.post_id}
-              open={open.open}
-              FetchComments={FetchComments}
-            />}
-            
+            {data.comment_allowed && (
+              <PostAddComments
+                post_id={data.post_id}
+                open={open.open}
+                FetchComments={FetchComments}
+              />
+            )}
           </div>
         </div>
       ) : null}

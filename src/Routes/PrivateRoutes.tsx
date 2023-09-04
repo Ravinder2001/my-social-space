@@ -8,7 +8,6 @@ import { RootState } from "../store/store";
 import { Login_Route } from "../Utils/Constant";
 
 import styles from "../App.module.scss";
-import NavBar from "../Components/Organisms/NavBar/NavBar";
 
 type PrivateRoutesType = { children: ReactNode };
 
@@ -21,9 +20,6 @@ function PrivateRoutes({ children }: PrivateRoutesType) {
         <Drawer isSearchUser={isSearchUser} setIsSearchUser={setIsSearchUser} />
       </div>
       <div className={styles.children_box}>
-        <div className={styles.navbar}>
-          <NavBar />
-        </div>
         <div className={styles.children} onClick={() => setIsSearchUser(false)}>
           {children}
         </div>

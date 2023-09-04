@@ -19,6 +19,7 @@ import SendFriendRequest from "../../../APIs/SendFriendRequest";
 import { message } from "antd";
 import DeleteFriendRequest from "../../../APIs/DeleteFriendRequest";
 import AcceptFriendRequest from "../../../APIs/AcceptFriendRequest";
+import moment from "moment";
 type headerProps = {
   User: {
     id: string;
@@ -149,7 +150,9 @@ function ProfileHeader(props: headerProps) {
           <div className={styles.icon}>
             <img src={time} alt="profile_icon" />
           </div>
-          <div className={styles.text}>Joined from March</div>
+          <div className={styles.text}>
+            Joined from {moment(data.created_at).format("MMMM")} {moment(data.created_at).format("YYYY")}
+          </div>
         </div>
         {!location.search.includes("user") ? (
           <div className={`${styles.box} ${styles.edit}`} onClick={handleModal}>
