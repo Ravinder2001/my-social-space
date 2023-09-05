@@ -6,6 +6,8 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 import GetSelfPosts from "../../../APIs/GetSelfPosts";
 import GetAllPost from "../../../APIs/GetAllPost";
 import FriendRequestList from "../FriendRequestList/FriendRequestList";
+import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
+import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -22,12 +24,14 @@ type postData = {
 };
 function HomeBody() {
   const [data, setData] = useState<postData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const FetchPost = async () => {
     const res = await GetAllPost();
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
+    setLoading(false);
   };
   useEffect(() => {
     FetchPost();
@@ -38,9 +42,15 @@ function HomeBody() {
         <FriendRequestList />
       </div>
       <div className={styles.right_box}>
-        {data.map((post) => (
-          <PostContainer key={post.post_id} Data={post} />
-        ))}
+        {loading ? (
+          <Loader2 />
+        ) : (
+          <>
+            {data.map((post) => (
+              <PostContainer key={post.post_id} Data={post} />
+            ))}
+          </>
+        )}
       </div>
       <div className={styles.suggest}></div>
     </div>

@@ -7,6 +7,7 @@ import GetSelfPosts from "../../../APIs/GetSelfPosts";
 import GetAllPost from "../../../APIs/GetAllPost";
 import { useLocation } from "react-router-dom";
 import GetAllPostOfAnotherUser from "../../../APIs/GetAllPostOfAnotherUser";
+import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -35,19 +36,22 @@ type AnotherUserPostData = {
 };
 function ProfileBody() {
   const location = useLocation();
-  console.log("🚀  file: ProfileTemplate.tsx:12  location:", location);
   const [data, setData] = useState<postData[] | AnotherUserPostData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const FetchPost = async () => {
     const res = await GetSelfPosts();
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
+    setLoading(false)
   };
   const FetchPostOfAnotherUser = async (user_id: string) => {
     const res = await GetAllPostOfAnotherUser(user_id);
     if (res.status == Request_Succesfull) {
       setData(res.data);
     }
+    setLoading(false)
   };
   useEffect(() => {
     if (location.search.includes("user")) {
@@ -61,9 +65,15 @@ function ProfileBody() {
     <div className={styles.container}>
       <div className={styles.left_box}></div>
       <div className={styles.right_box}>
-        {data.map((post) => (
-          <PostContainer key={post.post_id} Data={post} />
-        ))}
+        {loading ? (
+          <Loader2 />
+        ) : (
+          <>
+            {data.map((post) => (
+              <PostContainer key={post.post_id} Data={post} />
+            ))}
+          </>
+        )}
       </div>
       <div className={styles.suggest}></div>
     </div>
