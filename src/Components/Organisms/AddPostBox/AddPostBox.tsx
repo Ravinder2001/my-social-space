@@ -226,7 +226,7 @@ function AddPostBox(props: props) {
             </div>
             <div
               className={
-                props.isEdit ? styles.edit_images_box : styles.images_box
+                props.isEdit.edit ? styles.edit_images_box : styles.images_box
               }
             >
               {uploadedImages.length || carouselImages.length ? (
