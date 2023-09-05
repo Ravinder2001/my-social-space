@@ -8,6 +8,7 @@ type props = {
   user_name: string;
   profile_picture: string;
   created_at: string;
+  post_id: string;
   editable: boolean;
   private?: boolean;
 };
@@ -25,7 +26,7 @@ function PostHeader(props: props) {
 
       {props.editable ? (
         <div className={styles.left_box}>
-          <MenuBox />
+          <MenuBox post_id={props.post_id} />
         </div>
       ) : null}
     </div>

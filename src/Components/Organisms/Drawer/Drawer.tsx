@@ -114,6 +114,17 @@ function Drawer(props: props) {
             }}
           />
           <ThemeButton />
+          <DrawerItems
+            label="Settings"
+            IconColor="#ad15e5"
+            IconName="Settings"
+            IconSize={20}
+            index={6}
+            handleClick={() => {
+              navigate("/profile");
+              props.setIsSearchUser(false);
+            }}
+          />
         </div>
         <div className={styles.footer_items}>
           <DrawerItems

@@ -18,13 +18,13 @@ type ImageProps = {
   type: string;
 };
 
-export const Image_Compresser = async (props: ImageProps): Promise<string> => {
+export const Image_Compresser = async (props: ImageProps): Promise<File> => {
   if (props.file.size <= Max_Server_Image_Upload_Size * 1024 * 1024) {
     // If the image is 1 MB or smaller, no need to compress
-    return URL.createObjectURL(props.file);
+    return props.file;
   }
 
-  return new Promise<string>((resolve) => {
+  return new Promise<File>((resolve) => {
     Resizer.imageFileResizer(
       props.file,
       props.width, // desired width
@@ -33,12 +33,18 @@ export const Image_Compresser = async (props: ImageProps): Promise<string> => {
       60, // quality
       0, // rotation
       (uri: any) => {
-        resolve(uri);
+        // Create a new File object from the compressed image data
+        const compressedImageFile = new File([uri], props.file.name, {
+          type: props.type, // Set the same type as the original file
+        });
+
+        resolve(compressedImageFile);
       },
       "file" // output type as base64
     );
   });
 };
+
 
 export const BlobToFile = (
   blobUrl: string,

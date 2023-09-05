@@ -72,7 +72,7 @@ const PostModal = (props: props) => {
       {data ? (
         <div className={styles.container}>
           <div className={styles.left_box}>
-            <PostModalImages data={data} editable={data.editable} />
+            <PostModalImages data={data} editable={data.editable} post_id={data.post_id} />
           </div>
           <div className={styles.right_box}>
             <PostImpression

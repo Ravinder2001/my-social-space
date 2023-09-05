@@ -30,6 +30,8 @@ import {
 import PostImages from "../PostImages/PostImages";
 import PostPrivacy from "../../Molecules/PostPrivacy/PostPrivacy";
 import GetEditPostData from "../../../APIs/GetEditPostData";
+import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
+import UpdatePost from "../../../APIs/UpdatePost";
 type props = {
   isEdit: {
     edit: boolean;
@@ -37,9 +39,9 @@ type props = {
   };
 };
 const VisibilityOptions = [
-  { value: "Public", label: "Public" },
-  { value: "Friends", label: "Friends" },
-  { value: "Private", label: "Private" },
+  { value: "public", label: "Public" },
+  { value: "friends", label: "Friends" },
+  { value: "private", label: "Private" },
 ];
 function AddPostBox(props: props) {
   const inputref = useRef<HTMLInputElement>(null);
@@ -63,6 +65,7 @@ function AddPostBox(props: props) {
     value: string;
     label: string;
   }>(VisibilityOptions[0]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleToogle = (e: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -81,6 +84,7 @@ function AddPostBox(props: props) {
   };
 
   const handlePost = async () => {
+    setLoading(true);
     let image_stack: any = [];
 
     if (uploadedImages.length) {
@@ -111,11 +115,34 @@ function AddPostBox(props: props) {
       }
 
       formdata.append("caption", caption);
+      formdata.append("comment", Values.comment ? "1" : "0");
+      formdata.append("like", Values.like ? "1" : "0");
+      formdata.append("share", Values.share ? "1" : "0");
+      formdata.append("visibility", visibility.value);
       const image_res = await AddPost({ formdata: formdata });
       if (image_res?.status === 200) {
         message.success(image_res?.message);
       }
+      setLoading(false);
     }
+  };
+  const handleEdit = async () => {
+    console.log("values",Values)
+    setLoading(true);
+    const res = await UpdatePost({
+      post_id: props.isEdit.post_id,
+      data: {
+        caption: caption,
+        comment: Values.comment,
+        like: Values.like,
+        share: Values.share,
+        visibility: visibility.value,
+      },
+    });
+    if (res?.status == Request_Succesfull) {
+      message.success(res?.message);
+    }
+    setLoading(false);
   };
 
   const FetchEditPostDetails = async () => {
@@ -133,6 +160,7 @@ function AddPostBox(props: props) {
         value: res?.data.visibility,
       });
       setCarouselImages(res?.data?.images);
+      setLoading(false)
     }
   };
 
@@ -147,14 +175,18 @@ function AddPostBox(props: props) {
 
   useEffect(() => {
     if (props.isEdit.edit) {
+      setLoading(true)
       FetchEditPostDetails();
     }
   }, [props.isEdit.edit]);
-  console.log("carouselImages", carouselImages);
   return (
     <div className={styles.container}>
+      {loading ? <InfinityLoader /> : null}
+
       <div className={styles.left_box}>
-        <div className={styles.main_heading}>Add Post</div>
+        <div className={styles.main_heading}>
+          {props.isEdit ? "Edit Post" : "Add Post"}
+        </div>
         <div className={styles.caption_container}>
           <CaptionBox value={caption} handleCaption={handleCaption} />
         </div>
@@ -192,6 +224,7 @@ function AddPostBox(props: props) {
       </div>
       <div className={styles.right_box}>
         <PostPrivacy
+          handleEdit={handleEdit}
           handlePost={handlePost}
           edit={props.isEdit.edit}
           Values={Values}

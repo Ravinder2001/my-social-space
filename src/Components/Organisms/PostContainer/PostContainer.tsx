@@ -39,7 +39,6 @@ function PostContainer(props: props) {
       post_id: e ?? "",
     });
   };
-  console.log("Data.comment_allowed", Data);
   return (
     <div className={styles.container}>
       <PostHeader
@@ -47,7 +46,8 @@ function PostContainer(props: props) {
         profile_picture={Data.profile_picture}
         created_at={Data.created_at}
         editable={Data.editable}
-        private={false}
+        private={Data.private}
+        post_id={Data.post_id}
       />
       <PostCaption Caption={Data.caption} />
       <PostImages images={Data.images} />

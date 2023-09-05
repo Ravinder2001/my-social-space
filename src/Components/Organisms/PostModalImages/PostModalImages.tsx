@@ -11,6 +11,7 @@ type props = {
     caption: string;
     images: { image_url: string }[];
   };
+  post_id: string;
   editable: boolean;
 };
 function PostModalImages(props: props) {
@@ -20,6 +21,7 @@ function PostModalImages(props: props) {
     <div className={styles.container}>
       <div className={styles.top_box}>
         <PostHeader
+          post_id={props.post_id}
           editable={editable}
           user_name={data?.user_name}
           profile_picture={data?.profile_picture}

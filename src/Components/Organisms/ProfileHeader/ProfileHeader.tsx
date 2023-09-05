@@ -20,6 +20,7 @@ import { message } from "antd";
 import DeleteFriendRequest from "../../../APIs/DeleteFriendRequest";
 import AcceptFriendRequest from "../../../APIs/AcceptFriendRequest";
 import moment from "moment";
+import UnFriendModal from "../UnFriendModal/UnFriendModal";
 type headerProps = {
   User: {
     id: string;
@@ -37,7 +38,9 @@ type ProfileDataType = {
   post_count: string;
   friend_count: string;
   profile_picture: string;
+  name: string;
   isfriends?: string;
+
   friend_request_sent?: string;
   friend_request_received?: string;
   friend_Request_Id?: string;
@@ -46,9 +49,11 @@ function ProfileHeader(props: headerProps) {
   const location = useLocation();
   const { image } = props.User;
   const [open, setOpen] = useState<boolean>(false);
+  const [unFriendModalOpen, setUnFriendModalOpen] = useState<boolean>(false);
   const [data, setData] = useState<ProfileDataType>({
     location: "",
     job: "",
+    name: "",
     created_at: "",
     post_count: "",
     friend_count: "",
@@ -117,91 +122,114 @@ function ProfileHeader(props: headerProps) {
           className={styles.img}
         />
       </div>
-      <div className={styles.menu}>
-        <div className={styles.box}>
-          <div className={styles.icon}>
-            <img src={posts} alt="profile_icon" />
-          </div>
-          <div className={styles.text}>{data.post_count}</div>
-        </div>
-        <div className={styles.box}>
-          <div className={styles.icon}>
-            <img src={friends} alt="profile_icon" />
-          </div>
-          <div className={styles.text}>{data.friend_count}</div>
-        </div>
-        <div className={styles.box}>
-          <div className={styles.icon}>
-            <img src={work} alt="profile_icon" />
-          </div>
-          <div className={styles.text}>
-            {data?.job == "" ? "Not Available" : data?.job}
-          </div>
-        </div>
-        <div className={styles.box}>
-          <div className={styles.icon}>
-            <img src={locationIcon} alt="profile_icon" />
-          </div>
-          <div className={styles.text}>
-            {data?.location == "" ? "Not Available" : data?.location}
-          </div>
-        </div>
-        <div className={styles.box}>
-          <div className={styles.icon}>
-            <img src={time} alt="profile_icon" />
-          </div>
-          <div className={styles.text}>
-            Joined from {moment(data.created_at).format("MMMM")} {moment(data.created_at).format("YYYY")}
-          </div>
-        </div>
-        {!location.search.includes("user") ? (
-          <div className={`${styles.box} ${styles.edit}`} onClick={handleModal}>
+      <div className={styles.main_container}>
+        <div className={styles.heading}>{data.name}</div>
+        <div className={styles.menu}>
+          <div className={styles.box}>
             <div className={styles.icon}>
-              <img src={edit} alt="profile_icon" />
+              <img src={posts} alt="profile_icon" />
             </div>
-            <div className={styles.text}>Edit</div>
+            <div className={styles.text}>{data.post_count}</div>
           </div>
-        ) : data.isfriends == "1" ? (
-          <div className={`${styles.box} ${styles.edit}`}>
+          <div className={styles.box}>
             <div className={styles.icon}>
               <img src={friends} alt="profile_icon" />
             </div>
-            <div className={styles.text}>Friends</div>
+            <div className={styles.text}>{data.friend_count}</div>
           </div>
-        ) : data.friend_request_sent == "1" ? (
-          <div
-            className={`${styles.box} ${styles.edit}`}
-            onClick={DeleteRequest}
-          >
+          <div className={styles.box}>
             <div className={styles.icon}>
-              <img src={cancel} alt="profile_icon" />
+              <img src={work} alt="profile_icon" />
             </div>
-            <div className={styles.text}>Cancel Request</div>
+            <div className={styles.text}>
+              {data?.job == "" ? "Not Available" : data?.job}
+            </div>
           </div>
-        ) : data.friend_request_received == "1" ? (
-          <div
-            className={`${styles.box} ${styles.edit}`}
-            onClick={AcceptRequest}
-          >
+          <div className={styles.box}>
             <div className={styles.icon}>
-              <img src={approve} alt="profile_icon" />
+              <img src={locationIcon} alt="profile_icon" />
             </div>
-            <div className={styles.text}>Confirm</div>
+            <div className={styles.text}>
+              {data?.location == "" ? "Not Available" : data?.location}
+            </div>
           </div>
-        ) : (
-          <div className={`${styles.box} ${styles.edit}`} onClick={SendRequest}>
+          <div className={styles.box}>
             <div className={styles.icon}>
-              <img src={add_friend} alt="profile_icon" />
+              <img src={time} alt="profile_icon" />
             </div>
-            <div className={styles.text}>Add Friend</div>
+            <div className={styles.text}>
+              {moment(data.created_at).format("MMMM")}{" "}
+              {moment(data.created_at).format("YYYY")}
+            </div>
           </div>
-        )}
+          {!location.search.includes("user") ? (
+            <div
+              className={`${styles.box} ${styles.edit}`}
+              onClick={handleModal}
+            >
+              <div className={styles.icon}>
+                <img src={edit} alt="profile_icon" />
+              </div>
+              <div className={styles.text}>Edit</div>
+            </div>
+          ) : data.isfriends == "1" ? (
+            <div
+              className={`${styles.box} ${styles.edit}`}
+              onClick={() => setUnFriendModalOpen(!unFriendModalOpen)}
+            >
+              <div className={styles.icon}>
+                <img src={friends} alt="profile_icon" />
+              </div>
+              <div className={styles.text}>Friends</div>
+            </div>
+          ) : data.friend_request_sent == "1" ? (
+            <div
+              className={`${styles.box} ${styles.edit}`}
+              onClick={DeleteRequest}
+            >
+              <div className={styles.icon}>
+                <img src={cancel} alt="profile_icon" />
+              </div>
+              <div className={styles.text}>Cancel Request</div>
+            </div>
+          ) : data.friend_request_received == "1" ? (
+            <div
+              className={`${styles.box} ${styles.edit}`}
+              onClick={AcceptRequest}
+            >
+              <div className={styles.icon}>
+                <img src={approve} alt="profile_icon" />
+              </div>
+              <div className={styles.text}>Confirm</div>
+            </div>
+          ) : (
+            <div
+              className={`${styles.box} ${styles.edit}`}
+              onClick={SendRequest}
+            >
+              <div className={styles.icon}>
+                <img src={add_friend} alt="profile_icon" />
+              </div>
+              <div className={styles.text}>Add Friend</div>
+            </div>
+          )}
+        </div>
       </div>
       {open && (
         <AddProfilePictureModal
           open={open}
           setOpen={setOpen}
           closeable={true}
+        />
+      )}
+      {unFriendModalOpen && data.isfriends=="1" && (
+        <UnFriendModal
+          open={unFriendModalOpen}
+          setOpen={setUnFriendModalOpen}
+          image_url={data.profile_picture}
+          name={data.name}
+          user_id={location.search.split("=")[1]}
+          FetchAnotherUserProfileData={FetchAnotherUserProfileData}
         />
       )}
     </div>

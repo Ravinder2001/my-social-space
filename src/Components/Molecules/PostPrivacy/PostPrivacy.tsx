@@ -5,6 +5,7 @@ import SelectBox from "../../Atoms/SelectBox/SelectBox";
 import DateAndTimePicker from "../../Atoms/DateAndTimePicker/DateAndTimePicker";
 type ImageProps = {
   handlePost: () => Promise<void>;
+  handleEdit: () => Promise<void>;
   edit: boolean;
   Values: {
     comment: boolean;
@@ -25,6 +26,7 @@ function PostPrivacy(props: ImageProps) {
     VisibilityOptions,
     setVisibilityOptions,
     value,
+    handleEdit
   } = props;
 
   return (
@@ -103,7 +105,7 @@ function PostPrivacy(props: ImageProps) {
         )}
       </div>
       {edit ? (
-        <button className={styles.btn} onClick={handlePost}>
+        <button className={styles.btn} onClick={handleEdit}>
           Edit
         </button>
       ) : (
