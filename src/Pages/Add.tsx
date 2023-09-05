@@ -12,8 +12,10 @@ function Add() {
     if (location.search.includes("edit=true")) {
       const post_id = location.search.split("=");
       setIsEdit({ edit: true, post_id: post_id[2] });
+    }else{
+      setIsEdit({ edit: false, post_id: "" });
     }
-  }, []);
+  }, [location]);
 
   return <AddTemplate isEdit={isEdit} />;
 }

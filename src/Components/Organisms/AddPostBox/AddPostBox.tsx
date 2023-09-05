@@ -127,7 +127,7 @@ function AddPostBox(props: props) {
     }
   };
   const handleEdit = async () => {
-    console.log("values",Values)
+    console.log("values", Values);
     setLoading(true);
     const res = await UpdatePost({
       post_id: props.isEdit.post_id,
@@ -160,7 +160,7 @@ function AddPostBox(props: props) {
         value: res?.data.visibility,
       });
       setCarouselImages(res?.data?.images);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -175,8 +175,18 @@ function AddPostBox(props: props) {
 
   useEffect(() => {
     if (props.isEdit.edit) {
-      setLoading(true)
+      setLoading(true);
       FetchEditPostDetails();
+    } else {
+      setCaption("");
+      setUploadedImages([]);
+      setCarouselImages([]);
+      setValues({
+        comment: true,
+        like: true,
+        share: true,
+      });
+      setVisibility(VisibilityOptions[0]);
     }
   }, [props.isEdit.edit]);
   return (
@@ -185,7 +195,7 @@ function AddPostBox(props: props) {
 
       <div className={styles.left_box}>
         <div className={styles.main_heading}>
-          {props.isEdit ? "Edit Post" : "Add Post"}
+          {props.isEdit.edit ? "Edit Post" : "Add Post"}
         </div>
         <div className={styles.caption_container}>
           <CaptionBox value={caption} handleCaption={handleCaption} />
@@ -214,7 +224,11 @@ function AddPostBox(props: props) {
                 multiple
               />
             </div>
-            <div className={styles.images_box}>
+            <div
+              className={
+                props.isEdit ? styles.edit_images_box : styles.images_box
+              }
+            >
               {uploadedImages.length || carouselImages.length ? (
                 <PostImages images={carouselImages} />
               ) : null}

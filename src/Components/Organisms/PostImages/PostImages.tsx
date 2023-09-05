@@ -7,17 +7,15 @@ type PostProps = {
 
 function PostImages({ images }: PostProps) {
   return (
-    <div className={styles.container}>
-      <Carousel showThumbs={false}>
-        {images.map((image) => (
-          <img
-            src={image.image_url}
-            alt="carosuel_image"
-            className={styles.image}
-          />
-        ))}
-      </Carousel>
-    </div>
+    <Carousel showThumbs={false} className={styles.container}>
+      {images.map((image) => (
+        <img
+          src={image.image_url}
+          alt="carosuel_image"
+          className={styles.image}
+        />
+      ))}
+    </Carousel>
   );
 }
 

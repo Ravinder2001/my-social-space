@@ -3,6 +3,7 @@ import styles from "./style.module.scss";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import MenuBox from "../MenuBox/MenuBox";
+import moment from "moment";
 
 type props = {
   user_name: string;
@@ -20,7 +21,7 @@ function PostHeader(props: props) {
       </div>
       <div className={styles.middle_box}>
         <div className={styles.name}>{props.user_name}</div>
-        <div className={styles.time}>{props.created_at}</div>
+        <div className={styles.time}>{moment(props.created_at).format("DD-MMMM-YYYY HH:MM")}</div>
       </div>
       {props.private && <div className={styles.private}>Private Post</div>}
 
