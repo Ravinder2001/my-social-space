@@ -8,6 +8,7 @@ import GetAllPost from "../../../APIs/GetAllPost";
 import FriendRequestList from "../FriendRequestList/FriendRequestList";
 import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
+import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -43,7 +44,7 @@ function HomeBody() {
       </div>
       <div className={styles.right_box}>
         {loading ? (
-          <Loader2 />
+          <InfinityLoader />
         ) : (
           <>
             {data.map((post) => (

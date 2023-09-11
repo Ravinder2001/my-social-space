@@ -10,9 +10,10 @@ type props = {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleComment: (gif?: string) => void;
   value: string;
+  placeholder: string;
 };
 function MessageInputBox(props: props) {
-  const { handleEmoji, handleChange, value,handleComment } = props;
+  const { handleEmoji, handleChange, value,handleComment,placeholder } = props;
   const [Visible, setVisible] = useState<string>("");
 
   return (
@@ -20,7 +21,7 @@ function MessageInputBox(props: props) {
       <MessageInput
         type="text"
         max_length={30}
-        placeholder="Write your comment"
+        placeholder={placeholder}
         value={value}
         onChange={handleChange}
       />

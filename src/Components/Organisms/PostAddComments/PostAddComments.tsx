@@ -45,6 +45,7 @@ function PostAddComments(props: props) {
       </div>
       <div className={styles.input_box}>
         <MessageInputBox
+          placeholder="Add you Comment"
           handleEmoji={handleEmoji}
           handleChange={handleChange}
           value={comment}

@@ -14,7 +14,8 @@ import {
 } from "../Utils/Constant";
 import Add from "../Pages/Add";
 import ErrorFallback from "../Error/ErrorFallback";
-import Home from "../Pages/Home"
+import Home from "../Pages/Home";
+import Message from "../Pages/Message";
 
 function ProjectRoutes() {
   return (
@@ -47,7 +48,7 @@ function ProjectRoutes() {
         path={Messages_Route}
         element={
           <PrivateRoutes>
-            <div>Messages</div>
+            <Message />
           </PrivateRoutes>
         }
       />

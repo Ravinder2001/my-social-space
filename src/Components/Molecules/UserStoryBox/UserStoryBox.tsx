@@ -5,10 +5,21 @@ import { RootState } from "../../../store/store";
 import ReactIcons from "../../../Utils/Icons/ReactIcons";
 import axios from "axios";
 function UserStoryBox() {
+  function getRandomHexColor() {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
   let user =
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60";
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{ borderColor: getRandomHexColor() }}
+    >
       <div className={styles.img_box}>
         <img
           src="https://images.pexels.com/photos/147411/italy-mountains-dawn-daybreak-147411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

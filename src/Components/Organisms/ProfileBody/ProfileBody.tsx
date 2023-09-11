@@ -8,6 +8,7 @@ import GetAllPost from "../../../APIs/GetAllPost";
 import { useLocation } from "react-router-dom";
 import GetAllPostOfAnotherUser from "../../../APIs/GetAllPostOfAnotherUser";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
+import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -66,7 +67,7 @@ function ProfileBody() {
       <div className={styles.left_box}></div>
       <div className={styles.right_box}>
         {loading ? (
-          <Loader2 />
+          <InfinityLoader />
         ) : (
           <>
             {data.map((post) => (

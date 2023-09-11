@@ -5,7 +5,7 @@
   margin: 10px;
   border-radius: 8px;
   cursor: pointer;
-//   border: 1px solid red;
+  // border: 1px solid red;
 }
 .selected_box {
   display: flex;
@@ -58,9 +58,11 @@
   width: 100%;
 }
 .btn{
-    margin-left: 10px;
+    // margin-left: 10px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: center;
     height: 100%;
+    // border: 1px solid red;
     // margin-top: 2px;
 }

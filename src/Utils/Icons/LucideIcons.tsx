@@ -16,7 +16,9 @@ import {
   Bell,
   Users,
   Search,
-  Settings 
+  Settings,
+  Check,
+  CheckCheck,
 } from "lucide-react";
 
 type IconsType = {
@@ -60,6 +62,10 @@ function LucideIcons(props: IconsType) {
       return <Search color={props.color} size={props.size} />;
     case "Settings":
       return <Settings color={props.color} size={props.size} />;
+    case "Check":
+      return <Check color={props.color} size={props.size} />;
+    case "CheckCheck":
+      return <CheckCheck color={props.color} size={props.size} />;
     default:
       return <></>;
   }

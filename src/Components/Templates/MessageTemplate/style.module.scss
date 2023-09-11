@@ -1,0 +1,14 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+}
+.room_list {
+  width: 35%;
+  height: 100%;
+}
+.room {
+  width: 65%;
+  height: 100%;
+  // border: 1px solid red;
+}
