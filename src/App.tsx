@@ -11,7 +11,8 @@ import { withSuspense } from "./HOC/withSuspense";
 import GetServerHealth from "./APIs/GetServerHealth";
 import Server from "./Assets/Images/Server.png";
 
-import styles from "./App.module.scss"
+import styles from "./App.module.scss";
+import UpdateUserOnlineStatus from "./APIs/UpdateUserOnlineStatus";
 
 interface decode {
   exp: number;
@@ -57,6 +58,17 @@ function App() {
       }
     }
   }, [ServerHealth]);
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      await UpdateUserOnlineStatus("offline");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   const ComponentWithSuspense = withSuspense(ProjectRoutes);
   return (
@@ -67,7 +79,7 @@ function App() {
         <ComponentWithSuspense />
       ) : (
         <div className={styles.server_con}>
-          <img src={Server} alt=""  className={styles.server_img}/>
+          <img src={Server} alt="" className={styles.server_img} />
         </div>
       )}
     </>

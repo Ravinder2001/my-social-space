@@ -13,10 +13,7 @@ function MessageTemplate() {
   return (
     <div className={styles.container}>
       <div className={styles.room_list}>
-        <RoomList
-          room_id={roomDetails.room_id}
-          setRoomDetails={setRoomDetails}
-        />
+        <RoomList room_id={roomDetails.room_id} setRoomDetails={setRoomDetails} />
       </div>
       <div className={styles.room}>
         <Room roomDetails={roomDetails} />

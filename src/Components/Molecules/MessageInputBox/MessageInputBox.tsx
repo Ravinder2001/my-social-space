@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FocusEventHandler, KeyboardEventHandler, useEffect, useState } from "react";
 import MessageInput from "../../Atoms/InputBox/MessageInput/MessageInput";
 import styles from "./style.module.scss";
 import ReactIcons from "../../../Utils/Icons/ReactIcons";
@@ -11,19 +11,26 @@ type props = {
   handleComment: (gif?: string) => void;
   value: string;
   placeholder: string;
+  max_length?: number;
+  handleKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+  handleKeyUp?: KeyboardEventHandler<HTMLInputElement>;
+  handleBlur?: FocusEventHandler<HTMLInputElement>;
 };
 function MessageInputBox(props: props) {
-  const { handleEmoji, handleChange, value,handleComment,placeholder } = props;
+  const { handleEmoji, handleChange, value,handleComment,placeholder,max_length } = props;
   const [Visible, setVisible] = useState<string>("");
 
   return (
     <div className={styles.container}>
       <MessageInput
         type="text"
-        max_length={30}
+        max_length={max_length??30 }
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
+        handleBlur={props.handleBlur}
+        handleKeyDown={props.handleKeyDown}
+        handleKeyUp={props.handleKeyUp}
       />
       <div className={styles.icons}>
         <div className={styles.emoji}>

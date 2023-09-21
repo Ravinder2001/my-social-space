@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, FocusEventHandler, KeyboardEventHandler } from "react";
 
 import styles from "./style.module.scss";
 
@@ -9,6 +9,9 @@ type InputBoxType = {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   max_length?: number;
   placeholder?: string;
+  handleKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+  handleKeyUp?: KeyboardEventHandler<HTMLInputElement>;
+  handleBlur?: FocusEventHandler<HTMLInputElement>;
 };
 
 function MessageInput(props: InputBoxType) {
@@ -21,6 +24,10 @@ function MessageInput(props: InputBoxType) {
       onChange={props.onChange}
       placeholder={props.placeholder}
       maxLength={props.max_length}
+      onKeyDown={props.handleKeyDown}
+      onKeyUp={props.handleKeyUp}
+      onBlur={props.handleBlur}
+      
     />
   );
 }
