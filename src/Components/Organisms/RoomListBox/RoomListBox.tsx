@@ -35,7 +35,6 @@ function RoomListBox(props: props) {
         <div className={styles.time}>
           {formatTime(data.last_message_timestamp)}
         </div>
-        <div className={styles.count}>Count</div>
       </div>
     </div>
   );

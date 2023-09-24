@@ -1,10 +1,9 @@
 .container {
   width: 95%;
-  height: 100px;
+  height: 70px;
   border-radius: 10px;
-  background: linear-gradient(145deg, #e85aebf5, #79f7dc);
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  // background: linear-gradient(145deg, #e85aebf5, #79f7dc);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -12,20 +11,21 @@
   transition: box-shadow 0.3s ease-in-out;
 }
 .container:hover {
-  box-shadow: 14px 14px 28px #848484, -14px -14px 28px #ffffff;
+  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
 }
-.isSelected{
-  border: 2px solid black;
+.isSelected {
+  box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
 }
-.notSelected{}
+.notSelected {
+}
 .img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
 }
 .img_box {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: contain;
   //   border: 1px solid red;

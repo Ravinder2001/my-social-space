@@ -8,6 +8,8 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 import SendMessage from "../../../APIs/SendMessage";
 import { message } from "antd";
 import UpdateUserOnlineStatus from "../../../APIs/UpdateUserOnlineStatus";
+import TypingLoader from "../../Atoms/Loader/TypingLoader/TypingLoader";
+import SVGIcons from "../../../Assets/SVG/SvgIcon";
 type props = {
   roomDetails: {
     room_id: string;
@@ -29,6 +31,10 @@ function Room(props: props) {
   const [text, setText] = useState<string>("");
   const [Messages, setMessages] = useState<messageType[]>([]);
   const [UserTyping, setUserTyping] = useState<boolean>(false);
+  const [isAnotherUserTyping, setIsAnotherUserTyping] = useState<{ status: boolean; userImage: string }>({
+    status: false,
+    userImage: "",
+  });
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -64,6 +70,8 @@ function Room(props: props) {
     if (res?.status == Request_Succesfull) {
       message.success("message sentl");
     }
+    setText("")
+    fetchMessages()
   };
 
   const toogleStatus = async () => {
@@ -87,12 +95,22 @@ function Room(props: props) {
   return (
     <div className={styles.container}>
       <div className={styles.header_box}>
-        <RoomHeader room_id={props.roomDetails.room_id} />
+        <RoomHeader room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
       </div>
       <div className={styles.message_box}>
+        <div className={styles.background}>
+          <SVGIcons name="Message_Background" />
+        </div>
         {Messages.map((message) => (
           <RoomMessages message={message} user_image={user_image} />
         ))}
+        {isAnotherUserTyping.status && (
+          <div className={styles.typing_container}>
+            <img src={isAnotherUserTyping.userImage} className={styles.typing_img} alt="" />
+
+            <TypingLoader />
+          </div>
+        )}
       </div>
       <div className={styles.bottom_box}>
         <div className={styles.input_box}>

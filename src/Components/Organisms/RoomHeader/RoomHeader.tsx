@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styles from "./style.module.scss";
 import GetRoomDetails from "../../../APIs/GetRoomDetails";
 import { Request_Succesfull } from "../../../Utils/Constant";
@@ -6,6 +6,7 @@ import GetUserOnlineStatus from "../../../APIs/GetUserOnlineStatus";
 import { formatTime } from "../../../Utils/Function";
 type props = {
   room_id: string;
+  setIsAnotherUserTyping: Dispatch<SetStateAction<{ status: boolean; userImage: string }>>;
 };
 type detailsType =
   | {
@@ -42,6 +43,12 @@ function RoomHeader(props: props) {
     const res = await GetUserOnlineStatus(id);
     if (res?.status == Request_Succesfull) {
       setUserStatus({ status: res.data.status, timestamp: res.data.timestamp, room_id: res.data.room_id });
+      if (res.data.status == "typing") {
+        props.setIsAnotherUserTyping({
+          status: true,
+          userImage: details.image_url,
+        });
+      }
     }
   };
   useEffect(() => {
@@ -61,13 +68,13 @@ function RoomHeader(props: props) {
         {details.type === 1 ? (
           <>
             {userStatus.status == "online" ? (
-              <div className={styles.name}>Online</div>
+              <div className={styles.status}>Online</div>
             ) : (
               <>
                 {userStatus.status == "typing" && userStatus.room_id == props.room_id ? (
-                  <div className={styles.name}>...typing</div>
+                  <div className={styles.status}>...typing</div>
                 ) : (
-                  <div className={styles.name}>last seen at {formatTime(userStatus.timestamp)}</div>
+                  <div className={styles.status}>last seen at {formatTime(userStatus.timestamp)}</div>
                 )}
               </>
             )}

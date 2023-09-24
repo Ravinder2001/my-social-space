@@ -1,12 +1,5 @@
 const Login_Background = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-    version="1.1"
-    preserveAspectRatio="none"
-    viewBox="0 0 900 600"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" version="1.1" preserveAspectRatio="none" viewBox="0 0 900 600">
     <path fill="#080c2e" d="M0 0H900V600H0z"></path>
     <defs>
       <linearGradient x1="33.3%" x2="100%" y1="0%" y2="100%">
@@ -311,13 +304,7 @@ const Dot_Login_Background = (
   </svg>
 );
 const Drawer_Background = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-    preserveAspectRatio="none"
-    viewBox="0 0 230 600"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 230 600">
     <g fill="none" mask='url("#SvgjsMask1075")'>
       <path fill="rgba(9, 15, 60, 1)" d="M0 0H230V600H0z"></path>
       <path
@@ -337,54 +324,23 @@ const Drawer_Background = (
   </svg>
 );
 const Sub_Drawer_Background = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-    preserveAspectRatio="none"
-    viewBox="0 0 400 800"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 400 800">
     <g fill="none" mask='url("#SvgjsMask1204")'>
       <path fill='url("#SvgjsLinearGradient1205")' d="M0 0H400V800H0z"></path>
       <path fill="rgba(255, 255, 255, .1)" d="M400 0h-62.09L400 372.25z"></path>
-      <path
-        fill="rgba(255, 255, 255, .075)"
-        d="M337.91 0L400 372.25v98.42L307.99 0z"
-      ></path>
-      <path
-        fill="rgba(255, 255, 255, .05)"
-        d="M307.99 0L400 470.67v132.2L293.64 0z"
-      ></path>
-      <path
-        fill="rgba(255, 255, 255, .025)"
-        d="M293.64 0L400 602.87v25.05L128.69 0z"
-      ></path>
+      <path fill="rgba(255, 255, 255, .075)" d="M337.91 0L400 372.25v98.42L307.99 0z"></path>
+      <path fill="rgba(255, 255, 255, .05)" d="M307.99 0L400 470.67v132.2L293.64 0z"></path>
+      <path fill="rgba(255, 255, 255, .025)" d="M293.64 0L400 602.87v25.05L128.69 0z"></path>
       <path fill="rgba(0, 0, 0, .1)" d="M0 800h125.86L0 428.46z"></path>
-      <path
-        fill="rgba(0, 0, 0, .075)"
-        d="M0 428.46L125.86 800h62.38L0 260.81z"
-      ></path>
-      <path
-        fill="rgba(0, 0, 0, .05)"
-        d="M0 260.81L188.24 800h116.94L0 220.53z"
-      ></path>
-      <path
-        fill="rgba(0, 0, 0, .025)"
-        d="M0 220.53L305.18 800h20.04L0 136.19z"
-      ></path>
+      <path fill="rgba(0, 0, 0, .075)" d="M0 428.46L125.86 800h62.38L0 260.81z"></path>
+      <path fill="rgba(0, 0, 0, .05)" d="M0 260.81L188.24 800h116.94L0 220.53z"></path>
+      <path fill="rgba(0, 0, 0, .025)" d="M0 220.53L305.18 800h20.04L0 136.19z"></path>
     </g>
     <defs>
       <mask id="SvgjsMask1204">
         <path fill="#fff" d="M0 0H400V800H0z"></path>
       </mask>
-      <linearGradient
-        id="SvgjsLinearGradient1205"
-        x1="-25%"
-        x2="125%"
-        y1="12.5%"
-        y2="87.5%"
-        gradientUnits="userSpaceOnUse"
-      >
+      <linearGradient id="SvgjsLinearGradient1205" x1="-25%" x2="125%" y1="12.5%" y2="87.5%" gradientUnits="userSpaceOnUse">
         <stop offset="0" stopColor="#0e2a47"></stop>
         <stop offset="1" stopColor="rgba(74, 9, 66, 1)"></stop>
       </linearGradient>
@@ -392,13 +348,7 @@ const Sub_Drawer_Background = (
   </svg>
 );
 const Profile_Background = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-    preserveAspectRatio="none"
-    viewBox="0 0 960 540"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 960 540">
     <path fill="#d3dfe9" d="M0 0H960V540H0z"></path>
     <path
       fill="#f5a6a0"
@@ -427,63 +377,50 @@ const Profile_Background = (
   </svg>
 );
 const Home_Background = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-    preserveAspectRatio="none"
-    viewBox="0 0 900 600"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 900 600">
     <g fill="none" mask='url("#SvgjsMask1060")'>
       <path fill="rgba(244, 253, 255, 1)" d="M0 0H900V600H0z"></path>
-      <path
-        fill='url("#SvgjsLinearGradient1061")'
-        d="M28 600L628 0h186L214 600zM346 600L946 0h289.5l-600 600z"
-      ></path>
-      <path
-        fill='url("#SvgjsLinearGradient1062")'
-        d="M885 600L285 0h-75l600 600zM564 600L-36 0h-192l600 600z"
-      ></path>
-      <path
-        fill='url("#SvgjsLinearGradient1061")'
-        d="M466.487 600L900 166.487V600z"
-      ></path>
-      <path
-        fill='url("#SvgjsLinearGradient1062")'
-        d="M0 600h433.513L0 166.487z"
-      ></path>
+      <path fill='url("#SvgjsLinearGradient1061")' d="M28 600L628 0h186L214 600zM346 600L946 0h289.5l-600 600z"></path>
+      <path fill='url("#SvgjsLinearGradient1062")' d="M885 600L285 0h-75l600 600zM564 600L-36 0h-192l600 600z"></path>
+      <path fill='url("#SvgjsLinearGradient1061")' d="M466.487 600L900 166.487V600z"></path>
+      <path fill='url("#SvgjsLinearGradient1062")' d="M0 600h433.513L0 166.487z"></path>
     </g>
     <defs>
       <mask id="SvgjsMask1060">
         <path fill="#fff" d="M0 0H900V600H0z"></path>
       </mask>
-      <linearGradient
-        id="SvgjsLinearGradient1061"
-        x1="0%"
-        x2="100%"
-        y1="100%"
-        y2="0%"
-      >
+      <linearGradient id="SvgjsLinearGradient1061" x1="0%" x2="100%" y1="100%" y2="0%">
         <stop offset="0" stopColor="rgba(15, 70, 185, 0.2)"></stop>
-        <stop
-          offset="0.66"
-          stopColor="rgba(15, 70, 185, 0.2)"
-          stopOpacity="0"
-        ></stop>
+        <stop offset="0.66" stopColor="rgba(15, 70, 185, 0.2)" stopOpacity="0"></stop>
       </linearGradient>
-      <linearGradient
-        id="SvgjsLinearGradient1062"
-        x1="100%"
-        x2="0%"
-        y1="100%"
-        y2="0%"
-      >
+      <linearGradient id="SvgjsLinearGradient1062" x1="100%" x2="0%" y1="100%" y2="0%">
         <stop offset="0" stopColor="rgba(15, 70, 185, 0.2)"></stop>
-        <stop
-          offset="0.66"
-          stopColor="rgba(15, 70, 185, 0.2)"
-          stopOpacity="0"
-        ></stop>
+        <stop offset="0.66" stopColor="rgba(15, 70, 185, 0.2)" stopOpacity="0"></stop>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const Message_Background = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 800 600">
+    <g fill="none" mask='url("#SvgjsMask3053")'>
+      <path fill='url("#SvgjsLinearGradient3054")' d="M0 0H800V600H0z"></path>
+      <path fill="rgba(255, 255, 255, .1)" d="M0 0h256.79L0 30.08z"></path>
+      <path fill="rgba(255, 255, 255, .075)" d="M0 30.08L256.79 0H358.4L0 100.07z"></path>
+      <path fill="rgba(255, 255, 255, .05)" d="M0 100.07L358.4 0h9.49L0 132.65z"></path>
+      <path fill="rgba(255, 255, 255, .025)" d="M0 132.65L367.89 0h88.2L0 266.8z"></path>
+      <path fill="rgba(0, 0, 0, .1)" d="M800 600h-2.35l2.35-15.28z"></path>
+      <path fill="rgba(0, 0, 0, .075)" d="M800 584.72L797.65 600H601.67L800 296.38z"></path>
+      <path fill="rgba(0, 0, 0, .05)" d="M800 296.38L601.67 600h-25.64L800 130.16z"></path>
+      <path fill="rgba(0, 0, 0, .025)" d="M800 130.16L576.03 600H382.47L800 84.29z"></path>
+    </g>
+    <defs>
+      <mask id="SvgjsMask3053">
+        <path fill="#fff" d="M0 0H800V600H0z"></path>
+      </mask>
+      <linearGradient id="SvgjsLinearGradient3054" x1="6.25%" x2="93.75%" y1="-8.33%" y2="108.33%" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="#0e2a47"></stop>
+        <stop offset="0" stopColor="rgba(167, 213, 223, 1)"></stop>
       </linearGradient>
     </defs>
   </svg>
@@ -506,6 +443,8 @@ const SVGIcons = (props: SVGProps) => {
       return Home_Background;
     case "Sub_Drawer_Background":
       return Sub_Drawer_Background;
+    case "Message_Background":
+      return Message_Background;
     default:
       return <></>;
   }
