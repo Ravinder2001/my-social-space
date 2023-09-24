@@ -12,7 +12,7 @@ import GetServerHealth from "./APIs/GetServerHealth";
 import Server from "./Assets/Images/Server.png";
 
 import styles from "./App.module.scss";
-import UpdateUserOnlineStatus from "./APIs/UpdateUserOnlineStatus";
+import { socket } from "./socket";
 
 interface decode {
   exp: number;
@@ -46,6 +46,7 @@ function App() {
           let exp = decode.exp;
           const currentTime = Math.floor(Date.now() / 1000);
           if (exp > currentTime) {
+            socket.emit("Add-User", decode.id);
             dispatch(LoginUser(decode));
           } else {
             logout();
@@ -58,17 +59,6 @@ function App() {
       }
     }
   }, [ServerHealth]);
-  useEffect(() => {
-    const handleBeforeUnload = async () => {
-      await UpdateUserOnlineStatus("offline");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   const ComponentWithSuspense = withSuspense(ProjectRoutes);
   return (

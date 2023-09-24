@@ -5,25 +5,25 @@ type props = {
   data: {
     room_id: string;
     user_name: string;
+    user_id: string;
     image_url: string;
     last_message_timestamp: string;
     last_message_content: string;
   };
-  room_id:string,
-  setRoomDetails: Dispatch<
-    SetStateAction<{ room_id: string; user_image: string }>
-  >;
+  room_id: string;
+  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string; user_id: string }>>;
 };
 function RoomListBox(props: props) {
-  const { data, setRoomDetails,room_id } = props;
+  const { data, setRoomDetails, room_id } = props;
   const handleClick = () => {
     setRoomDetails({
       room_id: data.room_id,
       user_image: data.image_url,
+      user_id: data.user_id,
     });
   };
   return (
-    <div className={`${styles.container} ${room_id==data.room_id && styles.isSelected}`} onClick={handleClick}>
+    <div className={`${styles.container} ${room_id == data.room_id && styles.isSelected}`} onClick={handleClick}>
       <div className={styles.img_box}>
         <img className={styles.img} src={data.image_url} alt="" />
       </div>
@@ -32,9 +32,7 @@ function RoomListBox(props: props) {
         <div className={styles.message}>{data.last_message_content}</div>
       </div>
       <div className={styles.right_box}>
-        <div className={styles.time}>
-          {formatTime(data.last_message_timestamp)}
-        </div>
+        <div className={styles.time}>{formatTime(data.last_message_timestamp)}</div>
       </div>
     </div>
   );

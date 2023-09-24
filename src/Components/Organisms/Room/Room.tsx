@@ -10,10 +10,12 @@ import { message } from "antd";
 import UpdateUserOnlineStatus from "../../../APIs/UpdateUserOnlineStatus";
 import TypingLoader from "../../Atoms/Loader/TypingLoader/TypingLoader";
 import SVGIcons from "../../../Assets/SVG/SvgIcon";
+import { socket } from "../../../socket";
 type props = {
   roomDetails: {
     room_id: string;
     user_image: string;
+    user_id: string;
   };
 };
 
@@ -26,7 +28,7 @@ type messageType = {
   isOwnMessage: boolean;
 };
 function Room(props: props) {
-  const { room_id, user_image } = props.roomDetails;
+  const { room_id, user_image, user_id } = props.roomDetails;
 
   const [text, setText] = useState<string>("");
   const [Messages, setMessages] = useState<messageType[]>([]);
@@ -64,14 +66,15 @@ function Room(props: props) {
     let object = {
       room_id: room_id,
       content: text,
-      content_type: text,
+      content_type: "text",
     };
     const res = await SendMessage(object);
     if (res?.status == Request_Succesfull) {
-      message.success("message sentl");
+      socket.emit("Message-Sent", res.data, user_id);
+      setMessages((prev) => [res.data, ...prev]);
     }
-    setText("")
-    fetchMessages()
+    setText("");
+    fetchMessages();
   };
 
   const toogleStatus = async () => {
@@ -91,6 +94,17 @@ function Room(props: props) {
   useEffect(() => {
     toogleStatus();
   }, [UserTyping]);
+  useEffect(() => {
+    const handleMessageReceive = ({ data }: any) => {
+      console.log("🚀  file: Room.tsx:97  data:", data);
+      setMessages((prev) => [data, ...prev]);
+    };
+    socket.on("Message-Receive", handleMessageReceive);
+
+    return () => {
+      socket.offAny();
+    };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -98,11 +112,11 @@ function Room(props: props) {
         <RoomHeader room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
       </div>
       <div className={styles.message_box}>
-        <div className={styles.background}>
+        {/* <div className={styles.background}>
           <SVGIcons name="Message_Background" />
-        </div>
+        </div> */}
         {Messages.map((message) => (
-          <RoomMessages message={message} user_image={user_image} />
+          <RoomMessages key={message.id} message={message} user_image={user_image} />
         ))}
         {isAnotherUserTyping.status && (
           <div className={styles.typing_container}>

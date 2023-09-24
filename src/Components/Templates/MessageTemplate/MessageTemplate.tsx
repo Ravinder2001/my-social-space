@@ -7,9 +7,11 @@ function MessageTemplate() {
   const [roomDetails, setRoomDetails] = useState<{
     room_id: string;
     user_image: string;
+    user_id:string
   }>({
     room_id: "",
     user_image: "",
+    user_id: "",
   });
   return (
     <div className={styles.container}>

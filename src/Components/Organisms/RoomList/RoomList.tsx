@@ -7,16 +7,15 @@ import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 type DataType = {
   room_id: string;
+  user_id: string;
   user_name: string;
   image_url: string;
   last_message_timestamp: string;
   last_message_content: string;
 };
 type props = {
-  room_id:string,
-  setRoomDetails: Dispatch<
-    SetStateAction<{ room_id: string; user_image: string }>
-  >;
+  room_id: string;
+  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string; user_id: string }>>;
 };
 function RoomList(props: props) {
   const [data, setData] = useState<DataType[]>([]);
@@ -41,7 +40,7 @@ function RoomList(props: props) {
       ) : (
         <>
           {data.map((item) => (
-            <RoomListBox room_id={props.room_id} setRoomDetails={props.setRoomDetails} data={item} />
+            <RoomListBox key={item.room_id} room_id={props.room_id} setRoomDetails={props.setRoomDetails} data={item} />
           ))}
         </>
       )}

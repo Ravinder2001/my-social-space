@@ -48,15 +48,11 @@ function Drawer(props: props) {
     props.setIsSearchUser(false);
     navigate(id);
   };
-  const ToogleUserOnlineStatus = async () => {
-    await UpdateUserOnlineStatus("online");
-  };
+
   useEffect(() => {
     FetchProfilePicture();
   }, [flag]);
-  useEffect(() => {
-    ToogleUserOnlineStatus();
-  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.drawer}>
