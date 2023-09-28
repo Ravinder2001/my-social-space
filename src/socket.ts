@@ -3,4 +3,4 @@ import config from "./Utils/config";
 
 const URL = config.baseURL ?? "";
 
-export const socket = io(URL);
+export const socket = io(URL, { transports: ["websocket", "polling"] });
