@@ -59,11 +59,13 @@ function App() {
     }
   }, [ServerHealth]);
   useEffect(() => {
-    socket.emit("Add-User", "asasds");
-
     socket.on("connect_error", (err) => {
       console.log(`connect_error due to ${err.message}`);
     });
+    
+    socket.emit("Add-User", "asasds");
+
+    
 
     // return () => {
     //   socket.offAny();
