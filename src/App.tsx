@@ -61,9 +61,13 @@ function App() {
   useEffect(() => {
     socket.emit("Add-User", "asasds");
 
-    return () => {
-      socket.offAny();
-    };
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
+    // return () => {
+    //   socket.offAny();
+    // };
   }, []);
 
   const ComponentWithSuspense = withSuspense(ProjectRoutes);
