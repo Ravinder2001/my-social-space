@@ -59,6 +59,9 @@ function App() {
     }
   }, [ServerHealth]);
   useEffect(() => {
+    socket.on("connect", ()=>{
+      console.log(socket.id); 
+    })
     socket.on("connect_error", (err) => {
       console.log(`connect_error due to ${err.message}`);
     });
