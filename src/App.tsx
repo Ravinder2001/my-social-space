@@ -46,7 +46,6 @@ function App() {
           let exp = decode.exp;
           const currentTime = Math.floor(Date.now() / 1000);
           if (exp > currentTime) {
-            socket.emit("Add-User", decode.id);
             dispatch(LoginUser(decode));
           } else {
             logout();
@@ -59,6 +58,13 @@ function App() {
       }
     }
   }, [ServerHealth]);
+  useEffect(() => {
+    socket.emit("Add-User", "asasds");
+
+    return () => {
+      socket.offAny();
+    };
+  }, []);
 
   const ComponentWithSuspense = withSuspense(ProjectRoutes);
   return (
