@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { formatTime } from "../../../Utils/Function";
 import moment from "moment";
+import EditMessageModal from "../EditMessageModal/EditMessageModal";
 type messageType = {
   message: {
     id: number;
@@ -15,11 +16,16 @@ type messageType = {
     created_at: string;
     status: boolean;
     isOwnMessage: boolean;
+    isedited: boolean;
   };
   user_image: string;
 };
 
 function RoomMessages(props: messageType) {
+  const [open, setOpen] = useState(false);
+  const handleModal = () => {
+    setOpen(!open);
+  };
   const { message, user_image } = props;
   const main_image = useSelector((state: RootState) => state.UserReducer.image);
   const currentTime = moment();
@@ -34,19 +40,24 @@ function RoomMessages(props: messageType) {
       {message.status ? (
         <div className={message.isOwnMessage ? styles.msg_box : styles.user_msg_box}>
           <div className={styles.message}>{message?.content}</div>
-          <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
+          <div className={styles.time_con}>
+            {message.isedited && <div className={styles.edited}>Edited</div>}
+
+            <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
+          </div>
         </div>
       ) : (
-        <div className={true ? styles.msg_box : styles.user_msg_box}>
+        <div className={message.isOwnMessage ? styles.msg_box : styles.user_msg_box}>
           <div className={styles.message}>This Message was deleted</div>
           <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
         </div>
       )}
-      {message.isOwnMessage && timeDiff <= EditMessageTime && (
-        <div className={styles.message_open}>
+      {message.isOwnMessage && message.status && !message.isedited && timeDiff <= EditMessageTime && (
+        <div className={styles.message_open} onClick={handleModal}>
           <LucideIcons name="MailOpen" color="#c17306" size={15} />
         </div>
       )}
+      <EditMessageModal handleModal={handleModal} open={open} message_id={message.id} content={message.content} />
     </div>
   );
 }

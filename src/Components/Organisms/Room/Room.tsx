@@ -26,6 +26,7 @@ type messageType = {
   created_at: string;
   status: boolean;
   isOwnMessage: boolean;
+  isedited: boolean;
 };
 function Room(props: props) {
   const { room_id, user_image, user_id } = props.roomDetails;
