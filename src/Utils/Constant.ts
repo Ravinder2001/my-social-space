@@ -15,4 +15,6 @@ export const Profile_Route = "/profile";
 export const Max_Image_Upload_Size = 15;
 export const Max_Server_Image_Upload_Size = 1;
 export const Image_Output_Format = "JPEG";
-export const File_Extension='image'
+export const File_Extension = "image";
+export const MessagePerPage = 20;
+export const EditMessageTime = 2; //in hours

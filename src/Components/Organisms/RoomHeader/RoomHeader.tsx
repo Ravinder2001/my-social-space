@@ -4,6 +4,7 @@ import GetRoomDetails from "../../../APIs/GetRoomDetails";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import GetUserOnlineStatus from "../../../APIs/GetUserOnlineStatus";
 import { formatTime } from "../../../Utils/Function";
+import { socket } from "../../../socket";
 type props = {
   room_id: string;
   setIsAnotherUserTyping: Dispatch<SetStateAction<{ status: boolean; userImage: string }>>;
@@ -54,8 +55,24 @@ function RoomHeader(props: props) {
   useEffect(() => {
     if (props.room_id != "") fetchRoomDetails();
   }, [props.room_id]);
+
   useEffect(() => {
-    if (details.type == 1) if (details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
+    if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
+  }, [details]);
+
+  useEffect(() => {
+    socket.on("User is Offline", () => {
+      // console.log("Offline", details);
+      if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
+    });
+    socket.on("User is Online", () => {
+      // console.log("Online", details);
+      if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
+    });
+
+    return () => {
+      socket.offAny();
+    };
   }, [details]);
 
   return (

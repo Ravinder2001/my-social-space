@@ -29,7 +29,6 @@ type messageType = {
 };
 function Room(props: props) {
   const { room_id, user_image, user_id } = props.roomDetails;
-
   const [text, setText] = useState<string>("");
   const [Messages, setMessages] = useState<messageType[]>([]);
   const [UserTyping, setUserTyping] = useState<boolean>(false);
@@ -56,7 +55,7 @@ function Room(props: props) {
   };
 
   const fetchMessages = async () => {
-    const res = await GetRoomMessages(room_id);
+    const res = await GetRoomMessages(room_id, 1);
     if (res?.status == Request_Succesfull) {
       setMessages(res?.data);
     }
@@ -71,10 +70,10 @@ function Room(props: props) {
     const res = await SendMessage(object);
     if (res?.status == Request_Succesfull) {
       socket.emit("Message-Sent", res.data, user_id);
+      console.log("sss", res?.data);
       setMessages((prev) => [res.data, ...prev]);
     }
     setText("");
-    fetchMessages();
   };
 
   const toogleStatus = async () => {
@@ -96,7 +95,6 @@ function Room(props: props) {
   }, [UserTyping]);
   useEffect(() => {
     const handleMessageReceive = ({ data }: any) => {
-      console.log("🚀  file: Room.tsx:97  data:", data);
       setMessages((prev) => [data, ...prev]);
     };
     socket.on("Message-Receive", handleMessageReceive);
@@ -112,11 +110,10 @@ function Room(props: props) {
         <RoomHeader room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
       </div>
       <div className={styles.message_box}>
-        {/* <div className={styles.background}>
-          <SVGIcons name="Message_Background" />
-        </div> */}
-        {Messages.map((message) => (
-          <RoomMessages key={message.id} message={message} user_image={user_image} />
+        {Messages.map((message, index) => (
+          <React.Fragment key={message.id}>
+            <RoomMessages message={message} user_image={user_image} />
+          </React.Fragment>
         ))}
         {isAnotherUserTyping.status && (
           <div className={styles.typing_container}>
