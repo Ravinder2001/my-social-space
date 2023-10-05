@@ -32,8 +32,7 @@ function RoomHeader(props: props) {
   const [userStatus, setUserStatus] = useState<{
     status: string;
     timestamp: "";
-    room_id: string | null;
-  }>({ status: "", timestamp: "", room_id: null });
+  }>({ status: "", timestamp: "" });
   const fetchRoomDetails = async () => {
     const res = await GetRoomDetails(props.room_id);
     if (res?.status == Request_Succesfull) {
@@ -43,13 +42,7 @@ function RoomHeader(props: props) {
   const fetchUserOnlineStatus = async (id: string) => {
     const res = await GetUserOnlineStatus(id);
     if (res?.status == Request_Succesfull) {
-      setUserStatus({ status: res.data.status, timestamp: res.data.timestamp, room_id: res.data.room_id });
-      if (res.data.status == "typing") {
-        props.setIsAnotherUserTyping({
-          status: true,
-          userImage: details.image_url,
-        });
-      }
+      setUserStatus({ status: res.data.status, timestamp: res.data.timestamp });
     }
   };
   useEffect(() => {
@@ -61,15 +54,28 @@ function RoomHeader(props: props) {
   }, [details]);
 
   useEffect(() => {
-    socket.on("User is Offline", () => {
-      // console.log("Offline", details);
+    socket.on("User-Offline", () => {
       if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
     });
-    socket.on("User is Online", () => {
-      // console.log("Online", details);
+    socket.on("User-Online", () => {
       if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
     });
+    socket.on("User-Typing", () => {
+      setUserStatus({ status: "typing", timestamp: "" });
 
+      props.setIsAnotherUserTyping({
+        status: true,
+        userImage: details.image_url,
+      });
+    });
+    socket.on("User-Not-Typing", () => {
+      if (details.type == 1 && details.second_user_id != "") fetchUserOnlineStatus(details.second_user_id);
+
+      props.setIsAnotherUserTyping({
+        status: false,
+        userImage: "",
+      });
+    });
     return () => {
       socket.offAny();
     };
@@ -88,7 +94,7 @@ function RoomHeader(props: props) {
               <div className={styles.status}>Online</div>
             ) : (
               <>
-                {userStatus.status == "typing" && userStatus.room_id == props.room_id ? (
+                {userStatus.status == "typing" ? (
                   <div className={styles.status}>...typing</div>
                 ) : (
                   <div className={styles.status}>last seen at {formatTime(userStatus.timestamp)}</div>
