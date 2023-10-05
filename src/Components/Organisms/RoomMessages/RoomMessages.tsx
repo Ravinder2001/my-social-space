@@ -19,6 +19,8 @@ type messageType = {
     isedited: boolean;
   };
   user_image: string;
+  user_id: string;
+  fetchMessages: () => void;
 };
 
 function RoomMessages(props: messageType) {
@@ -52,12 +54,20 @@ function RoomMessages(props: messageType) {
           <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
         </div>
       )}
-      {message.isOwnMessage && message.status && !message.isedited && timeDiff <= EditMessageTime && (
+      {message.isOwnMessage && message.status && timeDiff <= EditMessageTime && (
         <div className={styles.message_open} onClick={handleModal}>
           <LucideIcons name="MailOpen" color="#c17306" size={15} />
         </div>
       )}
-      <EditMessageModal handleModal={handleModal} open={open} message_id={message.id} content={message.content} />
+      <EditMessageModal
+        handleModal={handleModal}
+        open={open}
+        message_id={message.id}
+        content={message.content}
+        user_id={props.user_id}
+        fetchMessages={props.fetchMessages}
+        isEdited={message.isedited}
+      />
     </div>
   );
 }

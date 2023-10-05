@@ -7,10 +7,11 @@ import GetRoomMessages from "../../../APIs/GetRoomMessages";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import SendMessage from "../../../APIs/SendMessage";
 import { message } from "antd";
-import UpdateUserOnlineStatus from "../../../APIs/UpdateUserOnlineStatus";
 import TypingLoader from "../../Atoms/Loader/TypingLoader/TypingLoader";
 import SVGIcons from "../../../Assets/SVG/SvgIcon";
 import { socket } from "../../../socket";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 type props = {
   roomDetails: {
     room_id: string;
@@ -37,6 +38,8 @@ function Room(props: props) {
     status: false,
     userImage: "",
   });
+  console.log("🚀  file: Room.tsx:41  isAnotherUserTyping:", isAnotherUserTyping);
+  const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -77,10 +80,6 @@ function Room(props: props) {
     setText("");
   };
 
-  const toogleStatus = async () => {
-    await UpdateUserOnlineStatus(UserTyping ? "typing" : "online", UserTyping ? props.roomDetails.room_id : "");
-  };
-
   useEffect(() => {
     if (props.roomDetails.room_id != "") fetchMessages();
   }, [props.roomDetails.room_id]);
@@ -91,14 +90,21 @@ function Room(props: props) {
     }, 3000);
     return () => clearTimeout(search);
   }, [text]);
+
   useEffect(() => {
-    toogleStatus();
+    if (UserTyping) {
+      socket.emit("User-Typing", user_id);
+    }else{
+      socket.emit("User-Not-Typing", user_id);
+    }
   }, [UserTyping]);
+
   useEffect(() => {
     const handleMessageReceive = ({ data }: any) => {
       setMessages((prev) => [data, ...prev]);
     };
     socket.on("Message-Receive", handleMessageReceive);
+    socket.on("Message-Edited", fetchMessages);
 
     return () => {
       socket.offAny();
@@ -111,11 +117,6 @@ function Room(props: props) {
         <RoomHeader room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
       </div>
       <div className={styles.message_box}>
-        {Messages.map((message, index) => (
-          <React.Fragment key={message.id}>
-            <RoomMessages message={message} user_image={user_image} />
-          </React.Fragment>
-        ))}
         {isAnotherUserTyping.status && (
           <div className={styles.typing_container}>
             <img src={isAnotherUserTyping.userImage} className={styles.typing_img} alt="" />
@@ -123,6 +124,9 @@ function Room(props: props) {
             <TypingLoader />
           </div>
         )}
+        {Messages.map((message, index) => (
+          <RoomMessages key={message.id} message={message} user_image={user_image} user_id={user_id} fetchMessages={fetchMessages} />
+        ))}
       </div>
       <div className={styles.bottom_box}>
         <div className={styles.input_box}>
