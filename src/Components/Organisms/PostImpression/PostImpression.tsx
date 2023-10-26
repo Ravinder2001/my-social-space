@@ -58,7 +58,7 @@ function PostImpression(props: props) {
     <div className={styles.container}>
       <div className={styles.box}>
         <div className={`${styles.icon} ${user_like == "1" && styles.liked}`} onClick={ToogleLike}>
-          <LucideIcons name="Heart" color="#494849" size={22} />
+          <LucideIcons name="Heart" color="#494849" size={20} />
         </div>
         <div className={styles.text} onClick={() => Number(count) >= 1 && handleLikeModal()}>
           {Number(count) == 0 ? "Like" : Number(count) == 1 ? `${count} Like` : `${count} Likes`}
@@ -66,14 +66,14 @@ function PostImpression(props: props) {
       </div>
       <div className={styles.box} onClick={() => handleModal && handleModal(post_id ?? "")}>
         <div className={styles.icon}>
-          <LucideIcons name="MessageCircleIcon" color="#494849" size={22} />
+          <LucideIcons name="MessageCircleIcon" color="#494849" size={20} />
         </div>
         <div className={styles.text}>Comments</div>
       </div>
       {!open ? (
         <div className={styles.box} onClick={() => handleModal && handleModal(post_id ?? "")}>
           <div className={styles.icon}>
-            <LucideIcons name="Hash" color="#494849" size={22} />
+            <LucideIcons name="Hash" color="#494849" size={20} />
           </div>
           <div className={styles.text}>See Post</div>
         </div>

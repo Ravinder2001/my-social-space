@@ -19,7 +19,9 @@ import {
   Settings,
   Check,
   CheckCheck,
-  MailOpen
+  MailOpen,
+  BellDot,
+  UserPlus,
 } from "lucide-react";
 
 type IconsType = {
@@ -68,7 +70,11 @@ function LucideIcons(props: IconsType) {
     case "CheckCheck":
       return <CheckCheck color={props.color} size={props.size} />;
     case "MailOpen":
-      return <MailOpen  color={props.color} size={props.size} />;
+      return <MailOpen color={props.color} size={props.size} />;
+    case "BellDot":
+      return <BellDot color={props.color} size={props.size} />;
+    case "UserPlus":
+      return <UserPlus color={props.color} size={props.size} />;
     default:
       return <></>;
   }
