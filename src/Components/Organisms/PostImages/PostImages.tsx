@@ -7,13 +7,9 @@ type PostProps = {
 
 function PostImages({ images }: PostProps) {
   return (
-    <Carousel showThumbs={false} className={styles.container}>
+    <Carousel showThumbs={false} className={styles.container} swipeable={false}>
       {images.map((image) => (
-        <img
-          src={image.image_url}
-          alt="carosuel_image"
-          className={styles.image}
-        />
+        <img src={image.image_url} alt="carosuel_image" className={styles.image} />
       ))}
     </Carousel>
   );
