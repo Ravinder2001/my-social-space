@@ -20,6 +20,7 @@ type messageType = {
   };
   user_image: string;
   user_id: string;
+  showImage: boolean;
   fetchMessages: () => void;
 };
 
@@ -36,7 +37,7 @@ function RoomMessages(props: messageType) {
   return (
     <div className={message.isOwnMessage ? styles.msg_container : styles.user_msg_container}>
       <div className={styles.img_box}>
-        <img src={message.isOwnMessage ? main_image : user_image} alt="" className={styles.img} />
+        {props.showImage && <img src={message.isOwnMessage ? main_image : user_image} alt="" className={styles.img} />}
       </div>
 
       {message.status ? (

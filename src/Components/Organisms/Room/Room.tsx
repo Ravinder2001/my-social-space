@@ -94,7 +94,7 @@ function Room(props: props) {
   useEffect(() => {
     if (UserTyping) {
       socket.emit("User-Typing", user_id);
-    }else{
+    } else {
       socket.emit("User-Not-Typing", user_id);
     }
   }, [UserTyping]);
@@ -124,9 +124,13 @@ function Room(props: props) {
             <TypingLoader />
           </div>
         )}
-        {Messages.map((message, index) => (
-          <RoomMessages key={message.id} message={message} user_image={user_image} user_id={user_id} fetchMessages={fetchMessages} />
-        ))}
+        {Messages.map((message, index) => {
+          let showImage = true;
+          if (index > 0 && Messages[index].isOwnMessage == Messages[index - 1].isOwnMessage) {
+            showImage = false;
+          }
+          return <RoomMessages key={message.id} showImage={showImage} message={message} user_image={user_image} user_id={user_id} fetchMessages={fetchMessages} />;
+        })}
       </div>
       <div className={styles.bottom_box}>
         <div className={styles.input_box}>

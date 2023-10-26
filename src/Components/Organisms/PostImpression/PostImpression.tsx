@@ -6,6 +6,7 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 import RemovePostLike from "../../../APIs/RemovePostLike";
 import AddPostLike from "../../../APIs/AddPostLike";
 import LikeModal from "../LikeModal/LikeModal";
+import { socket } from "../../../socket";
 
 type props = {
   handleModal?: (e: string) => void;
@@ -34,52 +35,43 @@ function PostImpression(props: props) {
         const res = await RemovePostLike(post_id);
         if (res?.status == Request_Succesfull) {
           // FetchLikes();
+          socket.emit("Like-Toogle", post_id);
         }
       } else {
         const res = await AddPostLike(post_id);
         if (res?.status == Request_Succesfull) {
           // FetchLikes();
+          socket.emit("Like-Toogle", post_id);
         }
       }
     } else {
       alert("Admin has disabled like");
     }
   };
-
+  useEffect(() => {
+    socket.on("User-Not-Typing", () => {});
+    return () => {
+      socket.offAny();
+    };
+  }, []);
   return (
     <div className={styles.container}>
       <div className={styles.box}>
-        <div
-          className={`${styles.icon} ${user_like=="1" && styles.liked}`}
-          onClick={ToogleLike}
-        >
+        <div className={`${styles.icon} ${user_like == "1" && styles.liked}`} onClick={ToogleLike}>
           <LucideIcons name="Heart" color="#494849" size={22} />
         </div>
-        <div
-          className={styles.text}
-          onClick={() => Number(count) >= 1 && handleLikeModal()}
-        >
-          {Number(count) == 0
-            ? "Like"
-            : Number(count) == 1
-            ? `${count} Like`
-            : `${count} Likes`}
+        <div className={styles.text} onClick={() => Number(count) >= 1 && handleLikeModal()}>
+          {Number(count) == 0 ? "Like" : Number(count) == 1 ? `${count} Like` : `${count} Likes`}
         </div>
       </div>
-      <div
-        className={styles.box}
-        onClick={() => handleModal && handleModal(post_id ?? "")}
-      >
+      <div className={styles.box} onClick={() => handleModal && handleModal(post_id ?? "")}>
         <div className={styles.icon}>
           <LucideIcons name="MessageCircleIcon" color="#494849" size={22} />
         </div>
         <div className={styles.text}>Comments</div>
       </div>
       {!open ? (
-        <div
-          className={styles.box}
-          onClick={() => handleModal && handleModal(post_id ?? "")}
-        >
+        <div className={styles.box} onClick={() => handleModal && handleModal(post_id ?? "")}>
           <div className={styles.icon}>
             <LucideIcons name="Hash" color="#494849" size={22} />
           </div>
@@ -87,13 +79,7 @@ function PostImpression(props: props) {
         </div>
       ) : null}
 
-      {post_id ? (
-        <LikeModal
-          open={modalOpen}
-          handleModal={handleLikeModal}
-          post_id={post_id}
-        />
-      ) : null}
+      {post_id ? <LikeModal open={modalOpen} handleModal={handleLikeModal} post_id={post_id} /> : null}
     </div>
   );
 }
