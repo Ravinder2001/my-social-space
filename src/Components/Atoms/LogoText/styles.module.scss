@@ -21,3 +21,41 @@
   margin-top: -3px;
   text-transform: uppercase;
 }
+
+/* Default styles for all devices */
+
+/* Mobile devices */
+@media only screen and (max-width:890px) {
+  /* Styles for devices with a maximum width of 600 pixels */
+}
+
+/* Tablets and small desktops */
+@media only screen and (min-width: 1107px) and (max-width: 1331px) {
+  .left_box {
+    font-size: 28px;
+  }
+
+  .top {
+    font-size: 10px;
+  }
+  .bottom {
+    font-size: 10px;
+  }
+}
+@media only screen and (min-width: 1020px) and (max-width: 1106px) {
+  .left_box {
+    font-size: 25px;
+  }
+
+  .top {
+    font-size: 8px;
+  }
+  .bottom {
+    font-size: 8px;
+  }
+}
+
+/* Medium to large desktops */
+@media only screen and (min-width: 1025px) {
+  /* Styles for devices with a minimum width of 1025 pixels */
+}
