@@ -24,3 +24,25 @@
   margin: 10px;
   cursor: pointer;
 }
+@media only screen and (max-width: 600px) {
+  .left_box  {
+    width: 100%;
+    // border: 1px solid red;
+    // font-size: 16px;
+  }
+  .right_box div {
+  display: none;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  .left_box div {
+    font-size: 16px;
+  }
+  .right_box div {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+}

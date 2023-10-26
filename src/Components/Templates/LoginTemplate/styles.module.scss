@@ -51,3 +51,21 @@
 .main_box {
   position: absolute;
 }
+@media only screen and (max-width: 600px) {
+  .left_container{
+    display: none;
+  }
+  .right_container{
+    width: 100%;
+  }
+  .content_box {
+
+    top: 80px;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
+}

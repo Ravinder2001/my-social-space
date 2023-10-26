@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Formik, Form } from "formik";
 import { message } from "antd";
@@ -17,6 +17,7 @@ import { auth, googleAuth } from "../../../firebase.config";
 import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
 import { LoginUser } from "../../../store/Slices/UserSlice";
 import { JWT_Decode } from "../../../Utils/Function";
+import logo from "../../../Assets/Images/Logo_2.png";
 
 import styles from "./styles.module.scss";
 
@@ -37,10 +38,7 @@ function LoginBox() {
 
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid Email").required("Email is required"),
-    password: Yup.string()
-      .min(8, "Too Short")
-      .max(20, "Too long")
-      .required("Password is required"),
+    password: Yup.string().min(8, "Too Short").max(20, "Too long").required("Password is required"),
   });
 
   const handleTokenLogin = () => {
@@ -52,7 +50,7 @@ function LoginBox() {
           if (res?.status === Request_Succesfull) {
             const decode = JWT_Decode(res.token);
             dispatch(LoginUser(decode));
-      
+
             localStorage.setItem(LocalStorageKey, res.token);
             setTokenLoader(false);
             navigate("/");
@@ -65,10 +63,7 @@ function LoginBox() {
       }
     });
   };
-  const handleEmailLogin = async (values: {
-    email: string;
-    password: string;
-  }) => {
+  const handleEmailLogin = async (values: { email: string; password: string }) => {
     setEmailLoader(true);
     let data = {
       email: values.email,
@@ -79,7 +74,7 @@ function LoginBox() {
     if (res?.status === Request_Succesfull) {
       const decode = JWT_Decode(res.token);
       dispatch(LoginUser(decode));
-    
+
       localStorage.setItem(LocalStorageKey, res.token);
       setEmailLoader(false);
       navigate("/");
@@ -106,6 +101,9 @@ function LoginBox() {
           <Loader2 />
         </div>
       )}
+      <div className={styles.logo}>
+        <img src={logo} alt="" width="100%" height="100%" />
+      </div>
       <div className={styles.heading}>Accout Login</div>
       <Formik
         initialValues={{ email: "", password: "" }}
@@ -117,17 +115,9 @@ function LoginBox() {
         {({ errors, touched, handleChange }) => (
           <Form>
             <div className={styles.input_box}>
-              <InputLabel1
-                name="email"
-                label="Email"
-                type="text"
-                onChange={handleChange}
-                max_length={255}
-              />
+              <InputLabel1 name="email" label="Email" type="text" onChange={handleChange} max_length={255} />
             </div>
-            {errors.email && touched.email ? (
-              <div className={styles.error}>{errors.email}</div>
-            ) : null}
+            {errors.email && touched.email ? <div className={styles.error}>{errors.email}</div> : null}
             <div className={styles.input_box}>
               <InputLabel1
                 name="password"
@@ -139,14 +129,9 @@ function LoginBox() {
                 max_length={20}
               />
             </div>
-            {errors.password && touched.password ? (
-              <div className={styles.error}>{errors.password}</div>
-            ) : null}
+            {errors.password && touched.password ? <div className={styles.error}>{errors.password}</div> : null}
             <div className={styles.forgot_box}>
-              <RememberMe
-                setRememberMeState={setRememberMeState}
-                RememberMeState={RememberMeState}
-              />
+              <RememberMe setRememberMeState={setRememberMeState} RememberMeState={RememberMeState} />
               <div className={styles.forgot_text}>Forgot Password?</div>
             </div>
             <button type="submit" className={styles.button}>
