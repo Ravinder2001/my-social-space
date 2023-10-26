@@ -4,7 +4,7 @@
 }
 .top_box {
   width: 100%;
-  height: 20%;
+  height: auto;
 }
 .bottom_box {
   width: 100%;
@@ -35,10 +35,30 @@
   cursor: pointer;
 }
 .img_selected {
-border: 3px solid black;
+  border: 3px solid black;
 }
-.big_img{
+.big_img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+.mobile_view_images {
+  display: none;
+}
+@media only screen and (max-width: 600px) {
+  .mobile_view_images {
+    display: block;
+  }
+  .left_box {
+    display: none;
+  }
+  .right_box {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
 }

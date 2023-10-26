@@ -2,8 +2,9 @@
 .container {
   width: 100%;
   //   border: 1px solid red;
-  height: 83%;
-  overflow: auto;
+  height: auto;
+  // overflow: auto;
+  margin-bottom: 20px;
 }
 .box {
   //   border: 1px solid red;
@@ -66,4 +67,11 @@
 .gif{
   width: 70px;
   height: 70px;
+}
+@media only screen and (max-width: 600px) {
+  .img_box{
+    width: 30px;
+    height: 30px;
+    
+  }
 }

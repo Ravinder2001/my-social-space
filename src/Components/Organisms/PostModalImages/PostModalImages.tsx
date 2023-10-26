@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./style.module.scss";
 import PostHeader from "../PostHeader/PostHeader";
 import PostCaption from "../PostCaption/PostCaption";
+import PostImages from "../PostImages/PostImages";
 
 type props = {
   data: {
@@ -30,24 +31,21 @@ function PostModalImages(props: props) {
         <PostCaption Caption={data.caption} />
       </div>
       <div className={styles.bottom_box}>
+        <div className={styles.mobile_view_images}>
+          <PostImages images={data.images} />
+        </div>
         <div className={styles.left_box}>
           {data.images.map((image, index) => (
             <img
               src={image.image_url}
               alt=""
-              className={`${styles.img} ${
-                selectedImage == index && styles.img_selected
-              }`}
+              className={`${styles.img} ${selectedImage == index && styles.img_selected}`}
               onClick={() => setSelectedImage(index)}
             />
           ))}
         </div>
         <div className={styles.right_box}>
-          <img
-            src={data.images[selectedImage].image_url}
-            alt=""
-            className={styles.big_img}
-          />
+          <img src={data.images[selectedImage].image_url} alt="" className={styles.big_img} />
         </div>
       </div>
     </div>
