@@ -9,6 +9,7 @@ import FriendRequestList from "../FriendRequestList/FriendRequestList";
 import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
+import { socket } from "../../../socket";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -36,6 +37,12 @@ function HomeBody() {
   };
   useEffect(() => {
     FetchPost();
+    socket.on("Like-Toogle", () => {
+      FetchPost();
+    });
+    return () => {
+      socket.offAny();
+    };
   }, []);
   return (
     <div className={styles.container}>

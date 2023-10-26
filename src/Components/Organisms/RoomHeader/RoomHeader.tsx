@@ -97,7 +97,7 @@ function RoomHeader(props: props) {
                 {userStatus.status == "typing" ? (
                   <div className={styles.status}>...typing</div>
                 ) : (
-                  <div className={styles.status}>last seen at {formatTime(userStatus.timestamp)}</div>
+                  <div className={styles.status}>last seen {formatTime(userStatus.timestamp)}</div>
                 )}
               </>
             )}
