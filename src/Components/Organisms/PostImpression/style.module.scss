@@ -30,3 +30,19 @@
   color: #494849;
   font-family: $font_family;
 }
+@media only screen and (max-width: 600px) {
+  .text {
+    font-size: 13px;
+  }
+  /* Styles for devices with a maximum width of 600 pixels */
+}
+
+/* Tablets and small desktops */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+  /* Styles for devices with a width between 601 and 1024 pixels */
+}
+
+/* Medium to large desktops */
+@media only screen and (min-width: 1025px) {
+  /* Styles for devices with a minimum width of 1025 pixels */
+}

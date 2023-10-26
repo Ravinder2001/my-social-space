@@ -9,7 +9,7 @@
 
 .user_con {
   margin-left: 10px;
-  width: 72vw;
+  width: 75vw;
   height: 100%;
   // border: 1px solid black;
 }
@@ -28,20 +28,17 @@
 
 /* Mobile devices */
 @media only screen and (max-width: 600px) {
-  /* Styles for devices with a maximum width of 600 pixels */
+  .container{
+    height: 135px;
+  }
   .user_con {
     width: 58vw;
-
   }
 }
 
-/* Tablets and small desktops */
 @media only screen and (min-width: 601px) and (max-width: 1024px) {
-  /* Styles for devices with a width between 601 and 1024 pixels */
-
   .user_con {
-    width: 68vw;
-
+    width: 75vw;
   }
 }
 
