@@ -116,113 +116,87 @@ function ProfileHeader(props: headerProps) {
   return (
     <div className={styles.container}>
       <div className={styles.user_image}>
-        <img
-          src={data.profile_picture}
-          alt="user_image"
-          className={styles.img}
-        />
+        <img src={data.profile_picture} alt="user_image" className={styles.img} />
       </div>
       <div className={styles.main_container}>
         <div className={styles.heading}>{data.name}</div>
         <div className={styles.menu}>
-          <div className={styles.box}>
-            <div className={styles.icon}>
-              <img src={posts} alt="profile_icon" />
+          <div className={styles.left_box}>
+            <div className={styles.box}>
+              <div className={styles.icon}>
+                <img src={posts} alt="profile_icon" width="100%" height="100%" />
+              </div>
+              <div className={styles.text}>{data.post_count}</div>
             </div>
-            <div className={styles.text}>{data.post_count}</div>
-          </div>
-          <div className={styles.box}>
-            <div className={styles.icon}>
-              <img src={friends} alt="profile_icon" />
+            <div className={styles.box}>
+              <div className={styles.icon}>
+                <img src={friends} alt="profile_icon" width="100%" height="100%" />
+              </div>
+              <div className={styles.text}>{data.friend_count}</div>
             </div>
-            <div className={styles.text}>{data.friend_count}</div>
-          </div>
-          <div className={styles.box}>
-            <div className={styles.icon}>
-              <img src={work} alt="profile_icon" />
-            </div>
-            <div className={styles.text}>
-              {data?.job == "" ? "Not Available" : data?.job}
-            </div>
-          </div>
-          <div className={styles.box}>
-            <div className={styles.icon}>
-              <img src={locationIcon} alt="profile_icon" />
-            </div>
-            <div className={styles.text}>
-              {data?.location == "" ? "Not Available" : data?.location}
+            <div className={styles.box}>
+              <div className={styles.icon}>
+                <img src={work} alt="profile_icon" width="100%" height="100%" />
+              </div>
+              <div className={styles.text}>{data?.job == "" ? "Not Available" : data?.job}</div>
             </div>
           </div>
-          <div className={styles.box}>
-            <div className={styles.icon}>
-              <img src={time} alt="profile_icon" />
+          <div className={styles.right_box}>
+            <div className={styles.box}>
+              <div className={styles.icon}>
+                <img src={locationIcon} alt="profile_icon" width="100%" height="100%" />
+              </div>
+              <div className={styles.text}>{data?.location == "" ? "Not Available" : data?.location}</div>
             </div>
-            <div className={styles.text}>
-              {moment(data.created_at).format("MMMM")}{" "}
-              {moment(data.created_at).format("YYYY")}
+            <div className={styles.box}>
+              <div className={styles.icon}>
+                <img src={time} alt="profile_icon" width="100%" height="100%" />
+              </div>
+              <div className={styles.text}>
+                {moment(data.created_at).format("MMMM")} {moment(data.created_at).format("YYYY")}
+              </div>
             </div>
+            {!location.search.includes("user") ? (
+              <div className={`${styles.box} ${styles.edit}`} onClick={handleModal}>
+                <div className={styles.icon}>
+                  <img src={edit} alt="profile_icon" width="100%" height="100%" />
+                </div>
+                <div className={styles.text}>Edit</div>
+              </div>
+            ) : data.isfriends == "1" ? (
+              <div className={`${styles.box} ${styles.edit}`} onClick={() => setUnFriendModalOpen(!unFriendModalOpen)}>
+                <div className={styles.icon}>
+                  <img src={friends} alt="profile_icon" width="100%" height="100%" />
+                </div>
+                <div className={styles.text}>Friends</div>
+              </div>
+            ) : data.friend_request_sent == "1" ? (
+              <div className={`${styles.box} ${styles.edit}`} onClick={DeleteRequest}>
+                <div className={styles.icon}>
+                  <img src={cancel} alt="profile_icon" width="100%" height="100%" />
+                </div>
+                <div className={styles.text}>Cancel Request</div>
+              </div>
+            ) : data.friend_request_received == "1" ? (
+              <div className={`${styles.box} ${styles.edit}`} onClick={AcceptRequest}>
+                <div className={styles.icon}>
+                  <img src={approve} alt="profile_icon" width="100%" height="100%" />
+                </div>
+                <div className={styles.text}>Confirm</div>
+              </div>
+            ) : (
+              <div className={`${styles.box} ${styles.edit}`} onClick={SendRequest}>
+                <div className={styles.icon}>
+                  <img src={add_friend} alt="profile_icon" width="100%" height="100%" />
+                </div>
+                <div className={styles.text}>Add Friend</div>
+              </div>
+            )}
           </div>
-          {!location.search.includes("user") ? (
-            <div
-              className={`${styles.box} ${styles.edit}`}
-              onClick={handleModal}
-            >
-              <div className={styles.icon}>
-                <img src={edit} alt="profile_icon" />
-              </div>
-              <div className={styles.text}>Edit</div>
-            </div>
-          ) : data.isfriends == "1" ? (
-            <div
-              className={`${styles.box} ${styles.edit}`}
-              onClick={() => setUnFriendModalOpen(!unFriendModalOpen)}
-            >
-              <div className={styles.icon}>
-                <img src={friends} alt="profile_icon" />
-              </div>
-              <div className={styles.text}>Friends</div>
-            </div>
-          ) : data.friend_request_sent == "1" ? (
-            <div
-              className={`${styles.box} ${styles.edit}`}
-              onClick={DeleteRequest}
-            >
-              <div className={styles.icon}>
-                <img src={cancel} alt="profile_icon" />
-              </div>
-              <div className={styles.text}>Cancel Request</div>
-            </div>
-          ) : data.friend_request_received == "1" ? (
-            <div
-              className={`${styles.box} ${styles.edit}`}
-              onClick={AcceptRequest}
-            >
-              <div className={styles.icon}>
-                <img src={approve} alt="profile_icon" />
-              </div>
-              <div className={styles.text}>Confirm</div>
-            </div>
-          ) : (
-            <div
-              className={`${styles.box} ${styles.edit}`}
-              onClick={SendRequest}
-            >
-              <div className={styles.icon}>
-                <img src={add_friend} alt="profile_icon" />
-              </div>
-              <div className={styles.text}>Add Friend</div>
-            </div>
-          )}
         </div>
       </div>
-      {open && (
-        <AddProfilePictureModal
-          open={open}
-          setOpen={setOpen}
-          closeable={true}
-        />
-      )}
-      {unFriendModalOpen && data.isfriends=="1" && (
+      {open && <AddProfilePictureModal open={open} setOpen={setOpen} closeable={true} />}
+      {unFriendModalOpen && data.isfriends == "1" && (
         <UnFriendModal
           open={unFriendModalOpen}
           setOpen={setUnFriendModalOpen}
