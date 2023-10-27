@@ -79,6 +79,22 @@
 
 /* Tablets and small desktops */
 @media only screen and (min-width: 601px) and (max-width: 1024px) {
+  .container{
+    height: 70px;
+  }
+  .img_box {
+    width: 30px;
+    height: 30px;
+  }
+  .name {
+    display: none;
+  }
+  .id{
+    display: none;
+  }
+  .bottom_box{
+    display: none;
+  }
 }
 
 /* Medium to large desktops */

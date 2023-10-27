@@ -34,3 +34,17 @@
   border: none;
   font-family: $font_family;
 }
+@media only screen and (max-width: 600px) {
+  .label{
+    font-size: 16px;
+  }
+  .heading{
+    font-size: 18px;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
+}

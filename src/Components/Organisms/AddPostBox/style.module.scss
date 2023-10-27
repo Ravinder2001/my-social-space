@@ -46,7 +46,7 @@
 }
 .add_button {
   background-color: black;
-  width: 50%;
+  width: auto;
   text-align: center;
   padding: 10px;
   color: white;
@@ -96,3 +96,29 @@
   // margin-top: 5px;
 }
 
+@media only screen and (max-width: 600px) {
+  .container{
+    // flex-direction: column;
+    display: block;
+    overflow-y: auto;
+   
+  }
+  .left_box {
+    width: 95%;
+    margin: auto;
+  }
+  .right_box{
+    width: 95%;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .add_button{
+    // width: 90%;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
+}

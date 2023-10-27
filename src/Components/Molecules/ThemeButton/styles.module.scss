@@ -75,9 +75,11 @@
   }
   .box {
     padding: 10px 9px;
+    justify-content: center;
   }
   .selected_box {
     padding: 10px 9px;
+    justify-content: center;
   }
   /* Styles for devices with a maximum width of 600 pixels */
 }
@@ -90,6 +92,14 @@
   }
   .btn {
     display: none;
+  }
+  .box {
+    padding: 10px 9px;
+    justify-content: center;
+  }
+  .selected_box {
+    padding: 10px 9px;
+    justify-content: center;
   }
 }
 
