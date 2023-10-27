@@ -104,7 +104,7 @@ function RoomHeader(props: props) {
           </>
         ) : null}
       </div>
-      <div className={styles.right_box}>Menu</div>
+      <div className={styles.right_box}>M</div>
     </div>
   );
 }

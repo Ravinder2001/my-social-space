@@ -32,4 +32,26 @@
 }
 .status{
   font-size: 14px;
+  color: rgb(51, 50, 50);
+  font-style: italic;
+}
+
+@media only screen and (max-width: 600px) {
+  .img_box{
+    margin-left: 2px;
+  }
+  .name{
+    font-size: 16px;
+    margin-left: 5px;
+  }
+  .status{
+    font-size: 12px;
+    margin-left: 5px;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
 }
