@@ -30,7 +30,7 @@
   color: #494849;
   font-family: $font_family;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .text {
     font-size: 13px;
   }
@@ -38,7 +38,7 @@
 }
 
 /* Tablets and small desktops */
-@media only screen and (min-width: 601px) and (max-width: 1024px) {
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
   /* Styles for devices with a width between 601 and 1024 pixels */
 }
 

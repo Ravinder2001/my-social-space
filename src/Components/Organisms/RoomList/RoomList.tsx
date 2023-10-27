@@ -16,30 +16,19 @@ type DataType = {
 type props = {
   room_id: string;
   setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string; user_id: string }>>;
+  loading: boolean;
+  data: DataType[];
 };
 function RoomList(props: props) {
-  const [data, setData] = useState<DataType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const fetchRoomsList = async () => {
-    setLoading(true);
-    const res = await GetMessageRoomList();
-    if (res?.status == Request_Succesfull) {
-      setData(res?.data);
-    }
-    setLoading(false);
-  };
-  useEffect(() => {
-    fetchRoomsList();
-  }, []);
   return (
     <div className={styles.container}>
-      {loading ? (
+      {props.loading ? (
         <div className={styles.loader}>
           <InfinityLoader />
         </div>
       ) : (
         <>
-          {data.map((item) => (
+          {props.data.map((item) => (
             <RoomListBox key={item.room_id} room_id={props.room_id} setRoomDetails={props.setRoomDetails} data={item} />
           ))}
         </>

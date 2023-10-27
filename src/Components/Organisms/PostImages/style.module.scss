@@ -12,13 +12,13 @@
   margin: 2px;
   border-radius: 10px;
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .image{
     max-height: 250px;
   }
 }
 
-@media only screen and (min-width: 601px) and (max-width: 1024px) {
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
 }
 
 @media only screen and (min-width: 1025px) {

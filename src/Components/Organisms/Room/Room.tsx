@@ -38,7 +38,6 @@ function Room(props: props) {
     status: false,
     userImage: "",
   });
-  console.log("🚀  file: Room.tsx:41  isAnotherUserTyping:", isAnotherUserTyping);
   const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

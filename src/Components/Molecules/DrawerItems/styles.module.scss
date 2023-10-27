@@ -61,7 +61,7 @@
     display: none;
   }
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .box {
     padding: 10px 9px;
     justify-content: center;
@@ -73,7 +73,7 @@
 }
 
 /* Tablets and small desktops */
-@media only screen and (min-width: 601px) and (max-width: 1024px) {
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
   .box {
     padding: 10px 9px;
     justify-content: center;

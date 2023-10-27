@@ -12,8 +12,25 @@
   height: 95%;
   // border: 1px solid red;
 }
-.img{
+.img {
   width: 65%;
   height: 100%;
   object-fit: contain;
+}
+@media only screen and (max-width: 768px) {
+  .room_list {
+    width: 100%;
+  }
+  .room {
+    width: 100%;
+  }
+  .img {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+}
+
+@media only screen and (min-width: 1025px) {
 }
