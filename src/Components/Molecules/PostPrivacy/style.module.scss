@@ -1,22 +1,22 @@
 @import "../.././../Variable.scss";
-.container{
+.container {
   width: 100%;
   height: 100%;
   // border: 1px solid red;
 }
-.heading{
+.heading {
   font-size: 20px;
   font-weight: bold;
 }
-.option_box{
+.option_box {
   height: 82%;
   margin-top: 20px;
   // background-color: white;
 }
-.label{
+.label {
   font-size: 18px;
 }
-.row{
+.row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,11 +35,14 @@
   font-family: $font_family;
 }
 @media only screen and (max-width: 600px) {
-  .label{
+  .label {
     font-size: 16px;
   }
-  .heading{
+  .heading {
     font-size: 18px;
+  }
+  .option_box {
+    height: auto;
   }
 }
 
