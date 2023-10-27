@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useMemo, useEffect } from "react";
 import SVGIcons from "../../../Assets/SVG/SvgIcon";
 import styles from "./style.module.scss";
 import StoryBox from "../../Organisms/StoryBox/StoryBox";
 import HomeBody from "../../Organisms/HomeBody/HomeBody";
+
 function HomeTemplate() {
   return (
     <div className={styles.container}>

@@ -4,18 +4,12 @@ import PrivateRoutes from "./PrivateRoutes";
 import PublicRoutes from "./PublicRoutes";
 import Login from "../Pages/Login";
 import Profile from "../Pages/Profile";
-import {
-  Add_Route,
-  Discover_Route,
-  Home_Route,
-  Login_Route,
-  Messages_Route,
-  Profile_Route,
-} from "../Utils/Constant";
+import { Add_Route, Discover_Route, Home_Route, Login_Route, Messages_Route, Profile_Route, Settings_Route } from "../Utils/Constant";
 import Add from "../Pages/Add";
 import ErrorFallback from "../Error/ErrorFallback";
 import Home from "../Pages/Home";
 import Message from "../Pages/Message";
+import { Settings } from "lucide-react";
 
 function ProjectRoutes() {
   return (
@@ -57,6 +51,14 @@ function ProjectRoutes() {
         element={
           <PrivateRoutes>
             <Profile />
+          </PrivateRoutes>
+        }
+      />
+      <Route
+        path={Settings_Route}
+        element={
+          <PrivateRoutes>
+            <Settings />
           </PrivateRoutes>
         }
       />

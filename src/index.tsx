@@ -14,6 +14,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "react-multi-carousel/lib/styles.css";
 import "./index.scss";
 
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

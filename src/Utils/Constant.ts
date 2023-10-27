@@ -10,6 +10,7 @@ export const Discover_Route = "/discover";
 export const Add_Route = "/add";
 export const Messages_Route = "/messages";
 export const Profile_Route = "/profile";
+export const Settings_Route = "/settings";
 
 //
 export const Max_Image_Upload_Size = 15;

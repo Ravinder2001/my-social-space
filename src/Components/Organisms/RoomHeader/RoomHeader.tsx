@@ -5,9 +5,11 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 import GetUserOnlineStatus from "../../../APIs/GetUserOnlineStatus";
 import { formatTime } from "../../../Utils/Function";
 import { socket } from "../../../socket";
+import RoomMenuBox from "../RoomMenuBox/RoomMenuBox";
 type props = {
   room_id: string;
   setIsAnotherUserTyping: Dispatch<SetStateAction<{ status: boolean; userImage: string }>>;
+  setReceiverName: Dispatch<SetStateAction<{ name: string; image: string }>>;
 };
 type detailsType =
   | {
@@ -37,6 +39,10 @@ function RoomHeader(props: props) {
     const res = await GetRoomDetails(props.room_id);
     if (res?.status == Request_Succesfull) {
       setDetails(res?.data);
+      props.setReceiverName({
+        name: res?.data.user_name,
+        image: res?.data.image_url,
+      });
     }
   };
   const fetchUserOnlineStatus = async (id: string) => {
@@ -104,7 +110,9 @@ function RoomHeader(props: props) {
           </>
         ) : null}
       </div>
-      <div className={styles.right_box}>M</div>
+      <div className={styles.right_box}>
+        <RoomMenuBox room_id={props.room_id} />
+      </div>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import LogoBox from "../../Molecules/LogoBox/LogoBox";
 import ThemeButton from "../../Molecules/ThemeButton/ThemeButton";
 import ProfileBox from "../../Molecules/ProfileBox/ProfileBox";
 
-import { LocalStorageKey, Request_Succesfull } from "../../../Utils/Constant";
+import { Add_Route, Home_Route, LocalStorageKey, Messages_Route, Profile_Route, Request_Succesfull, Settings_Route } from "../../../Utils/Constant";
 import { AddPicture, Logout } from "../../../store/Slices/UserSlice";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
 
@@ -69,7 +69,7 @@ function Drawer(props: props) {
             IconSize={20}
             index={0}
             handleClick={() => {
-              navigate("/");
+              navigate(Home_Route);
               props.setIsSearchUser(false);
             }}
           />
@@ -80,7 +80,7 @@ function Drawer(props: props) {
             IconSize={20}
             index={2}
             handleClick={() => {
-              navigate("/add");
+              navigate(Add_Route);
               props.setIsSearchUser(false);
             }}
           />
@@ -101,7 +101,7 @@ function Drawer(props: props) {
             IconSize={20}
             index={4}
             handleClick={() => {
-              navigate("/messages");
+              navigate(Messages_Route);
               props.setIsSearchUser(false);
             }}
           />
@@ -112,7 +112,7 @@ function Drawer(props: props) {
             IconSize={20}
             index={5}
             handleClick={() => {
-              navigate("/profile");
+              navigate(Profile_Route);
               props.setIsSearchUser(false);
             }}
           />
@@ -124,7 +124,7 @@ function Drawer(props: props) {
             IconSize={20}
             index={6}
             handleClick={() => {
-              navigate("/profile");
+              navigate(Settings_Route);
               props.setIsSearchUser(false);
             }}
           />
@@ -144,11 +144,7 @@ function Drawer(props: props) {
             index={-1}
           />
         </div>
-        <AddProfilePictureModal
-          open={open}
-          setOpen={setOpen}
-          closeable={closeable}
-        />
+        <AddProfilePictureModal open={open} setOpen={setOpen} closeable={closeable} />
       </div>
       {props.isSearchUser && <SubDrawer handleNavigate={handleNavigate} />}
     </div>

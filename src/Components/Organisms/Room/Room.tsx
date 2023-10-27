@@ -38,6 +38,10 @@ function Room(props: props) {
     status: false,
     userImage: "",
   });
+  const [ReceiverName, setReceiverName] = useState<{ name: string; image: string }>({
+    image: "",
+    name: "",
+  });
   const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -72,9 +76,15 @@ function Room(props: props) {
     };
     const res = await SendMessage(object);
     if (res?.status == Request_Succesfull) {
-      socket.emit("Message-Sent", res.data, user_id);
-      console.log("sss", res?.data);
       setMessages((prev) => [res.data, ...prev]);
+      socket.emit("Message-Sent", res.data, user_id);
+      let noti_data = {
+        name: ReceiverName.name,
+        image: ReceiverName.image,
+        content: res.data.content,
+        content_type: res.data.content_type,
+      };
+      socket.emit("Message-Sent-Notifications", noti_data, user_id);
     }
     setText("");
   };
@@ -113,7 +123,7 @@ function Room(props: props) {
   return (
     <div className={styles.container}>
       <div className={styles.header_box}>
-        <RoomHeader room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
+        <RoomHeader setReceiverName={setReceiverName} room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
       </div>
       <div className={styles.message_box}>
         {isAnotherUserTyping.status && (
@@ -128,7 +138,16 @@ function Room(props: props) {
           if (index > 0 && Messages[index].isOwnMessage == Messages[index - 1].isOwnMessage) {
             showImage = false;
           }
-          return <RoomMessages key={message.id} showImage={showImage} message={message} user_image={user_image} user_id={user_id} fetchMessages={fetchMessages} />;
+          return (
+            <RoomMessages
+              key={message.id}
+              showImage={showImage}
+              message={message}
+              user_image={user_image}
+              user_id={user_id}
+              fetchMessages={fetchMessages}
+            />
+          );
         })}
       </div>
       <div className={styles.bottom_box}>
