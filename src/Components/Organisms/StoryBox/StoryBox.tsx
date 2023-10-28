@@ -9,7 +9,7 @@ function StoryBox() {
       breakpoint: { max: 3000, min: 1024 },
       items: 9,
       paritialVisibilityGutter: 60,
-      slidesToSlide: 3 
+      slidesToSlide: 3,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -27,11 +27,9 @@ function StoryBox() {
       <SelfStoryBox />
       <div className={styles.user_con}>
         <Carousel responsive={responsive} className={styles.carousel}>
-          {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 3, 4, 2, 3, 3, 3].map(
-            (item) => (
-              <UserStoryBox />
-            )
-          )}
+          {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 3, 4, 2, 3, 3, 3].map((item) => (
+            <UserStoryBox key={item} />
+          ))}
         </Carousel>
       </div>
     </div>

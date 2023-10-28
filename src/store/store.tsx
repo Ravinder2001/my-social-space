@@ -6,6 +6,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import LoginPageReducer from "./Slices/LoginPageSlice";
 import UserReducer from "./Slices/UserSlice";
 import DrawerReducer from "./Slices/DrawerSlice";
+import TempReducer from "./Slices/TempSlice";
 
 const persistConfig = {
   key: "root",
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   LoginPageReducer,
   UserReducer,
   DrawerReducer,
+  TempReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

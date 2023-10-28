@@ -20,7 +20,7 @@ function PrivateRoutes({ children }: PrivateRoutesType) {
   const [api, contextHolder] = notification.useNotification();
   const Context = React.createContext({ name: "Default" });
   const location = useLocation();
-  
+
   const [isSearchUser, setIsSearchUser] = useState<boolean>(false);
   
   const openNotification = (props: { name: string; image: string; content: string; content_type: string }) => {

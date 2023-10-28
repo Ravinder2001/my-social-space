@@ -69,6 +69,7 @@ function Room(props: props) {
   };
 
   const sendMessage = async () => {
+    socket.emit("User-Not-Typing", user_id);
     let object = {
       room_id: room_id,
       content: text,

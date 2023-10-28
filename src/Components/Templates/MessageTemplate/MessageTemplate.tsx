@@ -5,6 +5,8 @@ import Room from "../../Organisms/Room/Room";
 import message from "../../../Assets/Images/message.png";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import GetMessageRoomList from "../../../APIs/GetMessageRoomList";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 type DataType = {
   room_id: string;
   user_id: string;
@@ -23,7 +25,7 @@ function MessageTemplate() {
     user_image: "",
     user_id: "",
   });
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const isMobile = useSelector((state: RootState) => state.TempReducer.isMobile);
   const [data, setData] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -39,19 +41,6 @@ function MessageTemplate() {
     fetchRoomsList();
   }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
   return (
     <div className={styles.container}>
       {isMobile && !data.length && roomDetails.room_id === "" && (
@@ -83,11 +72,6 @@ function MessageTemplate() {
           <Room roomDetails={roomDetails} />
         </div>
       )}
-
-
-
-
-
     </div>
   );
 }
