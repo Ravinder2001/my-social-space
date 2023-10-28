@@ -9,7 +9,8 @@ import Add from "../Pages/Add";
 import ErrorFallback from "../Error/ErrorFallback";
 import Home from "../Pages/Home";
 import Message from "../Pages/Message";
-import { Settings } from "lucide-react";
+import Settings from "../Pages/Settings";
+import UserVerifed from "../Components/Organisms/UserVerified/UserVerifed";
 
 function ProjectRoutes() {
   return (
@@ -70,6 +71,7 @@ function ProjectRoutes() {
           </PublicRoutes>
         }
       />
+      <Route path="/verify" element={<UserVerifed />} />
       <Route path="*" element={<ErrorFallback />} />
     </Routes>
   );

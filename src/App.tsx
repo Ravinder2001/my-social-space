@@ -19,7 +19,7 @@ import styles from "./App.module.scss";
 import { socket } from "./socket";
 import { toogleIsMobile } from "./store/Slices/TempSlice";
 import { RootState } from "./store/store";
-
+import { useNavigate } from "react-router-dom";
 
 interface decode {
   exp: number;
@@ -29,6 +29,7 @@ interface decode {
 }
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isMobile = useSelector((state: RootState) => state.TempReducer.isMobile);
 
   const [ServerHealth, setServerHealth] = useState<string>("Loading");
@@ -40,7 +41,9 @@ function App() {
 
   const CheckServerHealth = async () => {
     const ServerRes = await GetServerHealth();
-    // setServerHealth(ServerRes);
+    setTimeout(() => {
+      setServerHealth(ServerRes);
+    }, 2000);
   };
   useEffect(() => {
     CheckServerHealth();
@@ -57,6 +60,7 @@ function App() {
           if (exp > currentTime) {
             socket.emit("Add-User", decode.id);
             dispatch(LoginUser(decode));
+            navigate("/verify");
           } else {
             logout();
           }
@@ -88,7 +92,7 @@ function App() {
     <>
       {ServerHealth === "Loading" ? (
         <div style={{ width: "100%", height: "100vh" }}>
-          <video width="100%" height="100%" autoPlay muted>
+          <video width="100%" height="100%" autoPlay muted style={{ border: "none !important" }}>
             <source src={isMobile ? Welcom_Video_Mob : Welcom_Video_Des} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
