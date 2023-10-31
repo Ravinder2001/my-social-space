@@ -6,9 +6,11 @@ import { CgMenuRight } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import DeletePost from "../../../APIs/DeletePost";
 import { Request_Succesfull } from "../../../Utils/Constant";
+import DeleteChatHistory from "../../../APIs/DeleteChatHistory";
 
 type props = {
   room_id: string;
+  setMessages: any;
 };
 const RoomMenuBox = (props: props) => {
   const [open, setOpen] = useState(false);
@@ -27,7 +29,9 @@ const RoomMenuBox = (props: props) => {
     {
       key: "3",
       label: "Clear Chat",
-      onClick: () => {},
+      onClick: () => {
+        DeleteChat();
+      },
     },
 
     {
@@ -37,6 +41,14 @@ const RoomMenuBox = (props: props) => {
       onClick: () => {},
     },
   ];
+
+  const DeleteChat = async () => {
+    const res = await DeleteChatHistory(props.room_id);
+    if (res?.status == Request_Succesfull) {
+      props.setMessages([]);
+      message.success("Chat deleted successfully");
+    }
+  };
 
   return (
     <>

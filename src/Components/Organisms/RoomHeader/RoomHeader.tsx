@@ -6,10 +6,12 @@ import GetUserOnlineStatus from "../../../APIs/GetUserOnlineStatus";
 import { formatTime } from "../../../Utils/Function";
 import { socket } from "../../../socket";
 import RoomMenuBox from "../RoomMenuBox/RoomMenuBox";
+
 type props = {
   room_id: string;
   setIsAnotherUserTyping: Dispatch<SetStateAction<{ status: boolean; userImage: string }>>;
   setReceiverName: Dispatch<SetStateAction<{ name: string; image: string }>>;
+  setMessages: any;
 };
 type detailsType =
   | {
@@ -111,7 +113,7 @@ function RoomHeader(props: props) {
         ) : null}
       </div>
       <div className={styles.right_box}>
-        <RoomMenuBox room_id={props.room_id} />
+        <RoomMenuBox room_id={props.room_id} setMessages={props.setMessages} />
       </div>
     </div>
   );

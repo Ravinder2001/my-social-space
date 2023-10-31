@@ -17,9 +17,9 @@ import Welcom_Video_Des from "./Assets/Videos/welcome_video_des.mp4";
 
 import styles from "./App.module.scss";
 import { socket } from "./socket";
-import { toogleIsMobile } from "./store/Slices/TempSlice";
 import { RootState } from "./store/store";
 import { useNavigate } from "react-router-dom";
+import { toogleIsMobile } from "./store/Slices/TempSlice";
 
 interface decode {
   exp: number;
@@ -92,7 +92,7 @@ function App() {
     <>
       {ServerHealth === "Loading" ? (
         <div style={{ width: "100%", height: "100vh" }}>
-          <video width="100%" height="100%" autoPlay muted style={{ border: "none !important" }}>
+          <video width="100%" height="100%" autoPlay muted>
             <source src={isMobile ? Welcom_Video_Mob : Welcom_Video_Des} type="video/mp4" />
             Your browser does not support the video tag.
           </video>

@@ -31,6 +31,8 @@ type messageType = {
 };
 function Room(props: props) {
   const { room_id, user_image, user_id } = props.roomDetails;
+  const UserId = useSelector((state: RootState) => state.UserReducer.id);
+
   const [text, setText] = useState<string>("");
   const [Messages, setMessages] = useState<messageType[]>([]);
   const [UserTyping, setUserTyping] = useState<boolean>(false);
@@ -42,7 +44,7 @@ function Room(props: props) {
     image: "",
     name: "",
   });
-  const UserId = useSelector((state: RootState) => state.UserReducer.id);
+  
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -124,7 +126,7 @@ function Room(props: props) {
   return (
     <div className={styles.container}>
       <div className={styles.header_box}>
-        <RoomHeader setReceiverName={setReceiverName} room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} />
+        <RoomHeader setReceiverName={setReceiverName} room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} setMessages={setMessages} />
       </div>
       <div className={styles.message_box}>
         {isAnotherUserTyping.status && (
