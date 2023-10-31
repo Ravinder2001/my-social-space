@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import UpdateMessageSeen from "../../../APIs/UpdateMessageSeen";
 import GetSeenMessage from "../../../APIs/GetSeenMessage";
+import { formatTime } from "../../../Utils/Function";
+import moment from "moment";
 type props = {
   roomDetails: {
     room_id: string;
@@ -54,10 +56,11 @@ function Room(props: props) {
     name: "",
   });
   const [roomType, setRoomType] = useState<number>(0);
-  const [lastSeenMsg, setLastSeenMsg] = useState<{ message_id: number; timestamp: string }>({
+  const [lastSeenMsg, setLastSeenMsg] = useState<{ message_id: number; seen_at: string }>({
     message_id: 0,
-    timestamp: "",
+    seen_at: "",
   });
+  console.log("🚀  file: Room.tsx:63  lastSeenMsg:", lastSeenMsg)
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -104,9 +107,9 @@ function Room(props: props) {
     }
     setText("");
   };
-  const ToogleMessageSeen = async () => {
+  const ToogleMessageSeen = async (msg_id: number) => {
     const lastMsg = Messages.find((msg) => !msg.isOwnMessage);
-    if (lastMsg) {
+    if (lastMsg && lastMsg?.id != msg_id) {
       let object = {
         room_id: props.roomDetails.room_id,
         id: lastMsg.id,
@@ -122,15 +125,25 @@ function Room(props: props) {
       user_id: props.roomDetails.user_id,
     };
     let res = await GetSeenMessage(object);
-    console.log("🚀  file: Room.tsx:126  res:", res);
     if (res?.status == Request_Succesfull && res?.data) {
       setLastSeenMsg(res?.data);
+    }
+  };
+  const FetchOwnSeenMsg = async () => {
+    let object = {
+      room_id: props.roomDetails.room_id,
+      user_id: UserId,
+    };
+    let res = await GetSeenMessage(object);
+    if (res?.status == Request_Succesfull && res?.data) {
+      ToogleMessageSeen(res?.data?.message_id);
+      // setLastSeenMsg(res?.data);
     }
   };
 
   useEffect(() => {
     if (Messages.length && roomType == 1) {
-      ToogleMessageSeen();
+      FetchOwnSeenMsg();
       FetchSeenMsg();
     }
   }, [Messages, roomType]);
@@ -193,7 +206,7 @@ function Room(props: props) {
           }
           return (
             <>
-              {message.id == lastSeenMsg.message_id && <div className={styles.seen_text}>Seen</div>}
+              {message.id == lastSeenMsg?.message_id && <div className={styles.seen_text}>Seen {formatTime(lastSeenMsg?.seen_at)}</div>}
               <RoomMessages
                 key={message.id}
                 showImage={showImage}
