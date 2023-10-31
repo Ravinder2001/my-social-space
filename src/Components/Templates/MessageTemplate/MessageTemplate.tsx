@@ -57,7 +57,7 @@ function MessageTemplate() {
 
       {isMobile && roomDetails.room_id !== "" && (
         <div className={styles.room}>
-          <Room roomDetails={roomDetails} />
+          <Room roomDetails={roomDetails} setRoomDetails={setRoomDetails} />
         </div>
       )}
 
@@ -69,7 +69,7 @@ function MessageTemplate() {
 
       {!isMobile && roomDetails.room_id !== "" && (
         <div className={styles.room}>
-          <Room roomDetails={roomDetails} />
+          <Room roomDetails={roomDetails} setRoomDetails={setRoomDetails}/>
         </div>
       )}
     </div>

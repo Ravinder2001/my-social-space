@@ -12,6 +12,13 @@ type props = {
   setIsAnotherUserTyping: Dispatch<SetStateAction<{ status: boolean; userImage: string }>>;
   setReceiverName: Dispatch<SetStateAction<{ name: string; image: string }>>;
   setMessages: any;
+  setRoomDetails: Dispatch<
+    SetStateAction<{
+      room_id: string;
+      user_image: string;
+      user_id: string;
+    }>
+  >;
 };
 type detailsType =
   | {
@@ -34,9 +41,9 @@ function RoomHeader(props: props) {
     second_user_id: "",
   });
   const [userStatus, setUserStatus] = useState<{
-    status: string;
+    status: boolean | string;
     timestamp: "";
-  }>({ status: "", timestamp: "" });
+  }>({ status: false, timestamp: "" });
   const fetchRoomDetails = async () => {
     const res = await GetRoomDetails(props.room_id);
     if (res?.status == Request_Succesfull) {
@@ -98,7 +105,7 @@ function RoomHeader(props: props) {
         <div className={styles.name}>{details.user_name}</div>
         {details.type === 1 ? (
           <>
-            {userStatus.status == "online" ? (
+            {userStatus.status == true ? (
               <div className={styles.status}>Online</div>
             ) : (
               <>
@@ -113,7 +120,7 @@ function RoomHeader(props: props) {
         ) : null}
       </div>
       <div className={styles.right_box}>
-        <RoomMenuBox room_id={props.room_id} setMessages={props.setMessages} />
+        <RoomMenuBox room_id={props.room_id} setMessages={props.setMessages} setRoomDetails={props.setRoomDetails} />
       </div>
     </div>
   );

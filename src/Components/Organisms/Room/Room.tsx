@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, KeyboardEvent, FocusEventHandler } from "react";
+import React, { useState, useEffect, ChangeEvent, KeyboardEvent, FocusEventHandler, Dispatch, SetStateAction } from "react";
 import styles from "./style.module.scss";
 import MessageInputBox from "../../Molecules/MessageInputBox/MessageInputBox";
 import RoomHeader from "../RoomHeader/RoomHeader";
@@ -18,6 +18,13 @@ type props = {
     user_image: string;
     user_id: string;
   };
+  setRoomDetails: Dispatch<
+    SetStateAction<{
+      room_id: string;
+      user_image: string;
+      user_id: string;
+    }>
+  >;
 };
 
 type messageType = {
@@ -30,7 +37,7 @@ type messageType = {
   isedited: boolean;
 };
 function Room(props: props) {
-  const { room_id, user_image, user_id } = props.roomDetails;
+  const { room_id, user_image, user_id, } = props.roomDetails;
   const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const [text, setText] = useState<string>("");
@@ -44,7 +51,6 @@ function Room(props: props) {
     image: "",
     name: "",
   });
-  
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -126,7 +132,13 @@ function Room(props: props) {
   return (
     <div className={styles.container}>
       <div className={styles.header_box}>
-        <RoomHeader setReceiverName={setReceiverName} room_id={props.roomDetails.room_id} setIsAnotherUserTyping={setIsAnotherUserTyping} setMessages={setMessages} />
+        <RoomHeader
+          setReceiverName={setReceiverName}
+          room_id={props.roomDetails.room_id}
+          setIsAnotherUserTyping={setIsAnotherUserTyping}
+          setMessages={setMessages}
+          setRoomDetails={props.setRoomDetails}
+        />
       </div>
       <div className={styles.message_box}>
         {isAnotherUserTyping.status && (

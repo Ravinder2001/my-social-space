@@ -53,6 +53,16 @@ function Drawer(props: props) {
     FetchProfilePicture();
   }, [flag]);
 
+  useEffect(()=>{
+    const StatusOffline=async()=>{
+      await UpdateUserOnlineStatus(false)
+    }
+    window.addEventListener("beforeunload",StatusOffline)
+    return () => {
+      window.removeEventListener('beforeunload', StatusOffline);
+    };
+  },[])
+
   return (
     <div className={styles.container}>
       <div className={styles.drawer}>
