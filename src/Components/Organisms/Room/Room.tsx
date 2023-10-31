@@ -12,6 +12,8 @@ import SVGIcons from "../../../Assets/SVG/SvgIcon";
 import { socket } from "../../../socket";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+import UpdateMessageSeen from "../../../APIs/UpdateMessageSeen";
+import GetSeenMessage from "../../../APIs/GetSeenMessage";
 type props = {
   roomDetails: {
     room_id: string;
@@ -37,7 +39,7 @@ type messageType = {
   isedited: boolean;
 };
 function Room(props: props) {
-  const { room_id, user_image, user_id, } = props.roomDetails;
+  const { room_id, user_image, user_id } = props.roomDetails;
   const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const [text, setText] = useState<string>("");
@@ -50,6 +52,11 @@ function Room(props: props) {
   const [ReceiverName, setReceiverName] = useState<{ name: string; image: string }>({
     image: "",
     name: "",
+  });
+  const [roomType, setRoomType] = useState<number>(0);
+  const [lastSeenMsg, setLastSeenMsg] = useState<{ message_id: number; timestamp: string }>({
+    message_id: 0,
+    timestamp: "",
   });
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -97,6 +104,36 @@ function Room(props: props) {
     }
     setText("");
   };
+  const ToogleMessageSeen = async () => {
+    const lastMsg = Messages.find((msg) => !msg.isOwnMessage);
+    if (lastMsg) {
+      let object = {
+        room_id: props.roomDetails.room_id,
+        id: lastMsg.id,
+      };
+      const res = await UpdateMessageSeen(object);
+      // if (res?.status == Request_Succesfull) {
+      // }
+    }
+  };
+  const FetchSeenMsg = async () => {
+    let object = {
+      room_id: props.roomDetails.room_id,
+      user_id: props.roomDetails.user_id,
+    };
+    let res = await GetSeenMessage(object);
+    console.log("🚀  file: Room.tsx:126  res:", res);
+    if (res?.status == Request_Succesfull && res?.data) {
+      setLastSeenMsg(res?.data);
+    }
+  };
+
+  useEffect(() => {
+    if (Messages.length && roomType == 1) {
+      ToogleMessageSeen();
+      FetchSeenMsg();
+    }
+  }, [Messages, roomType]);
 
   useEffect(() => {
     if (props.roomDetails.room_id != "") fetchMessages();
@@ -138,6 +175,7 @@ function Room(props: props) {
           setIsAnotherUserTyping={setIsAnotherUserTyping}
           setMessages={setMessages}
           setRoomDetails={props.setRoomDetails}
+          setRoomType={setRoomType}
         />
       </div>
       <div className={styles.message_box}>
@@ -154,14 +192,17 @@ function Room(props: props) {
             showImage = false;
           }
           return (
-            <RoomMessages
-              key={message.id}
-              showImage={showImage}
-              message={message}
-              user_image={user_image}
-              user_id={user_id}
-              fetchMessages={fetchMessages}
-            />
+            <>
+              {message.id == lastSeenMsg.message_id && <div className={styles.seen_text}>Seen</div>}
+              <RoomMessages
+                key={message.id}
+                showImage={showImage}
+                message={message}
+                user_image={user_image}
+                user_id={user_id}
+                fetchMessages={fetchMessages}
+              />
+            </>
           );
         })}
       </div>

@@ -34,6 +34,8 @@ function RoomMessages(props: messageType) {
   const currentTime = moment();
   const timeDiff = currentTime.diff(message.created_at, "hours");
 
+ 
+
   return (
     <div className={message.isOwnMessage ? styles.msg_container : styles.user_msg_container}>
       <div className={styles.img_box}>
@@ -48,6 +50,7 @@ function RoomMessages(props: messageType) {
 
             <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
           </div>
+          
         </div>
       ) : (
         <div className={message.isOwnMessage ? styles.msg_box : styles.user_msg_box}>
@@ -55,11 +58,13 @@ function RoomMessages(props: messageType) {
           <div className={styles.time}>{moment(message.created_at).format("hh:mm A")}</div>
         </div>
       )}
+      
       {message.isOwnMessage && message.status && timeDiff <= EditMessageTime && (
         <div className={styles.message_open} onClick={handleModal}>
           <LucideIcons name="MailOpen" color="#c17306" size={15} />
         </div>
       )}
+     
       <EditMessageModal
         handleModal={handleModal}
         open={open}

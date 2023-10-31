@@ -19,6 +19,7 @@ type props = {
       user_id: string;
     }>
   >;
+  setRoomType: Dispatch<SetStateAction<number>>;
 };
 type detailsType =
   | {
@@ -52,6 +53,7 @@ function RoomHeader(props: props) {
         name: res?.data.user_name,
         image: res?.data.image_url,
       });
+      props.setRoomType(res?.data?.type);
     }
   };
   const fetchUserOnlineStatus = async (id: string) => {

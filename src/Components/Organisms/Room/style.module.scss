@@ -104,6 +104,15 @@
   object-fit: contain;
 }
 
+.seen_text{
+  // border: 1px solid red;
+  text-align: right;
+  font-size: 12px;
+  margin-right: 10px;
+  font-style: italic;
+  color: rgb(21, 134, 96);
+}
+
 @media only screen and (max-width: 600px) {
   .header_box {
     width: 98%;
