@@ -4,10 +4,12 @@ import { RootState } from "../../../store/store";
 import ReactIcons from "../../../Utils/Icons/ReactIcons";
 import axios from "axios";
 import UserImage from "../../Atoms/UserImage/UserImage";
-function SelfStoryBox() {
-
+type props = {
+  handleModal: () => void;
+};
+function SelfStoryBox(props: props) {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={props.handleModal}>
       <div className={styles.img_box}>
         <UserImage />
       </div>

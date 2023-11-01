@@ -45,7 +45,7 @@ function StoryAddCarousel(props: props) {
             start: 0,
             end: timeFrame,
             link: "",
-            x:0
+            x: 0,
           },
         ]);
       });
@@ -61,14 +61,14 @@ function StoryAddCarousel(props: props) {
     <div className={styles.container}>
       {!isMusic.status ? (
         <div className={styles.sub_con}>
-          <Header handlePage={handlePage} />
+          <Header handlePage={handlePage} isPrev={page != 0} isNext={values.length > 1 && page != values.length - 1} />
           {values.map((item) =>
             page == item.index ? (
               <div className={styles.main_container}>
                 <div className={styles.left_box}>
                   <img src={URL.createObjectURL(item.img)} alt="" className={styles.img} />
                   {item.link.length && (
-                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} x={item.x}/>
+                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} x={item.x} />
                   )}
                 </div>
                 <div className={styles.right_box}>

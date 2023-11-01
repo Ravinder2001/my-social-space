@@ -3,7 +3,11 @@ import styles from "./style.module.scss";
 import SelfStoryBox from "../../Molecules/SelfStoryBox/SelfStoryBox";
 import UserStoryBox from "../../Molecules/UserStoryBox/UserStoryBox";
 import Carousel from "react-multi-carousel";
-function StoryBox() {
+
+type props={
+  handleModal:()=>void
+}
+function StoryBox(props:props) {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -24,7 +28,7 @@ function StoryBox() {
   };
   return (
     <div className={styles.container}>
-      <SelfStoryBox />
+      <SelfStoryBox handleModal={props.handleModal}/>
       <div className={styles.user_con}>
         <Carousel responsive={responsive} className={styles.carousel}>
           {[1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 3, 4, 2, 3, 3, 3].map((item) => (

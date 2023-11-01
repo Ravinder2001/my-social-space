@@ -4,32 +4,38 @@ import LucideIcons from "../../../../Utils/Icons/LucideIcons";
 
 type props = {
   handlePage: (e: string) => void;
+  isNext: boolean;
+  isPrev: boolean;
 };
 function Header(props: props) {
   return (
     <div className={styles.header}>
-      <div className={styles.nav_btn}      onClick={() => {
-            props.handlePage("Prev");
-          }}>
+      {props.isPrev ? (
         <div
-          className={styles.icon}
-     
+          className={styles.nav_btn}
+          onClick={() => {
+            props.handlePage("Prev");
+          }}
         >
-          <LucideIcons name="ArrowLeft" color="white" size={17} />
+          <div className={styles.icon}>
+            <LucideIcons name="ArrowLeft" color="white" size={17} />
+          </div>
+          <div>Prev</div>
         </div>
-        <div>Prev</div>
-      </div>
-      <div
-        className={styles.nav_btn}
-        onClick={() => {
-          props.handlePage("Next");
-        }}
-      >
-        <div className={styles.icon}>Next</div>
-        <div>
-          <LucideIcons name="ArrowRight" color="white" size={17} />
+      ) : null}
+      {props.isNext ? (
+        <div
+          className={styles.nav_btn}
+          onClick={() => {
+            props.handlePage("Next");
+          }}
+        >
+          <div className={styles.icon}>Next</div>
+          <div>
+            <LucideIcons name="ArrowRight" color="white" size={17} />
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import HomeBody from "../../Organisms/HomeBody/HomeBody";
 import AddStoryModal from "../../Organisms/AddStoryModal/AddStoryModal";
 
 function HomeTemplate() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleModal = () => {
     setOpen(!open);
   };
@@ -17,7 +17,7 @@ function HomeTemplate() {
       </div>
       <div className={styles.main_box}>
         <div className={styles.story_box}>
-          <StoryBox />
+          <StoryBox handleModal={handleModal}/>
         </div>
         <div>
           <HomeBody />
