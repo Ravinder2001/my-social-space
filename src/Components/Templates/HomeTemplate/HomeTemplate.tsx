@@ -1,10 +1,15 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SVGIcons from "../../../Assets/SVG/SvgIcon";
 import styles from "./style.module.scss";
 import StoryBox from "../../Organisms/StoryBox/StoryBox";
 import HomeBody from "../../Organisms/HomeBody/HomeBody";
+import AddStoryModal from "../../Organisms/AddStoryModal/AddStoryModal";
 
 function HomeTemplate() {
+  const [open, setOpen] = useState(true);
+  const handleModal = () => {
+    setOpen(!open);
+  };
   return (
     <div className={styles.container}>
       <div className={styles.background}>
@@ -18,6 +23,7 @@ function HomeTemplate() {
           <HomeBody />
         </div>
       </div>
+      <AddStoryModal handleModal={handleModal} open={open} />
     </div>
   );
 }

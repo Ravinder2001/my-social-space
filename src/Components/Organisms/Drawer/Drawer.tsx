@@ -53,15 +53,27 @@ function Drawer(props: props) {
     FetchProfilePicture();
   }, [flag]);
 
-  useEffect(()=>{
-    const StatusOffline=async()=>{
-      await UpdateUserOnlineStatus(false)
-    }
-    window.addEventListener("beforeunload",StatusOffline)
-    return () => {
-      window.removeEventListener('beforeunload', StatusOffline);
+  useEffect(() => {
+    const StatusOffline = async () => {
+      await UpdateUserOnlineStatus(false);
     };
-  },[])
+    window.addEventListener("beforeunload", StatusOffline);
+    return () => {
+      window.removeEventListener("beforeunload", StatusOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", () => {
+      dispatch(setIndex(0));
+    });
+
+    return () => {
+      document.removeEventListener("visibilitychange", () => {
+        dispatch(setIndex(0));
+      });
+    };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -88,7 +100,7 @@ function Drawer(props: props) {
             IconColor="#36f202"
             IconName="PlusSquare"
             IconSize={20}
-            index={2}
+            index={1}
             handleClick={() => {
               navigate(Add_Route);
               props.setIsSearchUser(false);
@@ -99,7 +111,7 @@ function Drawer(props: props) {
             IconColor="#024af2"
             IconName="Search"
             IconSize={20}
-            index={3}
+            index={2}
             handleClick={() => {
               props.setIsSearchUser(true);
             }}
@@ -109,7 +121,7 @@ function Drawer(props: props) {
             IconColor="#f2ca02"
             IconName="Message"
             IconSize={20}
-            index={4}
+            index={3}
             handleClick={() => {
               navigate(Messages_Route);
               props.setIsSearchUser(false);
@@ -120,7 +132,7 @@ function Drawer(props: props) {
             IconColor="#33d7b6"
             IconName="User"
             IconSize={20}
-            index={5}
+            index={4}
             handleClick={() => {
               navigate(Profile_Route);
               props.setIsSearchUser(false);
@@ -132,7 +144,7 @@ function Drawer(props: props) {
             IconColor="#ad15e5"
             IconName="Settings"
             IconSize={20}
-            index={6}
+            index={5}
             handleClick={() => {
               navigate(Settings_Route);
               props.setIsSearchUser(false);

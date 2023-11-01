@@ -29,6 +29,7 @@
     "react": "^18.2.0",
     "react-avatar-edit": "^1.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
     "react-icons": "^4.10.1",
     "react-image-file-resizer": "^0.4.8",
     "react-images": "^1.2.0-beta.7",

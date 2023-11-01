@@ -1,0 +1,27 @@
+.time-range {
+  position: relative;
+  height: 20px;
+  background-color: #ddd;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.start-point,
+.end-point {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 20px;
+  background-color: #4caf50;
+  cursor: ew-resize;
+}
+
+.end-point {
+  background-color: #f44336;
+}
+.progress-bar {
+  height: 5px;
+  background-color: #4caf50; /* Green color for the progress bar */
+  position: relative;
+  top: -5px;
+}
