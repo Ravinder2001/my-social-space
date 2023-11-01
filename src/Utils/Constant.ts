@@ -20,3 +20,4 @@ export const File_Extension = "image";
 export const MessagePerPage = 20;
 export const EditMessageTime = 2; //in hours
 export const JioSavanAPI = "https://saavn.me/modules";
+export const timeFrame = 10;

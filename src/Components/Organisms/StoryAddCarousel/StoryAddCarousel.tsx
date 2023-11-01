@@ -24,7 +24,7 @@ function StoryAddCarousel(props: props) {
           <div className={styles.main_container}>
             <div className={styles.left_box}>
               <img src="https://cdn.pixabay.com/photo/2023/09/09/08/31/woman-8242672_1280.jpg" alt="" className={styles.img} />
-              <SongTrimmer link="https://aac.saavncdn.com/047/d1366530468931703ac909e82a3ee788_320.mp4"/>
+              {musicLink.length && <SongTrimmer link={musicLink} />}
             </div>
             <div className={styles.right_box}>
               <div className={styles.box} onClick={handleIsMusic}>
