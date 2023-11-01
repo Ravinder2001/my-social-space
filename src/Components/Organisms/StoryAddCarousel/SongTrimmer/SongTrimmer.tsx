@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import Draggable from "react-draggable";
 import styles from "./style.module.scss";
 import Rings from "./Rings";
@@ -6,15 +6,34 @@ import { timeFrame } from "../../../../Utils/Constant";
 
 type SongTrimmerProps = {
   link: string;
+  endTime: number;
+  startTime: number;
+  index: number;
+  x: number;
+  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string; x: number }[]>>;
 };
 
-const SongTrimmer: React.FC<SongTrimmerProps> = ({ link }) => {
-  
+const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, setValues, index, x }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(timeFrame);
+  // const [startTime, setStartTime] = useState(0);
+  // const [endTime, setEndTime] = useState(timeFrame);
   const [progress, setProgress] = useState(0);
   const [handleWidth, setHandleWidth] = useState(0); // Initial handle width for 10 seconds
+
+  const setStartTime = (time: number) => {
+    setValues((prev) => {
+      const updatedValues = [...prev];
+      updatedValues[index] = { ...updatedValues[index], start: time };
+      return updatedValues;
+    });
+  };
+  const setEndTime = (time: number) => {
+    setValues((prev) => {
+      const updatedValues = [...prev];
+      updatedValues[index] = { ...updatedValues[index], end: time };
+      return updatedValues;
+    });
+  };
 
   useEffect(() => {
     if (audioRef.current) {
@@ -42,6 +61,14 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link }) => {
   };
 
   const handleDrag = (e: any, data: any) => {
+    setValues((prev) => {
+      const updatedValues = [...prev];
+      updatedValues[index] = { ...updatedValues[index], x: data.x };
+      return updatedValues;
+    });
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
     const newStartTime = calculateTime(data.x, audioRef);
     setStartTime(newStartTime);
 
@@ -81,7 +108,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link }) => {
       <Rings />
       <div className={styles.progress_bar} style={{ width: `${progress}%` }} />
 
-      <Draggable axis="x" handle=".handle" bounds="parent" onDrag={handleDrag} onStop={handleDragStop}>
+      <Draggable axis="x" position={{ x: x, y: 0 }} handle=".handle" bounds="parent" onDrag={handleDrag} onStop={handleDragStop}>
         <div className={`handle ${styles.handle}`} style={{ width: `${handleWidth}%` }}></div>
       </Draggable>
     </div>

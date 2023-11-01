@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import styles from "./style.module.scss";
-import CustomAudioPlayer from "./CustomAudioPlayer";
 import StoryAddImages from "../StoryAddImages/StoryAddImages";
 import StoryAddCarousel from "../StoryAddCarousel/StoryAddCarousel";
 type props = {
@@ -15,7 +14,7 @@ const AddStoryModal = (props: props) => {
 
   return (
     <Modal title="Add Story" open={open} onOk={handleModal} onCancel={handleModal} footer={null} width={700}>
-      {images ? <StoryAddImages setImages={setImages} /> : <StoryAddCarousel images={images} />}
+      {!images ? <StoryAddImages setImages={setImages} /> : <StoryAddCarousel images={images} />}
     </Modal>
   );
 };

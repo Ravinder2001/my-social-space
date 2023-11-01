@@ -4,41 +4,93 @@ import Header from "./Header/Header";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
 import StoryAddMusic from "../StoryAddMusic/StoryAddMusic";
 import SongTrimmer from "./SongTrimmer/SongTrimmer";
+import { timeFrame } from "../../../Utils/Constant";
 
 type props = {
   images?: FileList;
 };
 function StoryAddCarousel(props: props) {
   const { images } = props;
-  const [isMusic, setIsMusic] = useState<boolean>(false);
-  const [musicLink, setMusicLink] = useState<string>("");
+  const [isMusic, setIsMusic] = useState<{ status: boolean; index: number }>({
+    status: false,
+    index: -1,
+  });
+  const [values, setValues] = useState<{ index: number; img: File; start: number; end: number; link: string; x: number }[]>([]);
+  const [page, setPage] = useState<number>(0);
 
-  const handleIsMusic = () => {
-    setIsMusic(!isMusic);
+  const handleIsMusic = (index: number) => {
+    setIsMusic({ status: !isMusic.status, index: index });
   };
+
+  const handlePage = (type: string) => {
+    switch (type) {
+      case "Prev":
+        return page > 0 && setPage(page - 1);
+      case "Next":
+        return page < values.length - 1 && setPage(page + 1);
+
+      default:
+        return setPage(0);
+    }
+  };
+
+  const StoreIntialValues = () => {
+    if (images) {
+      Array.from(images).map((item, index) => {
+        setValues((prev) => [
+          ...prev,
+          {
+            index,
+            img: item,
+            start: 0,
+            end: timeFrame,
+            link: "",
+            x:0
+          },
+        ]);
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (images?.length) {
+      StoreIntialValues();
+    }
+  }, [images]);
   return (
     <div className={styles.container}>
-      {!isMusic ? (
+      {!isMusic.status ? (
         <div className={styles.sub_con}>
-          <Header />
-          <div className={styles.main_container}>
-            <div className={styles.left_box}>
-              <img src="https://cdn.pixabay.com/photo/2023/09/09/08/31/woman-8242672_1280.jpg" alt="" className={styles.img} />
-              {musicLink.length && <SongTrimmer link={musicLink} />}
-            </div>
-            <div className={styles.right_box}>
-              <div className={styles.box} onClick={handleIsMusic}>
-                <div>
-                  <LucideIcons name="Music" color="#ba36f7" />
+          <Header handlePage={handlePage} />
+          {values.map((item) =>
+            page == item.index ? (
+              <div className={styles.main_container}>
+                <div className={styles.left_box}>
+                  <img src={URL.createObjectURL(item.img)} alt="" className={styles.img} />
+                  {item.link.length && (
+                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} x={item.x}/>
+                  )}
                 </div>
-                <div>Music</div>
+                <div className={styles.right_box}>
+                  <div
+                    className={styles.box}
+                    onClick={() => {
+                      handleIsMusic(item.index);
+                    }}
+                  >
+                    <div>
+                      <LucideIcons name="Music" color="#ba36f7" />
+                    </div>
+                    <div>Music</div>
+                  </div>
+                  <div className={styles.box}>Delete</div>
+                </div>
               </div>
-              <div className={styles.box}>Delete</div>
-            </div>
-          </div>
+            ) : null
+          )}
         </div>
       ) : (
-        <StoryAddMusic handleIsMusic={handleIsMusic} setMusicLink={setMusicLink} />
+        <StoryAddMusic handleIsMusic={handleIsMusic} setValues={setValues} isMusic={isMusic} />
       )}
     </div>
   );
