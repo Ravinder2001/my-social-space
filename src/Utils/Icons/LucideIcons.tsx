@@ -22,7 +22,10 @@ import {
   MailOpen,
   BellDot,
   UserPlus,
-  MessageSquare
+  MessageSquare,
+  ArrowRight,
+  ArrowLeft,
+  Music
 } from "lucide-react";
 
 type IconsType = {
@@ -78,6 +81,12 @@ function LucideIcons(props: IconsType) {
       return <UserPlus color={props.color} size={props.size} />;
     case "MessageSquare":
       return <MessageSquare color={props.color} size={props.size} />;
+    case "ArrowLeft":
+      return <ArrowLeft color={props.color} size={props.size} />;
+    case "ArrowRight":
+      return <ArrowRight color={props.color} size={props.size} />;
+    case "Music":
+      return <Music color={props.color} size={props.size} />;
     default:
       return <></>;
   }

@@ -7,8 +7,8 @@ interface CustomAudioPlayerProps {
 
 const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ audioSrc }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(5);
+  const [startTime, setStartTime] = useState(50);
+  const [endTime, setEndTime] = useState(100);
   const [isDraggingStart, setDraggingStart] = useState(false);
   const [isDraggingEnd, setDraggingEnd] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -55,7 +55,7 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ audioSrc }) => {
     if (isDraggingStart) {
       const newStartTime = calculateTime(e, audioRef);
       setStartTime(newStartTime);
-      setEndTime(newStartTime + 5);
+      setEndTime(newStartTime + 10);
     }
   };
 
@@ -72,18 +72,19 @@ const CustomAudioPlayer: React.FC<CustomAudioPlayerProps> = ({ audioSrc }) => {
   const calculateTime = (e: React.MouseEvent<HTMLDivElement>, audioRef: React.RefObject<HTMLAudioElement>) => {
     const { clientX, target } = e;
     const percent = (clientX - (target as HTMLDivElement).getBoundingClientRect().left) / (target as HTMLDivElement).clientWidth;
-    const time = percent * (audioRef.current?.duration || 0);
+    const time = percent * (audioRef.current?.duration || 10);
     return time;
   };
 
   return (
     <div>
-      <audio ref={audioRef} src={audioSrc}  onTimeUpdate={handleTimeUpdate}  autoPlay/>
+      <audio ref={audioRef} src={audioSrc}  onTimeUpdate={handleTimeUpdate} autoPlay />
       <div className="progress-bar" style={{ width: `${progress}%` }} />
       <div className="time-range" onMouseDown={handleStartDrag} onMouseMove={handleDrag} onMouseUp={handleDragEnd}>
         <div className="start-point" style={{ left: `${(startTime / (audioRef.current?.duration || 1)) * 100}%` }} />
         <div className="end-point" style={{ left: `${(endTime / (audioRef.current?.duration || 1)) * 100}%` }} />
       </div>
+      <CustomAudioPlayer audioSrc="https://aac.saavncdn.com/047/d1366530468931703ac909e82a3ee788_320.mp4" />
     </div>
   );
 };
