@@ -5,27 +5,22 @@ import { JioSavanAPI, Request_Succesfull } from "../../../Utils/Constant";
 import trendingSongs from "../../../Utils/JioSavanSongs";
 
 type props = {
-  handleIsMusic: (index: number) => void;
-  isMusic: { index: number; status: boolean };
-  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string }[]>>;
+  handleIsMusic: () => void;
+  setValues: Dispatch<SetStateAction<{ song: string; start: number; end: number; duration: number }>>;
 };
 function StoryAddMusic(props: props) {
-  const { handleIsMusic, isMusic } = props;
+  const { handleIsMusic, setValues } = props;
 
-  const [data, setData] = useState<{ thumbnail: string; song: string }[]>([]);
+  const [data, setData] = useState<{ thumbnail: string; song: string; duration: number }[]>([]);
   const [text, setText] = useState<string>("");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
   };
 
-  const handleSongClick = (link: string) => {
-    props.setValues((prev) => {
-      const updatedValues = [...prev];
-      updatedValues[isMusic.index] = { ...updatedValues[isMusic.index], link };
-      return updatedValues;
-    });
-    handleIsMusic(-1);
+  const handleSongClick = (link: string, duration: number) => {
+    setValues((prev) => ({ ...prev, song: link, duration }));
+    handleIsMusic();
   };
 
   const FetchSongs = async () => {
@@ -38,6 +33,7 @@ function StoryAddMusic(props: props) {
         return {
           song: lastDownloadUrl,
           thumbnail: lastImageLink,
+          duration: item.duration,
         };
       });
 
@@ -55,13 +51,7 @@ function StoryAddMusic(props: props) {
 
   return (
     <div className={styles.container}>
-      <div
-        onClick={() => {
-          handleIsMusic(isMusic.index);
-        }}
-      >
-        Back to Image
-      </div>
+      <div onClick={handleIsMusic}>Back to Image</div>
 
       <input type="text" value={text} onChange={handleChange} className={styles.input} placeholder="Search Any Song" />
       <div className={styles.list}>
@@ -72,7 +62,7 @@ function StoryAddMusic(props: props) {
               <div
                 className={styles.song}
                 onClick={() => {
-                  handleSongClick(song.song);
+                  handleSongClick(song.song, song.duration);
                 }}
               >
                 <img src={song.thumbnail} alt="" width={100} height={100} />

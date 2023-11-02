@@ -6,7 +6,7 @@ import HomeBody from "../../Organisms/HomeBody/HomeBody";
 import AddStoryModal from "../../Organisms/AddStoryModal/AddStoryModal";
 
 function HomeTemplate() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const handleModal = () => {
     setOpen(!open);
   };

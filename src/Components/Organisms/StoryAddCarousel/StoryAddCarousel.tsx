@@ -7,92 +7,55 @@ import SongTrimmer from "./SongTrimmer/SongTrimmer";
 import { TimeFrame } from "../../../Utils/Constant";
 
 type props = {
-  images?: FileList;
+  image?: File | undefined;
 };
 function StoryAddCarousel(props: props) {
-  const { images } = props;
-  const [isMusic, setIsMusic] = useState<{ status: boolean; index: number }>({
-    status: false,
-    index: -1,
+  const { image } = props;
+
+  const [isMusic, setIsMusic] = useState<boolean>(false);
+  const [values, setValues] = useState<{ song: string; duration: number; start: number; end: number }>({
+    song: "",
+    duration: 0,
+    start: 0,
+    end: TimeFrame,
   });
-  const [values, setValues] = useState<{ index: number; img: File; start: number; end: number; link: string }[]>([]);
-  const [page, setPage] = useState<number>(0);
 
-  const handleIsMusic = (index: number) => {
-    setIsMusic({ status: !isMusic.status, index: index });
+  const handleIsMusic = () => {
+    setIsMusic(!isMusic);
+  };
+  const handleSubmit = () => {
+    setIsMusic(!isMusic);
   };
 
-  const handlePage = (type: string) => {
-    switch (type) {
-      case "Prev":
-        return page > 0 && setPage(page - 1);
-      case "Next":
-        return page < values.length - 1 && setPage(page + 1);
-
-      default:
-        return setPage(0);
-    }
-  };
-
-  const StoreIntialValues = () => {
-    if (images) {
-      Array.from(images).map((item, index) => {
-        setValues((prev) => [
-          ...prev,
-          {
-            index,
-            img: item,
-            start: 0,
-            end: TimeFrame,
-            link: "",
-            x: 0,
-          },
-        ]);
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (images?.length) {
-      StoreIntialValues();
-    }
-  }, [images]);
-  return (
+  return !isMusic && image ? (
     <div className={styles.container}>
-      {!isMusic.status ? (
-        <div className={styles.sub_con}>
-          {/* <Header handlePage={handlePage} isPrev={page != 0} isNext={values.length > 1 && page != values.length - 1} /> */}
-          {values.map((item) =>
-            page == item.index ? (
-              <div className={styles.main_container}>
-                <div className={styles.left_box}>
-                  <img src={URL.createObjectURL(item.img)} alt="" className={styles.img} />
-                  {item.link.length && (
-                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} />
-                  )}
-                </div>
-                <div className={styles.right_box}>
-                  <div
-                    className={styles.box}
-                    onClick={() => {
-                      handleIsMusic(item.index);
-                    }}
-                  >
-                    <div>
-                      <LucideIcons name="Music" color="#ba36f7" />
-                    </div>
-                    <div>Music</div>
-                  </div>
-                  <div className={styles.box}>Delete</div>
-                </div>
-              </div>
-            ) : null
-          )}
+      <div className={styles.left_box}>
+        <img src={URL.createObjectURL(image)} alt="" className={styles.img} />
+        {values.song.length && <SongTrimmer link={values.song} setValues={setValues} duration={values.duration} />}
+      </div>
+      <div className={styles.right_box}>
+        <div className={styles.box} onClick={handleIsMusic}>
+          <div>
+            <LucideIcons name="Music" color="#ba36f7" />
+          </div>
+          <div>Music</div>
         </div>
-      ) : (
-        <StoryAddMusic handleIsMusic={handleIsMusic} setValues={setValues} isMusic={isMusic} />
-      )}
+        <div className={styles.box}>
+          <div>
+            <LucideIcons name="Trash2" color="#c50202" />
+          </div>
+          <div>Delete</div>
+        </div>
+        <div className={styles.box} onClick={handleSubmit}>
+          <div>
+            <LucideIcons name="Check" color="green" />
+          </div>
+          <div>Delete</div>
+        </div>
+      </div>
     </div>
+  ) : (
+    <StoryAddMusic handleIsMusic={handleIsMusic} setValues={setValues} />
   );
 }
 

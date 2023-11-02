@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useRef, ChangeEvent } from "react";
 import styles from "./style.module.scss";
 
 type props = {
-  setImages: Dispatch<SetStateAction<FileList | undefined>>;
+  setImage: Dispatch<SetStateAction<File|undefined>>;
 };
 function StoryAddImages(props: props) {
   const imgRef = useRef<HTMLInputElement>(null);
@@ -14,13 +14,13 @@ function StoryAddImages(props: props) {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
-      props.setImages(event.target.files);
+      props.setImage(event.target.files[0]);
     }
   };
   return (
     <div className={styles.container} onClick={handleClick}>
-      <input type="file"  ref={imgRef} style={{ display: "none" }} onChange={handleChange} />
-      <div className={styles.btn}>Select Images for Your Story</div>
+      <input type="file" ref={imgRef} style={{ display: "none" }} onChange={handleChange} />
+      <div className={styles.btn}>Select Image for Your Story</div>
     </div>
   );
 }

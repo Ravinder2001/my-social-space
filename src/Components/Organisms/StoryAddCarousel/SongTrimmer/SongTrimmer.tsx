@@ -6,41 +6,18 @@ import { TimeFrame } from "../../../../Utils/Constant";
 
 type SongTrimmerProps = {
   link: string;
-  endTime: number;
-  startTime: number;
-  index: number;
-  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string }[]>>;
+  duration: number;
+  setValues: Dispatch<SetStateAction<{ song: string; start: number; end: number; duration: number }>>;
 };
 
-const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, setValues, index }) => {
+const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, setValues, duration }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  // const [startTime, setStartTime] = useState(0);
-  // const [endTime, setEndTime] = useState(TimeFrame);
+
   const [progress, setProgress] = useState(0);
-  const [handleWidth, setHandleWidth] = useState(0); // Initial handle width for 10 seconds
+  const [handleWidth, setHandleWidth] = useState(0);
 
-  const setStartTime = (time: number) => {
-    setValues((prev) => {
-      const updatedValues = [...prev];
-      updatedValues[index] = { ...updatedValues[index], start: time };
-      return updatedValues;
-    });
-  };
-  const setEndTime = (time: number) => {
-    setValues((prev) => {
-      const updatedValues = [...prev];
-      updatedValues[index] = { ...updatedValues[index], end: time };
-      return updatedValues;
-    });
-  };
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = startTime;
-    }
-
-    setHandleWidth(4.9);
-  }, [startTime, link]);
+  const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(TimeFrame);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
@@ -75,6 +52,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
 
     // Set handle width dynamically based on 10 seconds
     const durationInSeconds = audioRef.current?.duration || TimeFrame;
+    console.log("🚀  file:eeeeee SongTrimmer.tsx:54  durationInSeconds:", durationInSeconds);
     setHandleWidth((TimeFrame / durationInSeconds) * 100);
 
     // Set inline style for handle width
@@ -87,6 +65,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
   const handleDragStop = () => {
     if (audioRef.current) {
       audioRef.current.play();
+      setValues((prev) => ({ ...prev, start: startTime, end: endTime }));
     }
   };
 
@@ -96,6 +75,17 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
     return time;
   };
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = startTime;
+    }
+  }, [startTime, link]);
+
+  useEffect(() => {
+    const durationInSeconds = duration || TimeFrame;
+
+    setHandleWidth((TimeFrame / durationInSeconds) * 100);
+  }, [duration]);
   return (
     <div className={styles.container}>
       <audio ref={audioRef} src={link} onTimeUpdate={handleTimeUpdate} autoPlay />
