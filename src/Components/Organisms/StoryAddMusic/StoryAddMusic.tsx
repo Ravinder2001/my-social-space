@@ -7,7 +7,7 @@ import trendingSongs from "../../../Utils/JioSavanSongs";
 type props = {
   handleIsMusic: (index: number) => void;
   isMusic: { index: number; status: boolean };
-  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string,x:number }[]>>;
+  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string }[]>>;
 };
 function StoryAddMusic(props: props) {
   const { handleIsMusic, isMusic } = props;

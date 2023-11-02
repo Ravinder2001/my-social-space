@@ -426,64 +426,252 @@ const Message_Background = (
   </svg>
 );
 const Verify_Background = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1440 800">
-    <g fill="none" mask='url("#SvgjsMask1036")'>
-      <path fill='url("#SvgjsLinearGradient1037")' d="M0 0H1440V800H0z"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="6" d="M843 609l-1 287" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="10" d="M1125 269l-1-263" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="8" d="M211 422l-1 456" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M187 215l-1-346" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M217 355l-1 233" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="6" d="M1184 383l-1 412" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M238 498l-1-514" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M504 334l-1 598" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="10" d="M839 164l-1 360" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M63 460l-1 373M290 314l-1 358" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M1208 648l-1 509" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="10" d="M22 755l-1-281M83 710l-1 513" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M148 729l-1 418M64 345l-1 238" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="6" d="M1353 695l-1-350" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="8" d="M640 225l-1-334" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="8" d="M860 706l-1 288" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M675 161l-1-218" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="8" d="M522 121l-1 227" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="10" d="M371 741l-1-378" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M143 128l-1 528" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="8" d="M703 726l-1 592" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M1165 388l-1 454" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="10" d="M257 579l-1 230" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M530 697l-1 233M216 405l-1-258" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="8" d="M1171 235l-1-432" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M871 330l-1 415" className="Down"></path>
-      <path
-        stroke='url("#SvgjsLinearGradient1039")'
-        strokeLinecap="round"
-        strokeWidth="6"
-        d="M1098 53l-1-526M112 41l-1-219M858 257l-1-350"
-        className="Down"
-      ></path>
-      <path stroke='url("#SvgjsLinearGradient1038")' strokeLinecap="round" strokeWidth="8" d="M586 144l-1-501" className="Up"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="6" d="M1377 334l-1-563" className="Down"></path>
-      <path stroke='url("#SvgjsLinearGradient1039")' strokeLinecap="round" strokeWidth="10" d="M781 294l-1 447" className="Down"></path>
-    </g>
-    <defs>
-      <mask id="SvgjsMask1036">
-        <path fill="#fff" d="M0 0H1440V800H0z"></path>
-      </mask>
-      <linearGradient id="SvgjsLinearGradient1037" x1="11.11%" x2="88.89%" y1="-20%" y2="120%" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor="#0e2a47"></stop>
-        <stop offset="1" stopColor="rgba(8, 12, 46, 1)"></stop>
-      </linearGradient>
-      <linearGradient id="SvgjsLinearGradient1038" x1="0%" x2="0%" y1="100%" y2="0%">
-        <stop offset="0" stopColor="rgba(28, 83, 142, 0)"></stop>
-        <stop offset="1" stopColor="#1c538e"></stop>
-      </linearGradient>
-      <linearGradient id="SvgjsLinearGradient1039" x1="0%" x2="0%" y1="0%" y2="100%">
-        <stop offset="0" stopColor="rgba(28, 83, 142, 0)"></stop>
-        <stop offset="1" stopColor="#1c538e"></stop>
-      </linearGradient>
-    </defs>
-  </svg>
+  <svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="100%"
+  height="100%"
+  preserveAspectRatio="none"
+  viewBox="0 0 1440 800"
+>
+  <g fill="none" mask='url("#SvgjsMask1009")'>
+    <path fill="rgba(234, 234, 234, 1)" d="M0 0H1440V800H0z"></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M833 466l-1 536"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M633 313l-1-212"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M1395 742l-1 244"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M615 763l-1 274"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M768 576l-1-433"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M429 545l-1 319"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M93 565l-1-249"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M233 178l-1-501M645 708l-1 386"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M137 5l-1-350"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M953 253l-1 404"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M1040 747l-1 328"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M1109 779l-1-243M1028 386l-1-460M862 11l-1 488"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M799 261l-1 364"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M61 793l-1-423"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M330 17l-1-418"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M688 742l-1 416"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M227 796l-1 316"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M954 216l-1-387"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M155 202l-1-492"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M414 140l-1-503M465 632l-1 596M396 225l-1 411M1155 289l-1 260"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M865 243l-1-324"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M756 751l-1 445"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M263 681l-1 484"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="6"
+      d="M425 353l-1-394"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M1223 565l-1 497"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M1235 347l-1 269"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M1155 135l-1-379"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1011")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M376 380l-1-302"
+      className="Up"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="10"
+      d="M957 226l-1-431"
+      className="Down"
+    ></path>
+    <path
+      stroke='url("#SvgjsLinearGradient1010")'
+      strokeLinecap="round"
+      strokeWidth="8"
+      d="M897 620l-1 477"
+      className="Down"
+    ></path>
+  </g>
+  <defs>
+    <mask id="SvgjsMask1009">
+      <path fill="#fff" d="M0 0H1440V800H0z"></path>
+    </mask>
+    <linearGradient
+      id="SvgjsLinearGradient1010"
+      x1="0%"
+      x2="0%"
+      y1="0%"
+      y2="100%"
+    >
+      <stop offset="0" stopColor="rgba(30, 192, 171, 0)"></stop>
+      <stop offset="1" stopColor="rgba(30, 192, 171, 1)"></stop>
+    </linearGradient>
+    <linearGradient
+      id="SvgjsLinearGradient1011"
+      x1="0%"
+      x2="0%"
+      y1="100%"
+      y2="0%"
+    >
+      <stop offset="0" stopColor="rgba(30, 192, 171, 0)"></stop>
+      <stop offset="1" stopColor="rgba(30, 192, 171, 1)"></stop>
+    </linearGradient>
+  </defs>
+</svg>
 );
 
 type SVGProps = {

@@ -2,21 +2,20 @@ import React, { useState, useRef, useEffect, Dispatch, SetStateAction } from "re
 import Draggable from "react-draggable";
 import styles from "./style.module.scss";
 import Rings from "./Rings";
-import { timeFrame } from "../../../../Utils/Constant";
+import { TimeFrame } from "../../../../Utils/Constant";
 
 type SongTrimmerProps = {
   link: string;
   endTime: number;
   startTime: number;
   index: number;
-  x: number;
-  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string; x: number }[]>>;
+  setValues: Dispatch<SetStateAction<{ index: number; img: File; start: number; end: number; link: string }[]>>;
 };
 
-const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, setValues, index, x }) => {
+const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, setValues, index }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   // const [startTime, setStartTime] = useState(0);
-  // const [endTime, setEndTime] = useState(timeFrame);
+  // const [endTime, setEndTime] = useState(TimeFrame);
   const [progress, setProgress] = useState(0);
   const [handleWidth, setHandleWidth] = useState(0); // Initial handle width for 10 seconds
 
@@ -61,11 +60,6 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
   };
 
   const handleDrag = (e: any, data: any) => {
-    setValues((prev) => {
-      const updatedValues = [...prev];
-      updatedValues[index] = { ...updatedValues[index], x: data.x };
-      return updatedValues;
-    });
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -76,12 +70,12 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
     const deltaX = data.x - data.lastX;
 
     // Calculate new end time based on the change in position
-    const newEndTime = endTime + (deltaX / (audioRef.current?.parentElement?.clientWidth || 1)) * (audioRef.current?.duration || timeFrame);
+    const newEndTime = endTime + (deltaX / (audioRef.current?.parentElement?.clientWidth || 1)) * (audioRef.current?.duration || TimeFrame);
     setEndTime(newEndTime);
 
     // Set handle width dynamically based on 10 seconds
-    const durationInSeconds = audioRef.current?.duration || timeFrame;
-    setHandleWidth((timeFrame / durationInSeconds) * 100);
+    const durationInSeconds = audioRef.current?.duration || TimeFrame;
+    setHandleWidth((TimeFrame / durationInSeconds) * 100);
 
     // Set inline style for handle width
     const handleElement = document.querySelector(".handle") as HTMLElement | null;
@@ -98,7 +92,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
 
   const calculateTime = (x: number, audioRef: React.RefObject<HTMLAudioElement>) => {
     const percent = x / (audioRef.current?.parentElement?.clientWidth || 1);
-    const time = percent * (audioRef.current?.duration || timeFrame);
+    const time = percent * (audioRef.current?.duration || TimeFrame);
     return time;
   };
 
@@ -108,7 +102,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, startTime, endTime, set
       <Rings />
       <div className={styles.progress_bar} style={{ width: `${progress}%` }} />
 
-      <Draggable axis="x" position={{ x: x, y: 0 }} handle=".handle" bounds="parent" onDrag={handleDrag} onStop={handleDragStop}>
+      <Draggable axis="x" handle=".handle" bounds="parent" onDrag={handleDrag} onStop={handleDragStop}>
         <div className={`handle ${styles.handle}`} style={{ width: `${handleWidth}%` }}></div>
       </Draggable>
     </div>

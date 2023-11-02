@@ -4,7 +4,7 @@ import Header from "./Header/Header";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
 import StoryAddMusic from "../StoryAddMusic/StoryAddMusic";
 import SongTrimmer from "./SongTrimmer/SongTrimmer";
-import { timeFrame } from "../../../Utils/Constant";
+import { TimeFrame } from "../../../Utils/Constant";
 
 type props = {
   images?: FileList;
@@ -15,7 +15,7 @@ function StoryAddCarousel(props: props) {
     status: false,
     index: -1,
   });
-  const [values, setValues] = useState<{ index: number; img: File; start: number; end: number; link: string; x: number }[]>([]);
+  const [values, setValues] = useState<{ index: number; img: File; start: number; end: number; link: string }[]>([]);
   const [page, setPage] = useState<number>(0);
 
   const handleIsMusic = (index: number) => {
@@ -43,7 +43,7 @@ function StoryAddCarousel(props: props) {
             index,
             img: item,
             start: 0,
-            end: timeFrame,
+            end: TimeFrame,
             link: "",
             x: 0,
           },
@@ -61,14 +61,14 @@ function StoryAddCarousel(props: props) {
     <div className={styles.container}>
       {!isMusic.status ? (
         <div className={styles.sub_con}>
-          <Header handlePage={handlePage} isPrev={page != 0} isNext={values.length > 1 && page != values.length - 1} />
+          {/* <Header handlePage={handlePage} isPrev={page != 0} isNext={values.length > 1 && page != values.length - 1} /> */}
           {values.map((item) =>
             page == item.index ? (
               <div className={styles.main_container}>
                 <div className={styles.left_box}>
                   <img src={URL.createObjectURL(item.img)} alt="" className={styles.img} />
                   {item.link.length && (
-                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} x={item.x} />
+                    <SongTrimmer index={item.index} link={item.link} startTime={item.start} endTime={item.end} setValues={setValues} />
                   )}
                 </div>
                 <div className={styles.right_box}>

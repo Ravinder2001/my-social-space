@@ -19,7 +19,7 @@ function StoryAddImages(props: props) {
   };
   return (
     <div className={styles.container} onClick={handleClick}>
-      <input type="file" multiple ref={imgRef} style={{ display: "none" }} onChange={handleChange} />
+      <input type="file"  ref={imgRef} style={{ display: "none" }} onChange={handleChange} />
       <div className={styles.btn}>Select Images for Your Story</div>
     </div>
   );
