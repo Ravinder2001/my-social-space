@@ -52,7 +52,6 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, setValues, duration }) 
 
     // Set handle width dynamically based on 10 seconds
     const durationInSeconds = audioRef.current?.duration || TimeFrame;
-    console.log("🚀  file:eeeeee SongTrimmer.tsx:54  durationInSeconds:", durationInSeconds);
     setHandleWidth((TimeFrame / durationInSeconds) * 100);
 
     // Set inline style for handle width
@@ -86,6 +85,8 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ link, setValues, duration }) 
 
     setHandleWidth((TimeFrame / durationInSeconds) * 100);
   }, [duration]);
+
+
   return (
     <div className={styles.container}>
       <audio ref={audioRef} src={link} onTimeUpdate={handleTimeUpdate} autoPlay />

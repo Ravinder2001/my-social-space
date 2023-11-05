@@ -4,13 +4,15 @@ import Header from "./Header/Header";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
 import StoryAddMusic from "../StoryAddMusic/StoryAddMusic";
 import SongTrimmer from "./SongTrimmer/SongTrimmer";
-import { TimeFrame } from "../../../Utils/Constant";
+import { Request_Succesfull, TimeFrame } from "../../../Utils/Constant";
+import AddStory from "../../../APIs/AddStory";
 
 type props = {
-  image?: File | undefined;
+  image: Blob;
+  handleModal: () => void;
 };
 function StoryAddCarousel(props: props) {
-  const { image } = props;
+  const { image, handleModal } = props;
 
   const [isMusic, setIsMusic] = useState<boolean>(false);
   const [values, setValues] = useState<{ song: string; duration: number; start: number; end: number }>({
@@ -23,8 +25,16 @@ function StoryAddCarousel(props: props) {
   const handleIsMusic = () => {
     setIsMusic(!isMusic);
   };
-  const handleSubmit = () => {
-    setIsMusic(!isMusic);
+  const handleSubmit = async () => {
+    let formdata = new FormData();
+    formdata.append("image", image);
+    formdata.append("song", values.song);
+    formdata.append("start_time", values.start.toString());
+    formdata.append("end_time", values.end.toString());
+    const res = await AddStory(formdata);
+    if (res?.status == Request_Succesfull) {
+      handleModal();
+    }
   };
 
   return !isMusic && image ? (
@@ -55,7 +65,7 @@ function StoryAddCarousel(props: props) {
       </div>
     </div>
   ) : (
-    <StoryAddMusic handleIsMusic={handleIsMusic} setValues={setValues} />
+    <StoryAddMusic  handleIsMusic={handleIsMusic} setValues={setValues} />
   );
 }
 

@@ -14,7 +14,7 @@ const AddStoryModal = (props: props) => {
 
   return (
     <Modal title="Add Story" open={open} onOk={handleModal} onCancel={handleModal} footer={null} width={700}>
-      {!image ? <StoryAddImages setImage={setImage} /> : <StoryAddCarousel image={image} />}
+      {!image ? <StoryAddImages setImage={setImage} /> : <StoryAddCarousel  image={image} handleModal={handleModal} />}
     </Modal>
   );
 };
