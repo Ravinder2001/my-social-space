@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styles from "./style.module.scss";
 import SelfStoryBox from "../../Molecules/SelfStoryBox/SelfStoryBox";
 import UserStoryBox from "../../Molecules/UserStoryBox/UserStoryBox";
@@ -8,10 +8,22 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 
 type props = {
   handleModal: () => void;
+  setStoryModalOpen: Dispatch<
+    SetStateAction<{
+      status: boolean;
+      data: {
+        profile_picture: string;
+        username: string;
+        user_id: string;
+        story: { id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }[];
+      };
+    }>
+  >;
 };
 
 type StoryType = {
   profile_picture: string;
+  username: string;
   user_id: string;
   story: [{ id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }];
 };
@@ -44,6 +56,10 @@ function StoryBox(props: props) {
     }
   };
 
+  const handleClick = (data: any) => {
+    props.setStoryModalOpen({ data: data, status: true });
+  };
+
   useEffect(() => {
     FetchAllStory();
   }, []);
@@ -53,7 +69,7 @@ function StoryBox(props: props) {
       <div className={styles.user_con}>
         <Carousel responsive={responsive} className={styles.carousel}>
           {AllStory.map((item) => (
-            <UserStoryBox key={item.user_id} data={item} />
+            <UserStoryBox key={item.user_id} data={item} handleClick={handleClick} />
           ))}
         </Carousel>
       </div>

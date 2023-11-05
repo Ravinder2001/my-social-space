@@ -4,12 +4,14 @@ import styles from "./style.module.scss";
 type StoryType = {
   data: {
     profile_picture: string;
+    username: string;
     user_id: string;
-    story: [{ id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }];
+    story: { id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }[];
   };
+  handleClick: (data: any) => void;
 };
 function UserStoryBox(props: StoryType) {
-  const { data } = props;
+  const { data, handleClick } = props;
   function getRandomHexColor() {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -20,7 +22,13 @@ function UserStoryBox(props: StoryType) {
   }
 
   return (
-    <div className={styles.container} style={{ borderColor: getRandomHexColor() }}>
+    <div
+      className={styles.container}
+      style={{ borderColor: getRandomHexColor() }}
+      onClick={() => {
+        handleClick(data);
+      }}
+    >
       <div className={styles.img_box}>
         <img src={data.story[0].story_image} alt="" className={styles.img} />
       </div>
