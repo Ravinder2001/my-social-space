@@ -1,6 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import DrawerItems from "../../Molecules/DrawerItems/DrawerItems";
 import LogoBox from "../../Molecules/LogoBox/LogoBox";
@@ -20,6 +20,7 @@ import invalid_user from "../../../Assets/Images/invalid_user.png";
 import { boolean } from "yup";
 import SubDrawer from "../SubDrawer/SubDrawer";
 import UpdateUserOnlineStatus from "../../../APIs/UpdateUserOnlineStatus";
+import useSelection from "antd/es/table/hooks/useSelection";
 type props = {
   isSearchUser: boolean;
   setIsSearchUser: Dispatch<SetStateAction<boolean>>;
@@ -27,6 +28,7 @@ type props = {
 function Drawer(props: props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const flag = useSelector((state: RootState) => state.DrawerReducer.flag);
 
   const [open, setOpen] = useState(false);
@@ -94,6 +96,7 @@ function Drawer(props: props) {
               navigate(Home_Route);
               props.setIsSearchUser(false);
             }}
+            isSelected={location.pathname == "/"}
           />
           <DrawerItems
             label="Add Post"
@@ -105,6 +108,7 @@ function Drawer(props: props) {
               navigate(Add_Route);
               props.setIsSearchUser(false);
             }}
+            isSelected={location.pathname.includes(Add_Route)}
           />
           <DrawerItems
             label="Search"
@@ -115,6 +119,7 @@ function Drawer(props: props) {
             handleClick={() => {
               props.setIsSearchUser(true);
             }}
+            isSelected={false}
           />
           <DrawerItems
             label="Messages"
@@ -126,6 +131,7 @@ function Drawer(props: props) {
               navigate(Messages_Route);
               props.setIsSearchUser(false);
             }}
+            isSelected={location.pathname.includes(Messages_Route)}
           />
           <DrawerItems
             label="Profile"
@@ -137,6 +143,7 @@ function Drawer(props: props) {
               navigate(Profile_Route);
               props.setIsSearchUser(false);
             }}
+            isSelected={location.pathname.includes(Profile_Route)}
           />
           <ThemeButton />
           <DrawerItems
@@ -149,6 +156,7 @@ function Drawer(props: props) {
               navigate(Settings_Route);
               props.setIsSearchUser(false);
             }}
+            isSelected={location.pathname.includes(Settings_Route)}
           />
         </div>
         <div className={styles.footer_items}>
@@ -164,6 +172,7 @@ function Drawer(props: props) {
               navigate("/login");
             }}
             index={-1}
+            isSelected={false}
           />
         </div>
         <AddProfilePictureModal open={open} setOpen={setOpen} closeable={closeable} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./style.module.scss";
 import Gallery from "react-photo-gallery";
 import PostContainer from "../PostContainer/PostContainer";
-import { Request_Succesfull } from "../../../Utils/Constant";
+import { NewsAPI, Request_Succesfull } from "../../../Utils/Constant";
 import GetSelfPosts from "../../../APIs/GetSelfPosts";
 import GetAllPost from "../../../APIs/GetAllPost";
 import FriendRequestList from "../FriendRequestList/FriendRequestList";
@@ -10,6 +10,8 @@ import Loader1 from "../../Atoms/Loader/Loader1/Loader1";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 import { socket } from "../../../socket";
+import axios from "axios";
+import NewsContainer from "../NewsContainer/NewsContainer";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -26,6 +28,7 @@ type postData = {
 };
 function HomeBody() {
   const [data, setData] = useState<postData[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
 
   const FetchPost = async () => {
@@ -35,11 +38,12 @@ function HomeBody() {
     }
     setLoading(false);
   };
+
+
+
   useEffect(() => {
     FetchPost();
-    socket.on("Like-Toogle", () => {
-      FetchPost();
-    });
+  
     return () => {
       socket.offAny();
     };
@@ -60,7 +64,10 @@ function HomeBody() {
           </>
         )}
       </div>
-      <div className={styles.suggest}></div>
+      <div className={styles.suggest}>
+        <NewsContainer />
+        
+      </div>
     </div>
   );
 }

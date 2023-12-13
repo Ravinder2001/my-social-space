@@ -20,6 +20,7 @@ const StoryModal = (props: props) => {
 
   const { open, handleModal } = props;
   const { data } = open;
+  console.log("🚀  file: StoryModal.tsx:23  data:", data)
 
   const [page, setPage] = useState(0);
   useEffect(() => {
@@ -33,7 +34,12 @@ const StoryModal = (props: props) => {
       const playbackDuration = (data.story[page].end_time - data.story[page].start_time) * 1000;
       setTimeout(() => {
         currentAudio.pause();
-        setPage(page+1)
+        if(data.story.length>1){
+
+          setPage(page+1)
+        }else{
+          handleModal()
+        }
       }, playbackDuration);
     }
   }, [page, data]);
@@ -43,8 +49,11 @@ const StoryModal = (props: props) => {
       <div className={styles.container}>
         <div className={styles.header}>
           <img src={data.profile_picture} alt="" className={styles.profile} />
-
+          <div>
           <div className={styles.name}>{data.username}</div>
+
+          </div>
+
         </div>
         <Carousel
           showThumbs={false}

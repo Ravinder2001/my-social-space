@@ -1,20 +1,14 @@
 import { message } from "antd";
-import {
-  Bad_Request,
-  LocalStorageKey,
-  Request_Succesfull,
-  Unauthorized,
-} from "../Utils/Constant";
+import { Bad_Request, LocalStorageKey, Request_Succesfull, Unauthorized } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
-const GetProfilePicture = async () => {
+const GetLikeCount = async (post_id: string) => {
   try {
-    const response = await axiosInstance.get(`/getProfilePicture`);
+    const response = await axiosInstance.get(`/post/like/getCount/${post_id}`);
     if (response.status === Request_Succesfull) {
       return response.data;
     }
   } catch (error: any) {
-    console.log("🚀  file: GetProfilePicture.ts:17  error:", error)
     if (error.response.status === Bad_Request) {
       message.error(error.response.data.message);
     }
@@ -25,4 +19,4 @@ const GetProfilePicture = async () => {
     }
   }
 };
-export default GetProfilePicture;
+export default GetLikeCount;

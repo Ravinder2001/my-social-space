@@ -6,6 +6,7 @@ import { RootState } from "../../../store/store";
 import { setIndex } from "../../../store/Slices/DrawerSlice";
 
 import styles from "./styles.module.scss";
+import { useLocation } from "react-router-dom";
 
 type DrawerPropsTypes = {
   IconName: string;
@@ -14,27 +15,20 @@ type DrawerPropsTypes = {
   label: string;
   index: number;
   handleClick: () => void;
+  isSelected: Boolean;
 };
 
 function DrawerItems(props: DrawerPropsTypes) {
   const dispatch = useDispatch();
-  const Index = useSelector((state: RootState) => state.DrawerReducer.index);
   const handleClick = () => {
     dispatch(setIndex(props.index));
 
     props.handleClick();
   };
   return (
-    <div
-      className={Index === props.index ? styles.selected_box : styles.box}
-      onClick={handleClick}
-    >
+    <div className={props.isSelected ? styles.selected_box : styles.box} onClick={handleClick}>
       <div className={styles.icon}>
-        <LucideIcons
-          name={props.IconName}
-          color={props.IconColor}
-          size={props.IconSize}
-        />
+        <LucideIcons name={props.IconName} color={props.IconColor} size={props.IconSize} />
       </div>
       <div className={styles.text}>{props.label}</div>
     </div>

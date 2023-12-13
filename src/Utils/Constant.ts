@@ -22,3 +22,4 @@ export const EditMessageTime = 2; //in hours
 export const JioSavanAPI = "https://saavn.me/search/songs";
 export const TimeFrame = 10;
 export const MaxStoryImages = 2;
+export const NewsAPI = "https://newsapi.org/v2/top-headlines?country=in&apiKey=1fd25801f74c4f2f9332bb5abe865066"

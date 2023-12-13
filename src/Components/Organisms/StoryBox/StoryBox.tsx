@@ -5,6 +5,9 @@ import UserStoryBox from "../../Molecules/UserStoryBox/UserStoryBox";
 import Carousel from "react-multi-carousel";
 import GetAllStory from "../../../APIs/GetAllStory";
 import { Request_Succesfull } from "../../../Utils/Constant";
+import GetStoryByUserId from "../../../APIs/GetStoryByUserId";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
 type props = {
   handleModal: () => void;
@@ -46,13 +49,22 @@ function StoryBox(props: props) {
       paritialVisibilityGutter: 30,
     },
   };
+  const User = useSelector((state: RootState) => state.UserReducer);
 
   const [AllStory, setAllStory] = useState<StoryType[]>([]);
 
   const FetchAllStory = async () => {
     const res = await GetAllStory();
     if (res?.status == Request_Succesfull) {
-      setAllStory(res?.data);
+      setAllStory((prev) => [...prev, ...res?.data]);
+    }
+  };
+  const FetchStoryByUserId = async () => {
+    const res = await GetStoryByUserId(User.id);
+    if (res?.status == Request_Succesfull) {
+      
+      setAllStory([{ profile_picture: User.image, username: User.name, user_id: User.id, story: res.data }]);
+      FetchAllStory();
     }
   };
 
@@ -61,7 +73,7 @@ function StoryBox(props: props) {
   };
 
   useEffect(() => {
-    FetchAllStory();
+    FetchStoryByUserId();
   }, []);
   return (
     <div className={styles.container}>

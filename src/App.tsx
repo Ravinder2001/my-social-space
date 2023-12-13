@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import ProjectRoutes from "./Routes/ProjectRoutes";
 
-import { LocalStorageKey } from "./Utils/Constant";
+import { Home_Route, LocalStorageKey } from "./Utils/Constant";
 import { LoginUser, Logout } from "./store/Slices/UserSlice";
 import { withSuspense } from "./HOC/withSuspense";
 import GetServerHealth from "./APIs/GetServerHealth";
@@ -32,7 +32,7 @@ function App() {
   const navigate = useNavigate();
   const isMobile = useSelector((state: RootState) => state.TempReducer.isMobile);
 
-  const [ServerHealth, setServerHealth] = useState<string>("Loading");
+  const [ServerHealth, setServerHealth] = useState<string>("OK");
 
   const logout = () => {
     localStorage.removeItem(LocalStorageKey);
@@ -60,7 +60,8 @@ function App() {
           if (exp > currentTime) {
             socket.emit("Add-User", decode.id);
             dispatch(LoginUser(decode));
-            navigate("/verify");
+            // navigate("/verify");
+            // navigate(Home_Route);
           } else {
             logout();
           }

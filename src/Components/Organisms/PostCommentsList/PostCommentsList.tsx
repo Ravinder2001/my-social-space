@@ -27,7 +27,7 @@ function PostCommentsList(props: commentType) {
       props.FetchComments();
     }
   };
-  return (
+  return props.data.length ? (
     <div className={styles.container}>
       {props.data.map((comment) => {
         let gif = comment.content.includes("giphy.com");
@@ -39,22 +39,13 @@ function PostCommentsList(props: commentType) {
             <div className={styles.content_box}>
               <div className={styles.left_box}>
                 <div className={styles.name}>{comment.user_name}</div>
-                {gif ? (
-                  <img src={comment.content} alt="" className={styles.gif} />
-                ) : (
-                  <div className={styles.content}>{comment.content}</div>
-                )}
+                {gif ? <img src={comment.content} alt="" className={styles.gif} /> : <div className={styles.content}>{comment.content}</div>}
 
-                <div className={styles.time}>
-                  {formatTime(comment.created_at)}
-                </div>
+                <div className={styles.time}>{formatTime(comment.created_at)}</div>
               </div>
               <div className={styles.right_box}>
                 {comment.editable ? (
-                  <div
-                    className={styles.icon}
-                    onClick={() => handleDelete(comment.comment_id)}
-                  >
+                  <div className={styles.icon} onClick={() => handleDelete(comment.comment_id)}>
                     <ReactIcons name="MdDelete" size={18} />
                   </div>
                 ) : null}
@@ -68,6 +59,8 @@ function PostCommentsList(props: commentType) {
         );
       })}
     </div>
+  ) : (
+    <div  className={styles.no_container}>No Commments!</div>
   );
 }
 

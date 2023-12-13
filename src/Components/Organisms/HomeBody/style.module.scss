@@ -20,7 +20,7 @@
   }
 }
 .left_box {
-  width: 30%;
+  width: 25%;
   height: 100%;
   border: 1px solid black;
 }
@@ -38,9 +38,9 @@
   height: 0;
 }
 .suggest {
-  width: 25%;
-  height: 300px;
-  border: 1px solid black;
+  width: 30%;
+  height: 80vh;
+  // border: 1px solid black;
 }
 
 @media only screen and (max-width: 768px) {

@@ -2,9 +2,18 @@
 .container {
   width: 100%;
   //   border: 1px solid red;
-  height: auto;
+  height: 79%;
   // overflow: auto;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+
+}
+.no_container {
+  width: 100%;
+  height: 79%;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .box {
   //   border: 1px solid red;
