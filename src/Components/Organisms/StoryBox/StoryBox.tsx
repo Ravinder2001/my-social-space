@@ -28,6 +28,7 @@ type StoryType = {
   profile_picture: string;
   username: string;
   user_id: string;
+  editable?: boolean;
   story: [{ id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }];
 };
 function StoryBox(props: props) {
@@ -62,8 +63,9 @@ function StoryBox(props: props) {
   const FetchStoryByUserId = async () => {
     const res = await GetStoryByUserId(User.id);
     if (res?.status == Request_Succesfull) {
-      
-      setAllStory([{ profile_picture: User.image, username: User.name, user_id: User.id, story: res.data }]);
+      if (res.data.length) {
+        setAllStory([{ profile_picture: User.image, username: User.name, user_id: User.id, story: res.data, editable: true }]);
+      }
       FetchAllStory();
     }
   };

@@ -8,6 +8,8 @@ import AddPostLike from "../../../APIs/AddPostLike";
 import LikeModal from "../LikeModal/LikeModal";
 import { socket } from "../../../socket";
 import GetLikeCount from "../../../APIs/GetLikeCount";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
 type props = {
   handleModal?: (e: string) => void;
@@ -23,6 +25,7 @@ type props = {
 
 function PostImpression(props: props) {
   const { handleModal, post_id, open, privacy } = props;
+  const User = useSelector((state: RootState) => state.UserReducer);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [count, setCount] = useState(0);
@@ -35,8 +38,8 @@ function PostImpression(props: props) {
   const FetchLikeCount = async () => {
     const res = await GetLikeCount(post_id);
     if (res?.status == Request_Succesfull) {
-      setCount(res?.data?.count)
-      setIsUserLike(res?.data?.user_like==1?true:false);
+      setCount(res?.data?.count);
+      setIsUserLike(res?.data?.user_like == 1 ? true : false);
     }
   };
 
@@ -45,14 +48,14 @@ function PostImpression(props: props) {
       if (isUserLike == true) {
         const res = await RemovePostLike(post_id);
         if (res?.status == Request_Succesfull) {
-          FetchLikeCount()
-          socket.emit("Like-Toogle", post_id);
+          FetchLikeCount();
+          socket.emit("Like-Toogle", { post_id, isLiked: false, UserName: "", UserId: "", image: "" });
         }
       } else {
         const res = await AddPostLike(post_id);
         if (res?.status == Request_Succesfull) {
-          FetchLikeCount()
-          socket.emit("Like-Toogle", post_id);
+          FetchLikeCount();
+          socket.emit("Like-Toogle", { post_id, isLiked: true, UserName: User.name, UserId: User.id, image: User.image });
         }
       }
     } else {
@@ -62,16 +65,16 @@ function PostImpression(props: props) {
   useEffect(() => {
     socket.on("User-Not-Typing", () => {});
     socket.on("Like-Toogle", () => {
-      FetchLikeCount()
+      FetchLikeCount();
     });
     return () => {
       socket.offAny();
     };
   }, []);
 
-  useEffect(()=>{
-    FetchLikeCount()
-  },[post_id])
+  useEffect(() => {
+    FetchLikeCount();
+  }, [post_id]);
   return (
     <div className={styles.container}>
       <div className={styles.box}>

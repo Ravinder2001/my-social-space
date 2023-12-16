@@ -14,6 +14,7 @@ function HomeTemplate() {
       profile_picture: string;
       username: string;
       user_id: string;
+      editable?: boolean;
       story: { id: number; story_image: string; song: string; start_time: number; end_time: number; created_at: string }[];
     };
   }>({
@@ -22,6 +23,7 @@ function HomeTemplate() {
       profile_picture: "",
       username: "",
       user_id: "",
+      editable: false,
       story: [{ id: 0, story_image: "", song: "", start_time: 0, end_time: 0, created_at: "" }],
     },
   });

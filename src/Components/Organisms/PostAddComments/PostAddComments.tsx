@@ -8,6 +8,7 @@ import AddComment from "../../../APIs/AddComment";
 import { Request_Succesfull } from "../../../Utils/Constant";
 import { message } from "antd";
 import UserImage from "../../Atoms/UserImage/UserImage";
+import { socket } from "../../../socket";
 
 type props = {
   post_id: string;
@@ -30,6 +31,7 @@ function PostAddComments(props: props) {
       content: gif ?? comment,
     });
     if (res?.status == Request_Succesfull) {
+      socket.emit("Comment-Notifications", { post_id: props.post_id, UserName: User.name, UserId: User.id, image: User.image });
       setComment("");
       if (props.open && props.FetchComments) {
         props.FetchComments();

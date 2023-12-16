@@ -1,7 +1,9 @@
+import { message } from "antd";
 import jwtDecode from "jwt-decode";
 import moment from "moment";
 import Resizer from "react-image-file-resizer";
-import { Max_Server_Image_Upload_Size } from "./Constant";
+import { Max_Server_Image_Upload_Size, Request_Succesfull } from "./Constant";
+import CreateNotifications from "../APIs/GetNotifications";
 interface decode {
   id: string;
   name: string;
@@ -58,7 +60,7 @@ export const formatTime = (time: string) => {
   const duration = moment.duration(moment().diff(currentTime));
 
   if (duration.asHours() < 1) {
-    return "at" + " "+moment(currentTime).format("HH:mm");
+    return "at" + " " + moment(currentTime).format("HH:mm");
   } else if (duration.asDays() < 1) {
     return `${Math.floor(duration.asHours())} h ago`;
   } else if (duration.asWeeks() < 1) {
@@ -124,3 +126,4 @@ export const base64toFileWithDimensions = async (
     throw new Error("Error converting base64 to file: " + error.message);
   }
 };
+

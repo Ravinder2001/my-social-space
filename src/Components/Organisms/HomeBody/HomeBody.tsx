@@ -12,6 +12,7 @@ import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 import { socket } from "../../../socket";
 import axios from "axios";
 import NewsContainer from "../NewsContainer/NewsContainer";
+import NotificationsContainer from "../NotificationsContainer/NotificationsContainer";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -39,11 +40,9 @@ function HomeBody() {
     setLoading(false);
   };
 
-
-
   useEffect(() => {
     FetchPost();
-  
+
     return () => {
       socket.offAny();
     };
@@ -51,7 +50,8 @@ function HomeBody() {
   return (
     <div className={styles.container}>
       <div className={styles.left_box}>
-        <FriendRequestList />
+        {/* <FriendRequestList /> */}
+        <NotificationsContainer />
       </div>
       <div className={styles.right_box}>
         {loading ? (
@@ -66,7 +66,6 @@ function HomeBody() {
       </div>
       <div className={styles.suggest}>
         <NewsContainer />
-        
       </div>
     </div>
   );
