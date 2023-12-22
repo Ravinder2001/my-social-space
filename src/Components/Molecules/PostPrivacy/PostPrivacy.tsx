@@ -1,8 +1,9 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, Dispatch, SetStateAction } from "react";
 import styles from "./style.module.scss";
 import DefaultToogle from "../../Atoms/ToogleButton/DefaultToogle/DefaultToogle";
 import SelectBox from "../../Atoms/SelectBox/SelectBox";
 import DateAndTimePicker from "../../Atoms/DateAndTimePicker/DateAndTimePicker";
+import { Moment } from "moment";
 type ImageProps = {
   handlePost: () => Promise<void>;
   handleEdit: () => Promise<void>;
@@ -16,6 +17,10 @@ type ImageProps = {
   VisibilityOptions: { value: string; label: string }[];
   setVisibilityOptions: (newValue: { value: string; label: string }) => void;
   value: { value: string; label: string };
+  uploadAt: Moment;
+  uploadTill: Moment;
+  setUploadAt: Dispatch<SetStateAction<Moment>>;
+  setUploadTill: Dispatch<SetStateAction<Moment>>;
 };
 function PostPrivacy(props: ImageProps) {
   const {
@@ -26,7 +31,11 @@ function PostPrivacy(props: ImageProps) {
     VisibilityOptions,
     setVisibilityOptions,
     value,
-    handleEdit
+    handleEdit,
+    uploadAt,
+    uploadTill,
+    setUploadAt,
+    setUploadTill,
   } = props;
 
   return (
@@ -36,41 +45,25 @@ function PostPrivacy(props: ImageProps) {
         <div className={styles.row}>
           <div className={styles.label}>Allow Users to Comment</div>
           <div>
-            <DefaultToogle
-              name="comment"
-              value={Values.comment}
-              handleChange={handleToogle}
-            />
+            <DefaultToogle name="comment" value={Values.comment} handleChange={handleToogle} />
           </div>
         </div>
         <div className={styles.row}>
           <div className={styles.label}>Allow Users to Like</div>
           <div>
-            <DefaultToogle
-              name="like"
-              value={Values.like}
-              handleChange={handleToogle}
-            />
+            <DefaultToogle name="like" value={Values.like} handleChange={handleToogle} />
           </div>
         </div>
         <div className={styles.row}>
           <div className={styles.label}>Allow Users to Share</div>
           <div>
-            <DefaultToogle
-              name="share"
-              value={Values.share}
-              handleChange={handleToogle}
-            />
+            <DefaultToogle name="share" value={Values.share} handleChange={handleToogle} />
           </div>
         </div>
         <div className={styles.row}>
           <div className={styles.label}>Visibility</div>
           <div>
-            <SelectBox
-              options={VisibilityOptions}
-              value={value}
-              setVisibilityOptions={setVisibilityOptions}
-            />
+            <SelectBox options={VisibilityOptions} value={value} setVisibilityOptions={setVisibilityOptions} />
           </div>
         </div>
         {!edit && (
@@ -85,20 +78,18 @@ function PostPrivacy(props: ImageProps) {
             </div>
             <div className={styles.row}>
               <div className={styles.label}>Save Settings</div>
-              <div>
-                {/* <DefaultToogle name="settings" value={Values.settings} /> */}
-              </div>
+              <div>{/* <DefaultToogle name="settings" value={Values.settings} /> */}</div>
             </div>
             <div className={styles.row}>
               <div className={styles.label}>Schedule Post</div>
               <div>
-                <DateAndTimePicker />
+                <DateAndTimePicker value={uploadAt} setTime={setUploadAt} />
               </div>
             </div>
             <div className={styles.row}>
               <div className={styles.label}>Schedule Delete</div>
               <div>
-                <DateAndTimePicker />
+                <DateAndTimePicker value={uploadTill} setTime={setUploadTill}/>
               </div>
             </div>
           </>

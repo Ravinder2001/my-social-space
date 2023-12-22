@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styles from "./style.module.scss";
 import Header from "./Header/Header";
 import LucideIcons from "../../../Utils/Icons/LucideIcons";
@@ -10,9 +10,11 @@ import AddStory from "../../../APIs/AddStory";
 type props = {
   image: Blob;
   handleModal: () => void;
+
+  setFlag: Dispatch<SetStateAction<boolean>>;
 };
 function StoryAddCarousel(props: props) {
-  const { image, handleModal } = props;
+  const { image, handleModal, setFlag } = props;
 
   const [isMusic, setIsMusic] = useState<boolean>(false);
   const [values, setValues] = useState<{ song: string; duration: number; start: number; end: number }>({
@@ -34,6 +36,7 @@ function StoryAddCarousel(props: props) {
     const res = await AddStory(formdata);
     if (res?.status == Request_Succesfull) {
       handleModal();
+      setFlag((prev) => !prev);
     }
   };
 
@@ -65,7 +68,7 @@ function StoryAddCarousel(props: props) {
       </div>
     </div>
   ) : (
-    <StoryAddMusic  handleIsMusic={handleIsMusic} setValues={setValues} />
+    <StoryAddMusic handleIsMusic={handleIsMusic} setValues={setValues} />
   );
 }
 

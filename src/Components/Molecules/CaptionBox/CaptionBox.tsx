@@ -9,12 +9,12 @@ const hashtags = ["react", "antd"];
 interface CaptionProps {
   value: string;
   handleCaption: (text: string) => void;
+  handleModal: () => void;
 }
 
 function CaptionBox(props: CaptionProps) {
-  const { value, handleCaption } = props;
+  const { value, handleCaption, handleModal } = props;
   const [ListData, setListData] = useState<string[]>([]);
-  
 
   const handlePrefixData = (e: string) => {
     if (e == "@") {
@@ -27,7 +27,10 @@ function CaptionBox(props: CaptionProps) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.heading}>Caption</div>
+      <div className={styles.headerBox}>
+        <div className={styles.heading}>Caption</div>
+        <div onClick={handleModal} className={styles.ai}>Generate by AI!</div>
+      </div>
       <Mentions
         prefix={["@", "#"]}
         className={styles.input_box}
@@ -42,7 +45,9 @@ function CaptionBox(props: CaptionProps) {
         placeholder="Write your caption here. You can use '@' to tag users and '#' for hashtags."
       >
         {ListData.map((item) => (
-          <Mentions.Option key={item} value={item}>{item}</Mentions.Option>
+          <Mentions.Option key={item} value={item}>
+            {item}
+          </Mentions.Option>
         ))}
       </Mentions>
     </div>

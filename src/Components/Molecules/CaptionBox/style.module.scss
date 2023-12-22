@@ -2,6 +2,16 @@
 .container{
   // border: 1px solid red;
 }
+.headerBox{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.ai{
+  color: rgb(236, 44, 178);
+  cursor: pointer;
+}
 .input_box {
   margin-top: 10px;
     border: 1px solid grey;

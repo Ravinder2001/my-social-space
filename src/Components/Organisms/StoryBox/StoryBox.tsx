@@ -22,6 +22,7 @@ type props = {
       };
     }>
   >;
+  flag: boolean;
 };
 
 type StoryType = {
@@ -76,7 +77,7 @@ function StoryBox(props: props) {
 
   useEffect(() => {
     FetchStoryByUserId();
-  }, []);
+  }, [props.flag]);
   return (
     <div className={styles.container}>
       <SelfStoryBox handleModal={props.handleModal} />

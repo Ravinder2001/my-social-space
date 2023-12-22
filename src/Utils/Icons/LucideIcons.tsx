@@ -26,7 +26,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Music,
-  Trash2,
+  Trash2,Copy
 } from "lucide-react";
 
 type IconsType = {
@@ -90,6 +90,8 @@ function LucideIcons(props: IconsType) {
       return <Music color={props.color} size={props.size} />;
     case "Trash2":
       return <Trash2 color={props.color} size={props.size} />;
+    case "Copy":
+      return <Copy color={props.color} size={props.size} />;
     default:
       return <></>;
   }

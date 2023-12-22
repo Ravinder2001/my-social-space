@@ -1,37 +1,23 @@
-import React, {
-  ChangeEvent,
-  KeyboardEvent,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
 import CaptionBox from "../../Molecules/CaptionBox/CaptionBox";
 import styles from "./style.module.scss";
 
 import { nanoid } from "nanoid";
 import { message } from "antd";
-import {
-  BlobToFile,
-  Image_Compresser,
-  base64toFileWithDimensions,
-  getImageDimensions,
-} from "../../../Utils/Function";
+import { BlobToFile, Image_Compresser, base64toFileWithDimensions, getImageDimensions } from "../../../Utils/Function";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import AddPost from "../../../APIs/AddPost";
 import { ImageSizeError } from "../../../Utils/Message";
-import {
-  File_Extension,
-  Image_Output_Format,
-  Max_Image_Upload_Size,
-  Request_Succesfull,
-} from "../../../Utils/Constant";
+import { File_Extension, Image_Output_Format, Max_Image_Upload_Size, Request_Succesfull } from "../../../Utils/Constant";
 import PostImages from "../PostImages/PostImages";
 import PostPrivacy from "../../Molecules/PostPrivacy/PostPrivacy";
 import GetEditPostData from "../../../APIs/GetEditPostData";
 import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 import UpdatePost from "../../../APIs/UpdatePost";
+import moment from "moment";
+import ChatGPTModal from "../ChatGPT/ChatGPTModal";
 type props = {
   isEdit: {
     edit: boolean;
@@ -51,10 +37,9 @@ function AddPostBox(props: props) {
       inputref.current?.click();
     }
   };
+
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [carouselImages, setCarouselImages] = useState<{ image_url: string }[]>(
-    []
-  );
+  const [carouselImages, setCarouselImages] = useState<{ image_url: string }[]>([]);
   const [caption, setCaption] = useState<string>("");
   const [Values, setValues] = useState({
     comment: true,
@@ -66,6 +51,13 @@ function AddPostBox(props: props) {
     label: string;
   }>(VisibilityOptions[0]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [uploadAt, setUploadAt] = useState(moment());
+  const [uploadTill, setUploadTill] = useState(moment().add(10, "year"));
+  const [gptModal,setGptModal]=useState(false);
+
+  const handleGptModal=()=>{
+    setGptModal(!gptModal)
+  }
 
   const handleToogle = (e: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -119,6 +111,8 @@ function AddPostBox(props: props) {
       formdata.append("like", Values.like ? "1" : "0");
       formdata.append("share", Values.share ? "1" : "0");
       formdata.append("visibility", visibility.value);
+      formdata.append("uploadAt", uploadAt.toISOString());
+      formdata.append("uploadTill", uploadTill.toISOString());
       const image_res = await AddPost({ formdata: formdata });
       if (image_res?.status === 200) {
         message.success(image_res?.message);
@@ -166,10 +160,7 @@ function AddPostBox(props: props) {
 
   useEffect(() => {
     uploadedImages.map((image) => {
-      setCarouselImages((prev) => [
-        ...prev,
-        { image_url: URL.createObjectURL(image) },
-      ]);
+      setCarouselImages((prev) => [...prev, { image_url: URL.createObjectURL(image) }]);
     });
   }, [uploadedImages]);
 
@@ -194,44 +185,24 @@ function AddPostBox(props: props) {
       {loading ? <InfinityLoader /> : null}
 
       <div className={styles.left_box}>
-        <div className={styles.main_heading}>
-          {props.isEdit.edit ? "Edit Post" : "Add Post"}
-        </div>
+        <div className={styles.main_heading}>{props.isEdit.edit ? "Edit Post" : "Add Post"}</div>
         <div className={styles.caption_container}>
-          <CaptionBox value={caption} handleCaption={handleCaption} />
+          <CaptionBox value={caption} handleCaption={handleCaption} handleModal={handleGptModal} />
         </div>
         <div className={styles.add_container}>
           <div className={styles.heading}>Add Images</div>
           <div className={styles.add_box}>
             {!props.isEdit.edit && (
-              <div
-                className={`${styles.add_button} ${
-                  !uploadedImages.length && styles.with_image_add_button
-                }`}
-                onClick={handleClick}
-              >
+              <div className={`${styles.add_button} ${!uploadedImages.length && styles.with_image_add_button}`} onClick={handleClick}>
                 {!uploadedImages.length ? "Add Image" : "Add more images"}
               </div>
             )}
 
             <div style={{ display: "none" }}>
-              <input
-                onChange={handleImageSelect}
-                ref={inputref}
-                type="file"
-                name=""
-                id=""
-                multiple
-              />
+              <input onChange={handleImageSelect} ref={inputref} type="file" name="" id="" multiple />
             </div>
-            <div
-              className={
-                props.isEdit.edit ? styles.edit_images_box : styles.images_box
-              }
-            >
-              {uploadedImages.length || carouselImages.length ? (
-                <PostImages images={carouselImages} />
-              ) : null}
+            <div className={props.isEdit.edit ? styles.edit_images_box : styles.images_box}>
+              {uploadedImages.length || carouselImages.length ? <PostImages images={carouselImages} /> : null}
             </div>
           </div>
         </div>
@@ -246,8 +217,13 @@ function AddPostBox(props: props) {
           VisibilityOptions={VisibilityOptions}
           value={visibility}
           setVisibilityOptions={setVisibility}
+          uploadAt={uploadAt}
+          uploadTill={uploadTill}
+          setUploadAt={setUploadAt}
+          setUploadTill={setUploadTill}
         />
       </div>
+      <ChatGPTModal open={gptModal} handleModal={handleGptModal} setText={setCaption}/>
     </div>
   );
 }

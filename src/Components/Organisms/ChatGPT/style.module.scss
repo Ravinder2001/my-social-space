@@ -1,0 +1,36 @@
+@import "../../../Variable.scss";
+.container{
+    width: 100%;
+}
+.textarea{
+    width: 100%;
+    height: auto;
+    resize: none;
+    border: 3px solid rgb(232, 185, 212);
+    border-radius: 8px;
+    font-size: 18px;
+    font-family: $font_family;
+    padding: 5px;
+}
+.textarea:focus{
+    outline: none;
+    // border: none;
+}
+.resGenContainer{
+    border: 2px solid rgb(122, 175, 35);
+    width: 100%;
+    height: auto !important;
+    border-radius: 8px;
+    padding: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.resContainer{
+    border: 2px solid rgb(52, 129, 148);
+    width: 100%;
+    height: auto !important;
+    border-radius: 8px;
+    padding: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}

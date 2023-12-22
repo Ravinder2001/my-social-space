@@ -1,29 +1,41 @@
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import { KeyboardDateTimePicker } from "@material-ui/pickers";
-import React, { useState } from "react";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import React, { Dispatch, SetStateAction } from "react";
+import { Moment } from "moment";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import moment from "moment";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+
 const useStyles = makeStyles((theme: Theme) => ({
   dateTimePicker: {
     width: 220,
     fontSize: "10px",
   },
 }));
-function DateAndTimePicker() {
-  const [myDate, setmyDate] = useState();
+
+type Props = {
+  value: Moment;
+  setTime: Dispatch<SetStateAction<Moment>>;
+};
+
+function DateAndTimePicker(props: Props) {
+  const { value, setTime } = props;
   const classes = useStyles();
+
+  const handleDateChange = (date: MaterialUiPickersDate) => {
+    if (date !== null) {
+      setTime(date as Moment);
+    }
+  };
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <KeyboardDateTimePicker
-        // key={`dateTime-${tz}`}
-        // className={classes.dateTimePicker}
+        className={classes.dateTimePicker}
         label="Start Time"
-        value={myDate}
+        value={value}
         format="YYYY-MM-DD hh:mm A"
-        onChange={() => {}}
+        onChange={handleDateChange}
         showTodayButton
       />
     </MuiPickersUtilsProvider>

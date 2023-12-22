@@ -27,6 +27,7 @@ function HomeTemplate() {
       story: [{ id: 0, story_image: "", song: "", start_time: 0, end_time: 0, created_at: "" }],
     },
   });
+  const [flag, setFlag] = useState<boolean>(false);
 
   const handleAddStoryModal = () => {
     setAddStoryModalOpen(!AddStoryModalOpen);
@@ -41,13 +42,13 @@ function HomeTemplate() {
       </div>
       <div className={styles.main_box}>
         <div className={styles.story_box}>
-          <StoryBox handleModal={handleAddStoryModal} setStoryModalOpen={setStoryModalOpen} />
+          <StoryBox handleModal={handleAddStoryModal} setStoryModalOpen={setStoryModalOpen} flag={flag} />
         </div>
         <div>
           <HomeBody />
         </div>
       </div>
-      {AddStoryModalOpen && <AddStoryModal handleModal={handleAddStoryModal} open={AddStoryModalOpen} />}
+      {AddStoryModalOpen && <AddStoryModal handleModal={handleAddStoryModal} open={AddStoryModalOpen} setFlag={setFlag} />}
       {StoryModalOpen.status && <StoryModal handleModal={handleStoryModal} open={StoryModalOpen} />}
     </div>
   );
