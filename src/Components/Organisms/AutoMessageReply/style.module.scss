@@ -1,0 +1,47 @@
+@import "../../../Variable.scss";
+.container {
+  width: 100%;
+  // background: rgb(2, 0, 36);
+  // background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(239, 92, 246, 1) 0%, rgba(241, 89, 128, 1) 100%);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  height: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.box {
+  cursor: pointer;
+  border: 2px solid rgb(237, 132, 28);
+  border-radius: 14px;
+  padding: 0px 15px;
+
+  margin-right: 20px;
+
+}
+.logo {
+  width: 20px;
+  height: 20px;
+}
+.text {
+  color: rgb(173, 15, 162);
+  margin-left: 5px;
+}
+.ques {
+  color: white;
+  margin-left: 5px;
+}
+.btn {
+  border: none;
+  border-radius: 6px;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(239, 92, 246, 1) 0%, rgba(241, 89, 128, 1) 100%);
+  color: white;
+  font-size: $font_family;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 3px 15px;
+}

@@ -16,6 +16,8 @@ import UpdateMessageSeen from "../../../APIs/UpdateMessageSeen";
 import GetSeenMessage from "../../../APIs/GetSeenMessage";
 import { formatTime } from "../../../Utils/Function";
 import moment from "moment";
+import AutoMessageReply from "../AutoMessageReply/AutoMessageReply";
+import GenerateSuggestion from "../../../APIs/GenerateSuggestion";
 type props = {
   roomDetails: {
     room_id: string;
@@ -60,7 +62,21 @@ function Room(props: props) {
     message_id: 0,
     seen_at: "",
   });
-  console.log("🚀  file: Room.tsx:63  lastSeenMsg:", lastSeenMsg)
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [isGenerate, setIsGenerate] = useState<boolean>(false);
+  const [suggestion, setSuggestion] = useState<string>("");
+  const FetchSuggestion = async () => {
+    if (newMessage.length) {
+      setIsGenerate(true);
+      const res = await GenerateSuggestion(newMessage);
+      if (res?.status == Request_Succesfull) {
+        setSuggestion(res?.data);
+      }
+    }
+  };
+  const SuggestClick = () => {
+    sendMessage(suggestion);
+  };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
@@ -86,11 +102,12 @@ function Room(props: props) {
     }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = async (suggestion?: any) => {
+
     socket.emit("User-Not-Typing", user_id);
     let object = {
       room_id: room_id,
-      content: text,
+      content: suggestion?.length ? suggestion : text,
       content_type: "text",
     };
     const res = await SendMessage(object);
@@ -104,6 +121,8 @@ function Room(props: props) {
         content_type: res.data.content_type,
       };
       socket.emit("Message-Sent-Notifications", noti_data, user_id);
+      setIsGenerate(false);
+      setSuggestion("")
     }
     setText("");
   };
@@ -170,6 +189,7 @@ function Room(props: props) {
   useEffect(() => {
     const handleMessageReceive = ({ data }: any) => {
       setMessages((prev) => [data, ...prev]);
+      setIsGenerate(false);
     };
     socket.on("Message-Receive", handleMessageReceive);
     socket.on("Message-Edited", fetchMessages);
@@ -178,6 +198,11 @@ function Room(props: props) {
       socket.offAny();
     };
   }, []);
+
+  useEffect(() => {
+    let latestMsg = Messages.find((msg) => msg.isOwnMessage == false);
+    if (latestMsg) setNewMessage(latestMsg?.content);
+  }, [Messages]);
 
   return (
     <div className={styles.container}>
@@ -220,21 +245,25 @@ function Room(props: props) {
         })}
       </div>
       <div className={styles.bottom_box}>
-        <div className={styles.input_box}>
-          <MessageInputBox
-            max_length={100}
-            placeholder="Send your message"
-            value={text}
-            handleChange={handleChange}
-            handleBlur={handleBlur}
-            handleKeyDown={handleKeyDown}
-            // handleKeyUp={handleKeyUp}
-            handleComment={() => {}}
-            handleEmoji={() => {}}
-          />
-        </div>
-        <div className={styles.btn} onClick={sendMessage}>
-          Send
+        <AutoMessageReply isGenerate={isGenerate} suggestion={suggestion} FetchSuggestion={FetchSuggestion} SuggestClick={SuggestClick} />
+
+        <div className={styles.manual_box}>
+          <div className={styles.input_box}>
+            <MessageInputBox
+              max_length={100}
+              placeholder="Send your message"
+              value={text}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+              handleKeyDown={handleKeyDown}
+              // handleKeyUp={handleKeyUp}
+              handleComment={() => {}}
+              handleEmoji={() => {}}
+            />
+          </div>
+          <div className={styles.btn} onClick={sendMessage}>
+            Send
+          </div>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { Request_Succesfull } from "../../../Utils/Constant";
 import { TypeAnimation } from "react-type-animation";
 import AiBtn from "../../Atoms/AIBtn/AiBtn";
 
+
 type props = {
   open: boolean;
   handleModal: () => void;
@@ -13,23 +14,28 @@ type props = {
 };
 const ChatGPTModal = (props: props) => {
   const { open, handleModal, setText } = props;
-  const [details,setDetails]=useState<string>("")
+  const [details, setDetails] = useState<string>("");
   const [response, setResponse] = useState<string>("");
   const [resStack, setResStack] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange=(e:ChangeEvent<HTMLTextAreaElement>)=>{
-    setDetails(e.target.value)
-  }
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setDetails(e.target.value);
+  };
 
   const Generate = async () => {
-    if (response.length) {
-      setResStack((prev) => [...prev, response]);
-    }
-    setResponse("");
-    const res = await GenerateCaptions(details);
-    if (res?.status == Request_Succesfull) {
-      console.log("Captions", res?.data);
-      setResponse(res?.data?.message?.content);
+    if (details.length) {
+      setLoading(true);
+      if (response.length) {
+        setResStack((prev) => [...prev, response]);
+      }
+      setResponse("");
+      const res = await GenerateCaptions(details);
+      if (res?.status == Request_Succesfull) {
+        console.log("Captions", res?.data);
+        setResponse(res?.data);
+      }
+      
     }
   };
 
@@ -41,19 +47,26 @@ const ChatGPTModal = (props: props) => {
   return (
     <Modal title="Asistance" open={open} onOk={handleModal} onCancel={handleModal} footer={null} width={700}>
       <div className={styles.container}>
-        <textarea className={styles.textarea} value={details} onChange={handleChange} rows={5} placeholder="Tell about your post!" maxLength={300}></textarea>
-        <AiBtn handleClick={Generate} />
+        <textarea
+          className={styles.textarea}
+          value={details}
+          onChange={handleChange}
+          rows={5}
+          placeholder="Tell about your post!"
+          maxLength={300}
+        ></textarea>
+        <AiBtn handleClick={Generate} loading={loading} />
         {response.length ? (
           <div onClick={() => handleClick(response)}>
             <TypeAnimation
-            style={{ whiteSpace: "pre-line", height: "195px", display: "block" }}
-            sequence={[response, 1000]}
-            // repeat={Infinity}
-            omitDeletionAnimation={true}
-            cursor={false}
-            className={styles.resGenContainer}
-            
-          />
+              style={{ whiteSpace: "pre-line", height: "195px", display: "block" }}
+              sequence={[response, 1000,()=>{setLoading(false)}]}
+              // repeat={Infinity}
+              omitDeletionAnimation={true}
+              cursor={false}
+              className={styles.resGenContainer}
+              
+            />
           </div>
         ) : null}
 
