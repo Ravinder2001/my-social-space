@@ -29,7 +29,7 @@ interface decode {
 }
 function App() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const isMobile = useSelector((state: RootState) => state.TempReducer.isMobile);
 
   const [ServerHealth, setServerHealth] = useState<string>("OK");
