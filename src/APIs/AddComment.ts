@@ -23,7 +23,10 @@ const AddComment = async (props: AddCommentProps) => {
     }
   } catch (error: any) {
     console.log("🚀  file: AddComment.tsx:25  error:", error)
-    if (error.response.status === Bad_Request) {
+    if (error.response == undefined) {
+      return;
+    }
+if (error.response.status === Bad_Request) {
       message.error(error.response.data.message);
     }
     if (error.response.status === Unauthorized) {

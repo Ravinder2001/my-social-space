@@ -1,10 +1,5 @@
 import { message } from "antd";
-import {
-  Bad_Request,
-  LocalStorageKey,
-  Request_Succesfull,
-  Unauthorized,
-} from "../Utils/Constant";
+import { Bad_Request, LocalStorageKey, Request_Succesfull, Unauthorized } from "../Utils/Constant";
 import axiosInstance from "../Utils/axiosInstance/axiosInstance";
 
 const GetProfilePicture = async () => {
@@ -14,7 +9,9 @@ const GetProfilePicture = async () => {
       return response.data;
     }
   } catch (error: any) {
-    console.log("🚀  file: GetProfilePicture.ts:17  error:", error)
+    if (error.response == undefined) {
+      return;
+    }
     if (error.response.status === Bad_Request) {
       message.error(error.response.data.message);
     }

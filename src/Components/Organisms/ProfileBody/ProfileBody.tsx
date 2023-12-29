@@ -42,14 +42,14 @@ function ProfileBody() {
 
   const FetchPost = async () => {
     const res = await GetSelfPosts();
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
     setLoading(false)
   };
   const FetchPostOfAnotherUser = async (user_id: string) => {
     const res = await GetAllPostOfAnotherUser(user_id);
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
     setLoading(false)

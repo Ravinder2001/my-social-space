@@ -10,7 +10,10 @@ const AddStory = async (props: FormData) => {
       return response.data;
     }
   } catch (error: any) {
-    if (error.response.status === Bad_Request) {
+    if (error.response == undefined) {
+      return;
+    }
+if (error.response.status === Bad_Request) {
       message.error(error.response.data.message);
     }
     if (error.response.status === Unauthorized) {

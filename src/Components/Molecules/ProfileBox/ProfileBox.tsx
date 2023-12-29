@@ -4,6 +4,7 @@ import { RootState } from "../../../store/store";
 import UserImage from "../../Atoms/UserImage/UserImage";
 import GetUserInfo from "../../../APIs/GetUserInfo";
 import { Request_Succesfull } from "../../../Utils/Constant";
+import { useDispatch } from "react-redux";
 type infoType = {
   name: string;
   posts_count: string;

@@ -17,7 +17,7 @@ const LikeModal = (props: props) => {
   const [impressionData, setImpressionData] = useState<impressionData[]>([]);
   const FetchLikes = async () => {
     const res = await GetPostLikes(post_id);
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setImpressionData(res.data);
     }
   };

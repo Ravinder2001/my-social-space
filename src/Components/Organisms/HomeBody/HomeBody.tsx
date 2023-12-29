@@ -34,7 +34,7 @@ function HomeBody() {
 
   const FetchPost = async () => {
     const res = await GetAllPost();
-    if (res.status == Request_Succesfull) {
+    if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
     setLoading(false);
