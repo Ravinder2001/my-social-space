@@ -57,6 +57,13 @@
   // justify-content: space-between;
   flex-direction: column;
 }
+.notAllowed {
+  width: 100%;
+  height: 9%;
+  display: flex;
+align-items: center;
+justify-content: center;
+}
 .auto_box {
   width: 100%;
 

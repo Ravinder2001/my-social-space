@@ -9,9 +9,10 @@ type props = {
     image_url: string;
     last_message_timestamp: string;
     last_message_content: string;
+    type:number
   };
   room_id: string;
-  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string; user_id: string }>>;
+  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string;user_name: string; user_id: string,type:number }>>;
 };
 function RoomListBox(props: props) {
   const { data, setRoomDetails, room_id } = props;
@@ -19,7 +20,9 @@ function RoomListBox(props: props) {
     setRoomDetails({
       room_id: data.room_id,
       user_image: data.image_url,
+      user_name: data.user_name,
       user_id: data.user_id,
+      type:data.type
     });
   };
   return (

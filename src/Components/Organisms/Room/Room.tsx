@@ -18,17 +18,22 @@ import { formatTime } from "../../../Utils/Function";
 import moment from "moment";
 import AutoMessageReply from "../AutoMessageReply/AutoMessageReply";
 import GenerateSuggestion from "../../../APIs/GenerateSuggestion";
+import GetRoomMembers from "../../../APIs/GetRoomMembers";
 type props = {
   roomDetails: {
     room_id: string;
     user_image: string;
+    user_name: string;
     user_id: string;
+    type: number;
   };
   setRoomDetails: Dispatch<
     SetStateAction<{
       room_id: string;
       user_image: string;
+      user_name: string;
       user_id: string;
+      type: number;
     }>
   >;
 };
@@ -38,12 +43,20 @@ type messageType = {
   content: string;
   content_type: string;
   created_at: string;
+  sender_id: string;
   status: boolean;
   isOwnMessage: boolean;
   isedited: boolean;
 };
+type MembersType = {
+  id: string;
+  role: string | null;
+  name: string;
+  ismessageallowed: boolean;
+  image_url: string;
+};
 function Room(props: props) {
-  const { room_id, user_image, user_id } = props.roomDetails;
+  const { room_id, user_image, user_id, type, user_name } = props.roomDetails;
   const UserId = useSelector((state: RootState) => state.UserReducer.id);
 
   const [text, setText] = useState<string>("");
@@ -65,6 +78,10 @@ function Room(props: props) {
   const [newMessage, setNewMessage] = useState<string>("");
   const [isGenerate, setIsGenerate] = useState<boolean>(false);
   const [suggestion, setSuggestion] = useState<string>("");
+  const [roomMembers, setRoomMembers] = useState<MembersType[]>([]);
+  const [currentUser, setCurrentUser] = useState<MembersType>({ id: "", role: null, name: "", ismessageallowed: true, image_url: "" });
+  console.log("🚀  file: Room.tsx:83  currentUser:", currentUser)
+
   const FetchSuggestion = async () => {
     if (newMessage.length) {
       setIsGenerate(true);
@@ -103,7 +120,6 @@ function Room(props: props) {
   };
 
   const sendMessage = async (suggestion?: any) => {
-
     socket.emit("User-Not-Typing", user_id);
     let object = {
       room_id: room_id,
@@ -122,7 +138,7 @@ function Room(props: props) {
       };
       socket.emit("Message-Sent-Notifications", noti_data, user_id);
       setIsGenerate(false);
-      setSuggestion("")
+      setSuggestion("");
     }
     setText("");
   };
@@ -160,6 +176,14 @@ function Room(props: props) {
     }
   };
 
+  const FetchRoomMembers = async () => {
+    const res = await GetRoomMembers(props.roomDetails.room_id);
+    if (res?.status == Request_Succesfull) {
+      setRoomMembers(res?.data.members);
+      setCurrentUser(res?.data.currentUser);
+    }
+  };
+
   useEffect(() => {
     if (Messages.length && roomType == 1) {
       FetchOwnSeenMsg();
@@ -168,7 +192,10 @@ function Room(props: props) {
   }, [Messages, roomType]);
 
   useEffect(() => {
-    if (props.roomDetails.room_id != "") fetchMessages();
+    if (props.roomDetails.room_id != "") {
+      fetchMessages();
+      FetchRoomMembers();
+    }
   }, [props.roomDetails.room_id]);
 
   useEffect(() => {
@@ -208,12 +235,14 @@ function Room(props: props) {
     <div className={styles.container}>
       <div className={styles.header_box}>
         <RoomHeader
-          setReceiverName={setReceiverName}
           room_id={props.roomDetails.room_id}
           setIsAnotherUserTyping={setIsAnotherUserTyping}
           setMessages={setMessages}
           setRoomDetails={props.setRoomDetails}
-          setRoomType={setRoomType}
+          type={type}
+          user_name={user_name}
+          user_id={user_id}
+          image_url={user_image}
         />
       </div>
       <div className={styles.message_box}>
@@ -226,7 +255,7 @@ function Room(props: props) {
         )}
         {Messages.map((message, index) => {
           let showImage = true;
-          if (index > 0 && Messages[index].isOwnMessage == Messages[index - 1].isOwnMessage) {
+          if (index > 0 && Messages[index].isOwnMessage == Messages[index - 1].isOwnMessage && type==1) {
             showImage = false;
           }
           return (
@@ -239,33 +268,37 @@ function Room(props: props) {
                 user_image={user_image}
                 user_id={user_id}
                 fetchMessages={fetchMessages}
+                roomMembers={roomMembers}
+                type={type}
               />
             </>
           );
         })}
       </div>
-      <div className={styles.bottom_box}>
-        <AutoMessageReply isGenerate={isGenerate} suggestion={suggestion} FetchSuggestion={FetchSuggestion} SuggestClick={SuggestClick} />
+      {currentUser?.ismessageallowed ? (
+        <div className={styles.bottom_box}>
+          <AutoMessageReply isGenerate={isGenerate} suggestion={suggestion} FetchSuggestion={FetchSuggestion} SuggestClick={SuggestClick} />
 
-        <div className={styles.manual_box}>
-          <div className={styles.input_box}>
-            <MessageInputBox
-              max_length={100}
-              placeholder="Send your message"
-              value={text}
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              handleKeyDown={handleKeyDown}
-              // handleKeyUp={handleKeyUp}
-              handleComment={() => {}}
-              handleEmoji={() => {}}
-            />
-          </div>
-          <div className={styles.btn} onClick={sendMessage}>
-            Send
+          <div className={styles.manual_box}>
+            <div className={styles.input_box}>
+              <MessageInputBox
+                max_length={100}
+                placeholder="Send your message"
+                value={text}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+                handleKeyDown={handleKeyDown}
+                // handleKeyUp={handleKeyUp}
+                handleComment={() => {}}
+                handleEmoji={() => {}}
+              />
+            </div>
+            <div className={styles.btn} onClick={sendMessage}>
+              Send
+            </div>
           </div>
         </div>
-      </div>
+      ) : <div className={styles.notAllowed}>You do not have the permission to send the message.</div>}
     </div>
   );
 }

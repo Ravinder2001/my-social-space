@@ -14,16 +14,21 @@ type DataType = {
   image_url: string;
   last_message_timestamp: string;
   last_message_content: string;
+  type: number;
 };
 function MessageTemplate() {
   const [roomDetails, setRoomDetails] = useState<{
     room_id: string;
     user_image: string;
+    user_name: string;
     user_id: string;
+    type: number;
   }>({
     room_id: "",
     user_image: "",
     user_id: "",
+    user_name: "",
+    type: -1,
   });
   const isMobile = useSelector((state: RootState) => state.TempReducer.isMobile);
   const [data, setData] = useState<DataType[]>([]);
@@ -69,7 +74,7 @@ function MessageTemplate() {
 
       {!isMobile && roomDetails.room_id !== "" && (
         <div className={styles.room}>
-          <Room roomDetails={roomDetails} setRoomDetails={setRoomDetails}/>
+          <Room roomDetails={roomDetails} setRoomDetails={setRoomDetails} />
         </div>
       )}
     </div>

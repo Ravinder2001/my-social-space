@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Button, Dropdown, Popconfirm, Space, message } from "antd";
@@ -10,12 +10,15 @@ import DeleteChatHistory from "../../../APIs/DeleteChatHistory";
 
 type props = {
   room_id: string;
+  type: number;
   setMessages: any;
   setRoomDetails: Dispatch<
     SetStateAction<{
       room_id: string;
       user_image: string;
+      user_name: string;
       user_id: string;
+      type: number;
     }>
   >;
 };
@@ -30,7 +33,9 @@ const RoomMenuBox = (props: props) => {
         props.setRoomDetails({
           room_id: "",
           user_image: "",
+          user_name: "",
           user_id: "",
+          type: -1,
         });
       },
     },
@@ -46,7 +51,6 @@ const RoomMenuBox = (props: props) => {
         DeleteChat();
       },
     },
-
     {
       key: "4",
       danger: true,

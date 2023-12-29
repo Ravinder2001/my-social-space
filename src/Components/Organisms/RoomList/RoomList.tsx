@@ -12,10 +12,11 @@ type DataType = {
   image_url: string;
   last_message_timestamp: string;
   last_message_content: string;
+  type:number
 };
 type props = {
   room_id: string;
-  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string; user_id: string }>>;
+  setRoomDetails: Dispatch<SetStateAction<{ room_id: string; user_image: string;user_name: string; user_id: string,type:number }>>;
   loading: boolean;
   data: DataType[];
 };
