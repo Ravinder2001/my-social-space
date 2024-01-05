@@ -18,6 +18,7 @@ import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
 import UpdatePost from "../../../APIs/UpdatePost";
 import moment from "moment";
 import ChatGPTModal from "../ChatGPT/ChatGPTModal";
+import 'moment-timezone';
 type props = {
   isEdit: {
     edit: boolean;
@@ -53,11 +54,11 @@ function AddPostBox(props: props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [uploadAt, setUploadAt] = useState(moment());
   const [uploadTill, setUploadTill] = useState(moment().add(10, "year"));
-  const [gptModal,setGptModal]=useState(false);
+  const [gptModal, setGptModal] = useState(false);
 
-  const handleGptModal=()=>{
-    setGptModal(!gptModal)
-  }
+  const handleGptModal = () => {
+    setGptModal(!gptModal);
+  };
 
   const handleToogle = (e: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -105,14 +106,19 @@ function AddPostBox(props: props) {
           formdata.append(File_Extension, image);
         });
       }
+      const isuploadAt = new Date(uploadAt.toISOString());
+      const isuploadTill = new Date(uploadTill.toISOString()); // Replace this with your actual timestamp
+
+      const uploadAtIST = moment(isuploadAt).tz("Asia/Kolkata").format("YYYY-MM-DD");
+      const uploadTillIST = moment(isuploadTill).tz("Asia/Kolkata").format("YYYY-MM-DD");
 
       formdata.append("caption", caption);
       formdata.append("comment", Values.comment ? "1" : "0");
       formdata.append("like", Values.like ? "1" : "0");
       formdata.append("share", Values.share ? "1" : "0");
       formdata.append("visibility", visibility.value);
-      formdata.append("uploadAt", uploadAt.toISOString());
-      formdata.append("uploadTill", uploadTill.toISOString());
+      formdata.append("uploadAt", uploadAtIST);
+      formdata.append("uploadTill", uploadTillIST);
       const image_res = await AddPost({ formdata: formdata });
       if (image_res?.status === 200) {
         message.success(image_res?.message);
@@ -223,7 +229,7 @@ function AddPostBox(props: props) {
           setUploadTill={setUploadTill}
         />
       </div>
-      <ChatGPTModal open={gptModal} handleModal={handleGptModal} setText={setCaption}/>
+      <ChatGPTModal open={gptModal} handleModal={handleGptModal} setText={setCaption} />
     </div>
   );
 }

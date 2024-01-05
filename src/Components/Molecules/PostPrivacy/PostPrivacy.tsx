@@ -69,18 +69,6 @@ function PostPrivacy(props: ImageProps) {
         {!edit && (
           <>
             <div className={styles.row}>
-              <div className={styles.label}>Show Only to</div>
-              <div>{/* <DefaultToogle handleChange={handleToogle} /> */}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.label}>Hide from Certain Users</div>
-              <div>{/* <DefaultToogle /> */}</div>
-            </div>
-            <div className={styles.row}>
-              <div className={styles.label}>Save Settings</div>
-              <div>{/* <DefaultToogle name="settings" value={Values.settings} /> */}</div>
-            </div>
-            <div className={styles.row}>
               <div className={styles.label}>Schedule Post</div>
               <div>
                 <DateAndTimePicker value={uploadAt} setTime={setUploadAt} />
@@ -89,7 +77,7 @@ function PostPrivacy(props: ImageProps) {
             <div className={styles.row}>
               <div className={styles.label}>Schedule Delete</div>
               <div>
-                <DateAndTimePicker value={uploadTill} setTime={setUploadTill}/>
+                <DateAndTimePicker value={uploadTill} setTime={setUploadTill} />
               </div>
             </div>
           </>
