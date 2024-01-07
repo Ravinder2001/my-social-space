@@ -2,7 +2,9 @@ import axios, { AxiosInstance } from "axios";
 
 import config from "../config";
 
-import { LocalStorageKey } from "../Constant";
+import { Bad_Request, LocalStorageKey, Unauthorized } from "../Constant";
+import { message } from "antd";
+let apiFailureCounter = 0;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: config.baseURL,
@@ -24,10 +26,19 @@ axiosInstance.interceptors.response.use(
     return res;
   },
   (error) => {
-    if (error.response && error.response.status == 401) {
-      localStorage.removeItem(LocalStorageKey);
-      window.location.reload();
+    apiFailureCounter++;
+    if (apiFailureCounter === 1) {
+      if (error.response && error.response.status == Unauthorized) {
+        message.error(error.response.data.message ?? "Access denied");
+        localStorage.removeItem(LocalStorageKey);
+        window.location.reload();
+      } else if (error.response && error.response.status == Bad_Request) {
+        message.error(error.response.data.message ?? "An error occurred while fetching data.");
+      } else {
+        message.error("An error occurred while fetching data.");
+      }
     }
+
     return Promise.reject(error);
   }
 );

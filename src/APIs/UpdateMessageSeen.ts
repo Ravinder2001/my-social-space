@@ -9,17 +9,7 @@ const UpdateMessageSeen = async (object: { room_id: string; id: number }) => {
       return response.data;
     }
   } catch (error: any) {
-    if (error.response == undefined) {
-      return;
-    }
-if (error.response.status === Bad_Request) {
-      message.error(error.response.data.message);
-    }
-    if (error.response.status === Unauthorized) {
-      message.error(error.response.data.message);
-      localStorage.removeItem(LocalStorageKey);
-      window.location.reload();
-    }
+    console.log("error", error);
   }
 };
 export default UpdateMessageSeen;
