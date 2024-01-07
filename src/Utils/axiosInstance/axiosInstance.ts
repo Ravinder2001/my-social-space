@@ -23,6 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (res) => {
+    apiFailureCounter = 0;
     return res;
   },
   (error) => {

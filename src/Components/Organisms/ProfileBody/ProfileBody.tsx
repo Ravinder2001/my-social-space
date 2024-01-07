@@ -9,6 +9,8 @@ import { useLocation } from "react-router-dom";
 import GetAllPostOfAnotherUser from "../../../APIs/GetAllPostOfAnotherUser";
 import Loader2 from "../../Atoms/Loader/Loader2/Loader2";
 import InfinityLoader from "../../Atoms/Loader/InfinityLoader/InfinityLoader";
+import FriendBox from "../FriendBox/FriendBox";
+import GetFriendList from "../../../APIs/GetFriendList";
 type postData = {
   user_name: string;
   profile_picture: string;
@@ -35,9 +37,16 @@ type AnotherUserPostData = {
   comment_allowed: boolean;
   share_allowed: boolean;
 };
+type friendType = {
+  id: string;
+  job: string;
+  name: string;
+  profile_picture: string;
+};
 function ProfileBody() {
   const location = useLocation();
   const [data, setData] = useState<postData[] | AnotherUserPostData[]>([]);
+  const [friendData, setFriendData] = useState<friendType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const FetchPost = async () => {
@@ -45,14 +54,21 @@ function ProfileBody() {
     if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
-    setLoading(false)
+    setLoading(false);
+  };
+  const FetchFriend = async () => {
+    const res = await GetFriendList("");
+    if (res?.status == Request_Succesfull) {
+      setFriendData(res.data);
+    }
+    // setLoading(false);
   };
   const FetchPostOfAnotherUser = async (user_id: string) => {
     const res = await GetAllPostOfAnotherUser(user_id);
     if (res?.status == Request_Succesfull) {
       setData(res.data);
     }
-    setLoading(false)
+    setLoading(false);
   };
   useEffect(() => {
     if (location.search.includes("user")) {
@@ -60,11 +76,16 @@ function ProfileBody() {
       FetchPostOfAnotherUser(user_id);
     } else {
       FetchPost();
+      FetchFriend();
     }
   }, [location]);
   return (
     <div className={styles.container}>
-      <div className={styles.left_box}></div>
+      <div className={styles.left_box}>
+        {friendData.map((friend) => (
+          <FriendBox friend={friend} />
+        ))}
+      </div>
       <div className={styles.right_box}>
         {loading ? (
           <InfinityLoader />
@@ -76,7 +97,7 @@ function ProfileBody() {
           </>
         )}
       </div>
-      <div className={styles.suggest}></div>
+      {/* <div className={styles.suggest}></div> */}
     </div>
   );
 }

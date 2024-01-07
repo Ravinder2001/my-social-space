@@ -145,7 +145,7 @@ function Drawer(props: props) {
             }}
             isSelected={location.pathname.includes(Profile_Route)}
           />
-          <ThemeButton />
+          {/* <ThemeButton />
           <DrawerItems
             label="Settings"
             IconColor="#ad15e5"
@@ -157,7 +157,7 @@ function Drawer(props: props) {
               props.setIsSearchUser(false);
             }}
             isSelected={location.pathname.includes(Settings_Route)}
-          />
+          /> */}
         </div>
         <div className={styles.footer_items}>
           <DrawerItems
