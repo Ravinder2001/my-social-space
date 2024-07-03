@@ -10,24 +10,15 @@ import reportWebVitals from "./reportWebVitals";
 
 import { persistor, store } from "./store/store";
 
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import "react-multi-carousel/lib/styles.css";
-import "./index.scss";
-
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-  // <React.StrictMode>
-    <BrowserRouter>
-      <PersistGate persistor={persistor} loading={null}>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </PersistGate>
-    </BrowserRouter>
-  // </React.StrictMode>
+  <BrowserRouter>
+    <PersistGate persistor={persistor} loading={null}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </PersistGate>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
