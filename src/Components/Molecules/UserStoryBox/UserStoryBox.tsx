@@ -12,6 +12,7 @@ type StoryType = {
 };
 function UserStoryBox(props: StoryType) {
   const { data, handleClick } = props;
+  console.log("🚀  data:", data)
   function getRandomHexColor() {
     const letters = "0123456789ABCDEF";
     let color = "#";
@@ -30,7 +31,8 @@ function UserStoryBox(props: StoryType) {
       }}
     >
       <div className={styles.img_box}>
-        <img src={data.story[0].story_image} alt="" className={styles.img} />
+        {data.story.length ?<img src={data.story[0].story_image} alt="" className={styles.img} />:null}
+        
       </div>
       <div className={styles.user_img_box}>
         <img src={data.profile_picture} alt="" className={styles.user_img} />
