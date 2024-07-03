@@ -1,0 +1,41 @@
+.container {
+  margin: auto;
+  width: 92%;
+  padding: 15px 40px;
+  background-color: white;
+  border-radius: 40px 40px 0px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+.logoBox {
+  display: flex;
+  align-items: center;
+}
+.logoBox img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+.title {
+  font-weight: bold;
+  margin-left: 10px;
+  font-size: 24px;
+}
+
+.center {
+  width: 40%;
+}
+
+.right {
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.right img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
