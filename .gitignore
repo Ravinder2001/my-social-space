@@ -26,3 +26,6 @@ yarn-error.log*
 .env
 .env.dev
 .env.prod
+
+package-lock.json
+yarn.lock
