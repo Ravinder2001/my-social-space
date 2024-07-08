@@ -1,0 +1,19 @@
+.container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.textarea {
+  width: 95%;
+  resize: none;
+  border: 1px dashed rgb(205, 203, 203);
+  font-family: var(--font_family);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.textarea:focus {
+  outline: none;
+}

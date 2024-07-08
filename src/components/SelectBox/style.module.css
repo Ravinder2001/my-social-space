@@ -1,0 +1,20 @@
+.select {
+  border: 1px solid grey;
+  border-radius: 2px;
+  padding: 5px 3px;
+  font-family: var(--font_family);
+  cursor: pointer;
+  text-align: left;
+  min-width: 100px;
+}
+
+.select:focus {
+  outline: none;
+}
+
+.option {
+  font-family: var(--font_family);
+  cursor: pointer;
+  border: 1px solid red;
+  padding: 5px 10px !important;
+}

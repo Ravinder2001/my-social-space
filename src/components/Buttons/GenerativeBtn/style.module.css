@@ -1,0 +1,39 @@
+.btn {
+  border: none;
+  width: 15em;
+  height: 3.5em;
+  border-radius: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background: #1c1a1c;
+  cursor: pointer;
+  transition: all 450ms ease-in-out;
+  font-family: var(--font_family);
+}
+
+.sparkle {
+  fill: #aaaaaa;
+  transition: all 800ms ease;
+}
+
+.text {
+  font-weight: 600;
+  color: #aaaaaa;
+  font-size: medium;
+}
+
+.btn:hover {
+  background: linear-gradient(0deg, #a47cf3, #683fea);
+
+}
+
+.btn:hover .text {
+  color: white;
+}
+
+.btn:hover .sparkle {
+  fill: white;
+  /* transform: scale(1.2); */
+}

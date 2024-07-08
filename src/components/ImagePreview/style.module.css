@@ -1,0 +1,13 @@
+.container {
+  width: 100%;
+  /* border: 1px solid red; */
+  max-height: 200px;
+  overflow: auto;
+  display: flex;
+}
+.image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    cursor: pointer;
+}

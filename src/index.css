@@ -5,8 +5,14 @@ body {
   font-family: "Nunito", sans-serif !important;
   font-optical-sizing: auto;
   font-style: normal;
+  overflow: auto;
 }
 
 :root {
   --font_family: "Nunito", sans-serif;
+  --background_color:#f3f3f2
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
