@@ -1,5 +1,5 @@
 .container {
-  width: 30%;
+  width: 35%;
   /* border: 1px solid red; */
   padding: 10px;
   background-color: white;
@@ -71,10 +71,16 @@
 .imageListBox img {
   margin: 0px 10px;
 }
+.scheduleBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
 .optionBox {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .privacyBox {
@@ -85,12 +91,14 @@
   justify-content: space-between;
   margin-bottom: 10px;
 }
+
 .label {
   font-size: 16px;
+  color: rgb(95, 94, 94);
 }
 .aiBtn {
   width: 45%;
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,6 +129,10 @@
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .submitBtn {
   background-color: black;
@@ -129,4 +141,8 @@
   padding: 5px 20px;
   border-radius: 4px;
   cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

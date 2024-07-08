@@ -1,10 +1,10 @@
 .switch {
-  --circle-dim: 1.2em;
+  --circle-dim: 1em;
   font-size: 17px;
   position: relative;
   display: inline-block;
-  width: 3em;
-  height: 1.5em;
+  width: 2.5em;
+  height: 1.3em;
 }
 
 /* Hide default HTML checkbox */
@@ -22,7 +22,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #f5aeae;
+  background-color: #cecccc;
   transition: 0.4s;
   border-radius: 30px;
 }
@@ -34,7 +34,7 @@
   width: var(--circle-dim);
   border-radius: 20px;
   left: 0.2em;
-  right: 0.1em;
+  right: 0.5em;
   bottom: 2.5px;
   transition: 0.4s;
   pointer-events: none;
@@ -50,7 +50,7 @@
 }
 
 .slider_card_front {
-  background-color: #dc3535;
+  background-color: #7b7b7b;
 }
 
 .slider_card_back {
@@ -67,7 +67,7 @@
 }
 
 .input:checked ~ .slider_card {
-  transform: translateX(1.4em);
+  transform: translateX(1.1em);
 }
 
 .input:checked ~ .slider {

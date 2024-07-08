@@ -7,9 +7,9 @@ function App() {
   return (
     <div>
       <Navbar />
-      <div style={{display:"flex"}}>
+      <div style={{ display: "flex", width: "92%",margin:"auto" }}>
         <Sidebar />
-        <PostUpload/>
+        <PostUpload />
       </div>
       <Toaster />
     </div>

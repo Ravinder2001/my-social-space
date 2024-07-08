@@ -8,6 +8,7 @@ import CaptionGenerator from "../CaptionGenerator/CaptionGenerator";
 import SelectBox from "../SelectBox/SelectBox";
 import LucideIcon from "../../assets/Icons/LucideIcons";
 import ToggleBtn from "../ToggleBtn/ToggleBtn";
+import BasicDateTimePicker from "../DateTimePicker/DateTimePicker";
 
 let visibiltyOptions = [
   {
@@ -28,8 +29,9 @@ function PostUpload() {
   const btnRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [toggleValues, setToggleValues] = useState({
-    test: false,
+  const [toggleValues, setToggleValues] = useState<{ isLikeAllowed: boolean , isCommentAllowed: boolean }>({
+    isLikeAllowed: false,
+    isCommentAllowed: false,
   });
 
   const [caption, setCaption] = useState<string>("");
@@ -84,7 +86,7 @@ function PostUpload() {
         </div>
         <SelectBox value={visibiltyType} options={visibiltyOptions} onChange={handleVisibilityType} />
       </div>
-      <textarea name="" id="" rows={3} className={styles.textarea} placeholder="What's in your mind!"></textarea>
+      <textarea name="" id="" rows={5} className={styles.textarea} placeholder="What's in your mind!"></textarea>
       <div className={styles.uploadImageBox}>
         {images.length < 5 ? (
           <div className={styles.uploadBtn} onClick={handleOpenUpload}>
@@ -96,15 +98,19 @@ function PostUpload() {
           <ImagePreview images={images} />
         </div>
       </div>
+      <div className={styles.scheduleBox}>
+        <div className={styles.label}>Schedule Post</div>
+        <BasicDateTimePicker />
+      </div>
       <div className={styles.optionBox}>
         <div className={styles.privacyBox}>
           <div className={styles.box}>
             <div className={styles.label}>Disable Comments</div>
-            <ToggleBtn isChecked={toggleValues.test} onChange={handleToggleValues} name="test" />
+            <ToggleBtn isChecked={toggleValues.isLikeAllowed} onChange={handleToggleValues} name="isLikeAllowed" />
           </div>
           <div className={styles.box}>
-            <div className={styles.label}>Schedule Post</div>
-            <ToggleBtn isChecked={toggleValues.test} onChange={handleToggleValues} name="test" />
+            <div className={styles.label}>Disable Likes</div>
+            <ToggleBtn isChecked={toggleValues.isCommentAllowed} onChange={handleToggleValues} name="isCommentAllowed" />
           </div>
         </div>
         <div className={styles.aiBtn} onClick={handleModal}>

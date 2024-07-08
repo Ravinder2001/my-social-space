@@ -10,9 +10,45 @@ body {
 
 :root {
   --font_family: "Nunito", sans-serif;
-  --background_color:#f3f3f2
+  --background_color: #f3f3f2;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  cursor: pointer;
+}
+
+.css-v0pjtz-MuiStack-root > .MuiTextField-root {
+  min-width: 100px !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+  padding-right: 0px !important;
+  padding: 0px 0px 0px 5px !important;
+  height: 40px !important;
+}
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+  top: -8px !important;
+}
