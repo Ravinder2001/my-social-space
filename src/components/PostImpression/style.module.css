@@ -1,0 +1,23 @@
+.container{
+    width: 100%;
+    height: auto;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.box{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.label{
+    margin-left: 5px;
+    color: rgb(83, 82, 82);
+    font-weight: 500;
+    font-size: 14px;
+}
+#like svg{
+    stroke: red;
+}

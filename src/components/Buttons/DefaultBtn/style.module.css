@@ -1,0 +1,26 @@
+.resetBtn {
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(232, 231, 231);
+  padding: 5px 20px;
+  margin-right: 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.submitBtn {
+  background-color: black;
+  color: white;
+  border: 1px solid black;
+  padding: 5px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

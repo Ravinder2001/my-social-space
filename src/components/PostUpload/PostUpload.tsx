@@ -9,6 +9,8 @@ import SelectBox from "../SelectBox/SelectBox";
 import LucideIcon from "../../assets/Icons/LucideIcons";
 import ToggleBtn from "../ToggleBtn/ToggleBtn";
 import BasicDateTimePicker from "../DateTimePicker/DateTimePicker";
+import TextArea from "../TextArea/TextArea";
+import DefaultBtn from "../Buttons/DefaultBtn/DefaultBtn";
 
 let visibiltyOptions = [
   {
@@ -29,7 +31,7 @@ function PostUpload() {
   const btnRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [toggleValues, setToggleValues] = useState<{ isLikeAllowed: boolean , isCommentAllowed: boolean }>({
+  const [toggleValues, setToggleValues] = useState<{ isLikeAllowed: boolean; isCommentAllowed: boolean }>({
     isLikeAllowed: false,
     isCommentAllowed: false,
   });
@@ -74,6 +76,9 @@ function PostUpload() {
   const handleToggleValues = (event: ChangeEvent<HTMLInputElement>) => {
     setToggleValues((prev) => ({ ...prev, [event.target.name]: event.target.checked }));
   };
+  const handleCaption = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    // setToggleValues((prev) => ({ ...prev, [event.target.name]: event.target.checked }));
+  };
 
   return (
     <div className={styles.container}>
@@ -86,7 +91,7 @@ function PostUpload() {
         </div>
         <SelectBox value={visibiltyType} options={visibiltyOptions} onChange={handleVisibilityType} />
       </div>
-      <textarea name="" id="" rows={5} className={styles.textarea} placeholder="What's in your mind!"></textarea>
+      <TextArea placeholder="What's in your mind!" rows={5} value="" onChange={handleCaption} name="caption" />
       <div className={styles.uploadImageBox}>
         {images.length < 5 ? (
           <div className={styles.uploadBtn} onClick={handleOpenUpload}>
@@ -120,8 +125,8 @@ function PostUpload() {
       </div>
 
       <div className={styles.btnGroup}>
-        <div className={styles.resetBtn}>Reset</div>
-        <div className={styles.submitBtn}>Submit</div>
+        <DefaultBtn type="reset" label="Reset"/>
+        <DefaultBtn type="submit" label="Submit"/>
       </div>
       <input style={{ display: "none" }} type="file" ref={btnRef} multiple max={5} onChange={handleUploadImages} />
       <CaptionGenerator isOpen={isOpen} handleModal={handleModal} setCaption={setCaption} />
