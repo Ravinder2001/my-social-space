@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import LucideIcon from "../../assets/Icons/LucideIcons";
+import { Friends_Route, Home_Route } from "../../utils/constant";
+import { useNavigate } from "react-router-dom";
 function Sidebar() {
   let menu = [
     {
@@ -8,12 +10,14 @@ function Sidebar() {
       label: "Home",
       index: 0,
       color: "#2888d2",
+      route: Home_Route,
     },
     {
       icon: "Users",
       label: "Friends",
       index: 1,
       color: "#6c28d2",
+      route: Friends_Route,
     },
     {
       icon: "Bookmark",
@@ -36,6 +40,7 @@ function Sidebar() {
   ];
 
   const [selectedMenu, setSelectedMenu] = useState<number>(0);
+  const navigate = useNavigate();
   return (
     <div className={styles.container}>
       {menu.map((menuItem) => (
@@ -43,7 +48,10 @@ function Sidebar() {
           style={{ backgroundColor: selectedMenu === menuItem.index ? "#e9eaec" : "transparent" }}
           className={styles.box}
           key={menuItem.index}
-          onClick={() => setSelectedMenu(menuItem.index)}
+          onClick={() => {
+            setSelectedMenu(menuItem.index);
+            navigate(menuItem.route??"/");
+          }}
         >
           <LucideIcon name={menuItem.icon} color={menuItem.color} />
           <div className={styles.label}>{menuItem.label}</div>

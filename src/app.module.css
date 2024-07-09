@@ -1,0 +1,9 @@
+.sidebarBox {
+  display: flex;
+  width: 92%;
+  margin: auto;
+}
+.childrenBox {
+  width: 82%;
+  padding-left: 20px;
+}

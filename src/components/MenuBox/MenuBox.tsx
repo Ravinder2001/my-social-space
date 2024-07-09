@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import LucideIcon from "../../assets/Icons/LucideIcons";
 
 const options = [
- "Delete Post"
+ "Delete Post","Save Post"
 ];
 
 const ITEM_HEIGHT = 48;
