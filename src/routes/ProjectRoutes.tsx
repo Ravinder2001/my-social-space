@@ -3,10 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
 import PublicRoutes from "./PublicRoutes";
 import ErrorFallback from "../error/ErrorFallback";
-import { Friends_Route, Home_Route, Login_Route } from "../utils/constant";
+import { Friends_Route, Home_Route, Login_Route,Messages_Route } from "../utils/constant";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Friends from "../pages/Friends/Friends";
+import Messages from "../pages/Messages/Messages";
 
 function ProjectRoutes() {
   return (
@@ -24,6 +25,14 @@ function ProjectRoutes() {
         element={
           <PrivateRoutes>
             <Friends />
+          </PrivateRoutes>
+        }
+      />
+      <Route
+        path={Messages_Route}
+        element={
+          <PrivateRoutes>
+            <Messages />
           </PrivateRoutes>
         }
       />

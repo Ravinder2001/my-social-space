@@ -1,0 +1,125 @@
+.chat_area {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .chat_area_header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  .chat_area_profile {
+    width: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .chat_area_title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .chat_area_main {
+    flex-grow: 1;
+  }
+  
+  .chat_msg_img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .chat_msg_profile {
+    flex-shrink: 0;
+    margin-top: auto;
+    margin-bottom: -20px;
+    position: relative;
+  }
+  
+  .chat_msg_date {
+    position: absolute;
+    left: calc(100% + 12px);
+    bottom: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c0c7d2;
+    white-space: nowrap;
+  }
+  
+  .chat_msg {
+    display: flex;
+    padding: 0 20px 45px;
+  }
+  .chat_msg_content {
+    margin-left: 12px;
+    max-width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .chat_msg_text {
+    background-color: #f1f2f6;
+    padding: 15px;
+    border-radius: 20px 20px 20px 0;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .chat_msg_text + .chat_msg_text {
+    margin-top: 10px;
+  }
+  
+  .chat_msg_text {
+    color: var(--chat-text-color);
+  }
+  
+  .owner {
+    flex-direction: row-reverse;
+  }
+  .owner .chat_msg_content {
+    margin-left: 0;
+    margin-right: 12px;
+    align-items: flex-end;
+  }
+  .owner .chat_msg_text {
+    background-color: #0086ff;
+    color: #fff;
+    border-radius: 20px 20px 0 20px;
+  }
+  .owner .chat_msg_date {
+    left: auto;
+    right: calc(100% + 12px);
+  }
+  
+  .chat_msg_text img {
+    max-width: 300px;
+    width: 100%;
+  }
+  
+  .chat_area_group {
+    flex-shrink: 0;
+    display: flex;
+  }
+  .chat_area_group * {
+    border: 2px solid #fff;
+  }
+  .chat_area_group * + * {
+    margin-left: -5px;
+  }
+  .chat_area_group span {
+    width: 32px;
+    height: 32px;
+    background-color: #f0f7ff;
+    color: #0086ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+  }

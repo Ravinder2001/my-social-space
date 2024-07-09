@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import LucideIcon from "../../assets/Icons/LucideIcons";
-import { Friends_Route, Home_Route } from "../../utils/constant";
+import { Friends_Route, Home_Route, Messages_Route } from "../../utils/constant";
 import { useNavigate } from "react-router-dom";
 function Sidebar() {
   let menu = [
@@ -20,21 +20,28 @@ function Sidebar() {
       route: Friends_Route,
     },
     {
+      icon: "MessageCircleMore",
+      label: "Messages",
+      index: 2,
+      color: "orange",
+      route: Messages_Route,
+    },
+    {
       icon: "Bookmark",
       label: "Saved",
-      index: 2,
+      index: 3,
       color: "#28d2b0",
     },
     {
       icon: "User",
       label: "Profile",
-      index: 3,
+      index: 4,
       color: "#c21e65",
     },
     {
       icon: "Settings",
       label: "Settings",
-      index: 4,
+      index: 5,
       color: "#c2861e",
     },
   ];
@@ -50,7 +57,7 @@ function Sidebar() {
           key={menuItem.index}
           onClick={() => {
             setSelectedMenu(menuItem.index);
-            navigate(menuItem.route??"/");
+            navigate(menuItem.route ?? "/");
           }}
         >
           <LucideIcon name={menuItem.icon} color={menuItem.color} />

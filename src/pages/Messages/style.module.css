@@ -1,0 +1,17 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  max-width: 1600px;
+  height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
