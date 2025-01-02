@@ -1,10 +1,15 @@
 "use client";
-import { signIn } from "next-auth/react";
+import { setUserDetails } from "@/lib/features/UserSlice";
+import Constants from "@/utils/constants/Constant";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent } from "react";
+import { useDispatch } from "react-redux";
 
 function LoginBox() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     const res = await signIn("credentials", {
@@ -12,11 +17,21 @@ function LoginBox() {
       password: "P@ssw0rd123!",
       redirect: false,
     });
-    if (res?.status != 200) {
+
+    if (res?.error) {
       alert("Wrong Credentials");
       return;
     }
-    router.push("/");
+
+    // Retrieve the session data
+    const session = await getSession();
+    console.log("Logged in user:", session?.user);
+
+    if (session) {
+      dispatch(setUserDetails(session?.user));
+      localStorage.setItem(Constants.LOCAL_STORAGE_KEY, session?.user?.token);
+      router.push("/");
+    }
   };
   return (
     <div className="relative h-screen bg-gray-50 overflow-hidden">

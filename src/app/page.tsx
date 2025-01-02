@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import RightSidebar from "@/components/RightSidebar/RightSidebar";
 import React from "react";
 
-async function page() {
+function page() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />

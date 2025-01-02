@@ -1,3 +1,4 @@
+import useApiFetch from "@/hooks/useAPIFetch";
 import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, PlusCircle } from "lucide-react";
 import Image from "next/image";
 
@@ -32,7 +33,14 @@ const posts = [
   },
 ];
 
-export default function MainFeed() {
+const GetData = () => {
+  const res = useApiFetch("/post");
+  console.log("🚀  res:", res);
+};
+
+export default async function MainFeed() {
+  const data = await GetData();
+  console.log("🚀  data:", data);
   return (
     <main className="w-full lg:w-1/2 space-y-6">
       <div className="bg-white rounded-lg shadow p-4">

@@ -1,7 +1,11 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios"; // Import axios for API requests
+import APIRoutes from "./utils/constants/APIRoutes";
+import ProjectRoutes from "./utils/constants/ProjectRoutes";
+import jwt from "jsonwebtoken"; // Import the jwt library
+import axios from "axios";
+import Config from "./utils/config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -12,39 +16,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {},
-      authorize: async (cred) => {
+      authorize: async (cred: any) => {
         try {
-          console.log(cred);
-          // Make a request to your backend login API
-          const response = await axios.post(`http://localhost:7777/user/login`, {
+          const response = await axios.post(`${Config.API_BASE_URL}${APIRoutes.LOGIN}`, {
             email: cred.email,
             password: cred.password,
           });
 
-          // Check if the API response indicates success
-          if (response.status === 200 && response.data.success == 1) {
-            console.log("user logged in", response.data.data.token);
-            return {
-              id: "123123asdasd",
-              name: "ravinder",
-              email: "test@gmail.com",
-              token: response.data.data.token,
-            };
+          if (response.status === 200 && response.data.success === 1) {
+            const token = response.data.data.token;
+            const decoded = jwt.decode(token);
+            if (decoded && typeof decoded === "object") {
+              return {
+                id: decoded.id,
+                name: decoded.name,
+                token,
+              };
+            }
+            return null;
           } else {
-            // Return null if login fails
             return null;
           }
-        } catch {
-          //   console.error("Error during login:", error.response?.data || error.message);
+        } catch (error) {
+          console.error("Login error:", error);
           return null;
         }
       },
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: ProjectRoutes.LOGIN,
   },
   session: {
     strategy: "jwt",
+    maxAge: 4 * 60 * 60,
+  },
+  callbacks: {
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.token = user.token;
+      }
+      return token;
+    },
+    async session({ session, token }: any) {
+      //add the values here if you want to get those values in auth session object
+      session.user = {
+        id: token.id,
+        name: token.name,
+        token: token.token,
+      };
+      return session;
+    },
   },
 });
