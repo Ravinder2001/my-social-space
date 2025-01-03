@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const authDetails = await auth();
+    const authDetails: any = await auth();
     const token = authDetails?.user.token;
 
     if (token) {

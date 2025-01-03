@@ -18,7 +18,7 @@ export async function serverAPICall<T>(
   let error: string | null = null;
 
   try {
-    const authDetails = await auth();
+    const authDetails: any = await auth();
     const token = authDetails?.user?.token || "";
     const fullURL = Config.API_BASE_URL + url;
 
