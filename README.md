@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Name
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a robust web application built with the latest technologies and tools to ensure scalability, maintainability, and user-friendly experience. It incorporates state management, custom API hooks, and authentication mechanisms with private and public route handling.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Custom Hook for API Calls**: Used to streamline and simplify API requests.
+- **Authentication**:
+  - Private and public route authentication.
+  - User authentication with a custom authentication page.
+- **State Management**: Implemented using Redux Toolkit and Redux Persist.
+- **Error Notifications**: Integrated with `react-hot-toast` to provide error feedback.
+- **Server-side API Calls**: Dedicated server API call hooks for seamless backend communication.
+- **Code Quality and Formatting**:
+  - Configured **Husky** for pre-commit hooks to ensure code standards.
+  - Integrated **ESLint** for linting and maintaining consistent coding standards.
+  - Utilized **Prettier** for automatic code formatting.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The following libraries and frameworks were utilized in this project:
 
-## Learn More
+| Package Name        | Version          |
+|---------------------|------------------|
+| @reduxjs/toolkit    | ^2.5.0           |
+| axios               | ^1.7.9           |
+| js-cookie           | ^3.0.5           |
+| jsonwebtoken        | ^9.0.2           |
+| lucide-react        | ^0.468.0         |
+| next                | 15.0.3           |
+| next-auth           | ^5.0.0-beta.25   |
+| react               | ^19.0.0 (stable) |
+| react-dom           | ^19.0.0          |
+| react-hot-toast     | ^2.4.1           |
+| react-redux         | ^9.2.0           |
+| redux-persist       | ^6.0.0           |
+| eslint              | Configured       |
+| prettier            | Configured       |
+| husky               | Configured       |
 
-To learn more about Next.js, take a look at the following resources:
+## Key Highlights
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### State Management
+- Redux Toolkit for state management with simplified configurations.
+- Redux Persist for state persistence across sessions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### API Calls
+- Custom hooks to handle both client-side and server-side API requests, ensuring clean and reusable code.
 
-## Deploy on Vercel
+### Authentication
+- Integrated `next-auth` for managing user sessions and authentication flow.
+- Implemented custom authentication for handling both public and private routes.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Notifications
+- Integrated `react-hot-toast` for displaying error messages and other notifications.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Code Quality
+- Configured **Husky** to enforce pre-commit checks, ensuring only linted and formatted code is committed.
+- Leveraged **ESLint** to maintain consistent coding practices.
+- Utilized **Prettier** for automatic formatting of code.
+
+### Modern UI Components
+- Leveraged `lucide-react` for a modern and lightweight icon system.
+
+## Folder Structure
+
+```plaintext
+src/
+├── components/      # Reusable UI components
+├── hooks/           # Custom hooks including API call hooks
+├── pages/           # Next.js pages
+├── redux/           # Redux state slices and store configuration
+├── utils/           # Utility functions and configuration files
