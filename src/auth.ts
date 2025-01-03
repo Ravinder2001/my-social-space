@@ -2,10 +2,10 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import APIRoutes from "./utils/constants/APIRoutes";
-import ProjectRoutes from "./utils/constants/ProjectRoutes";
 import jwt from "jsonwebtoken"; // Import the jwt library
 import axios from "axios";
 import Config from "./utils/config";
+import { PublicProjectRoutes } from "./utils/constants/ProjectRoutes";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -45,7 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   pages: {
-    signIn: ProjectRoutes.LOGIN,
+    signIn: PublicProjectRoutes.LOGIN,
   },
   session: {
     strategy: "jwt",

@@ -1,6 +1,8 @@
-const ProjectRoutes = {
+export const PublicProjectRoutes = {
   LOGIN: "/login",
   REGISTER: "/register",
 };
 
-export default ProjectRoutes;
+export const PrivateProjectRoutes = {
+  HOME: "/",
+};

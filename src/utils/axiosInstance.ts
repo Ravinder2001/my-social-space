@@ -1,19 +1,15 @@
-"use client"
+"use client";
 import axios from "axios";
 import Config from "@/utils/config";
 import { auth } from "@/auth";
 
-console.log("cofig",Config)
-
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:7777",
+  baseURL: Config.API_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    console.log("coming----")
     const authDetails = await auth();
-    console.log("🚀  authDetails:", authDetails)
     const token = authDetails?.user.token;
 
     if (token) {
@@ -30,7 +26,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log("🚀  response:", response)
+    console.log("🚀  response:", response);
     return response;
   },
   (error) => {

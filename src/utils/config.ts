@@ -1,4 +1,4 @@
 const Config = {
-  API_BASE_URL: process.env.BASE_URL,
+  API_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
 };
 export default Config;

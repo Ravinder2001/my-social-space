@@ -1,6 +1,5 @@
 "use client";
 import { setUserDetails } from "@/lib/features/UserSlice";
-import Constants from "@/utils/constants/Constant";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent } from "react";
@@ -29,7 +28,6 @@ function LoginBox() {
 
     if (session) {
       dispatch(setUserDetails(session?.user));
-      localStorage.setItem(Constants.LOCAL_STORAGE_KEY, session?.user?.token);
       router.push("/");
     }
   };

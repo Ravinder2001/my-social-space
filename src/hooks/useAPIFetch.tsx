@@ -1,8 +1,9 @@
-"use client"
+"use client";
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { AxiosRequestConfig } from "axios";
-import axiosInstance from "@/lib/axiosInstance";
+import axiosInstance from "@/utils/axiosInstance";
+import { showToast } from "@/utils/comman/Toast";
 
 const useApiFetch = (initialUrl: string, initialOptions?: AxiosRequestConfig) => {
   const [data, setData] = useState<{
@@ -20,8 +21,7 @@ const useApiFetch = (initialUrl: string, initialOptions?: AxiosRequestConfig) =>
       const response = await axiosInstance(url, options);
       setData(response.data);
     } catch (error: any) {
-    console.log("🚀  error:", error)
-    //   showToast(error.data.error || error.data.message || error.message || "Something went wrong", "error");
+      showToast.error(error.data.error || error.data.message || error.message || "Something went wrong");
       setError(error.data.error || error.data.message || error.message || "Something went wrong");
     } finally {
       setIsLoading(false);
