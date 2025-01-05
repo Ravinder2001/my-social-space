@@ -2,18 +2,62 @@
 import { setUserDetails } from "@/lib/features/UserSlice";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { FormEvent } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
+
+import ReusableForm from "@/components/ReusableForm/ReusableForm";
+
+type InitialValuesType = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
 
 function LoginBox() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
+  const initialValues: InitialValuesType = {
+    email: "",
+    password: "",
+    rememberMe: false,
+  };
+
+  const fields = [
+    { name: "email", label: "Email address", type: "email", placeholder: "Enter your email" },
+    { name: "password", label: "Password", type: "password", placeholder: "Enter your password" },
+    {
+      name: "rememberMe",
+      label: "",
+      type: "checkbox",
+      customComponent: (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              Remember me
+            </label>
+          </div>
+
+          <div className="text-sm">
+            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Forgot your password?
+            </a>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  const handleSubmit = async (values: InitialValuesType) => {
     const res = await signIn("credentials", {
-      email: "john.doe@example.com",
-      password: "P@ssw0rd123!",
+      email: values.email,
+      password: values.password,
       redirect: false,
     });
 
@@ -45,66 +89,13 @@ function LoginBox() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 bg-opacity-40">
-            <form className="space-y-6" action="#" onSubmit={handleLogin} method="POST">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-md"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-md"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                    Remember me
-                  </label>
-                </div>
-
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Sign in
-                </button>
-              </div>
-            </form>
+            <ReusableForm
+              initialValues={initialValues}
+              onSubmit={handleSubmit}
+              fields={fields}
+              submitButtonText="Sign in"
+              schemaName="userLoginSchema"
+            />
 
             <div className="mt-6">
               <div className="relative">
