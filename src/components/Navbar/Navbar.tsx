@@ -1,4 +1,6 @@
 "use client";
+import { signOut } from "next-auth/react";
+import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
 import { Bell, Mail, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,9 +32,9 @@ export default function Navbar() {
             <Link href="/messages" className="text-gray-600 hover:text-blue-600">
               <Mail className="w-6 h-6" />
             </Link>
-            <Link href="/profile" className="flex items-center space-x-2">
+            <div onClick={() => signOut({ redirect: true, redirectTo: PublicProjectRoutes.LOGIN })} className="flex items-center space-x-2">
               <Image src="/placeholder.svg?height=32&width=32" width={32} height={32} alt="User Avatar" className="w-8 h-8 rounded-full" />
-            </Link>
+            </div>
           </div>
         </div>
       </div>

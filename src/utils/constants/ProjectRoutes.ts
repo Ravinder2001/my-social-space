@@ -1,6 +1,6 @@
 export const PublicProjectRoutes = {
-  LOGIN: "/login",
-  REGISTER: "/register",
+  LOGIN: "/authentications/login",
+  REGISTER: "/authentications/register",
 };
 
 export const PrivateProjectRoutes = {
