@@ -21,9 +21,17 @@ interface ReusableFormProps {
   onSubmit: (values: any) => void;
   fields: FormField[];
   submitButtonText?: string;
+  isLoading?: boolean; // Added prop
 }
 
-const ReusableForm: React.FC<ReusableFormProps> = ({ initialValues, schemaName, onSubmit, fields, submitButtonText = "Submit" }) => {
+const ReusableForm: React.FC<ReusableFormProps> = ({ 
+  initialValues, 
+  schemaName, 
+  onSubmit, 
+  fields, 
+  submitButtonText = "Submit", 
+  isLoading = false // Default to false 
+}) => {
   return (
     <Formik initialValues={initialValues} validationSchema={YupSchema[schemaName]} onSubmit={onSubmit}>
       {({ values }) => (
@@ -32,6 +40,7 @@ const ReusableForm: React.FC<ReusableFormProps> = ({ initialValues, schemaName, 
             field.customComponent ? (
               <div key={index} className={styles.customComponent}>
                 {field.customComponent}
+                <ErrorMessage name={field.name} component="div" className={styles.errorMsg} />
               </div>
             ) : field.isDynamic ? (
               <FieldArray
@@ -65,8 +74,8 @@ const ReusableForm: React.FC<ReusableFormProps> = ({ initialValues, schemaName, 
               </div>
             )
           )}
-          <button type="submit" className={styles.submitButton}>
-            {submitButtonText}
+          <button type="submit" className={styles.submitButton} disabled={isLoading}>
+            {isLoading ? <span className={styles.loader}></span> : submitButtonText}
           </button>
         </Form>
       )}

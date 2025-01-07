@@ -2,10 +2,13 @@
 import { setUserDetails } from "@/lib/features/UserSlice";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import ReusableForm from "@/components/ReusableForm/ReusableForm";
+import { showToast } from "@/utils/comman/Toast";
+import Link from "next/link";
+import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
 
 type InitialValuesType = {
   email: string;
@@ -16,6 +19,8 @@ type InitialValuesType = {
 function LoginBox() {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: InitialValuesType = {
     email: "",
@@ -55,24 +60,31 @@ function LoginBox() {
   ];
 
   const handleSubmit = async (values: InitialValuesType) => {
-    const res = await signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    });
+    try {
+      setIsLoading(true);
+      const res: any = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
 
-    if (res?.error) {
-      alert("Wrong Credentials");
-      return;
-    }
+      if (res?.error) {
+        showToast.error(res?.code);
+        return;
+      }
 
-    // Retrieve the session data
-    const session = await getSession();
-    console.log("Logged in user:", session?.user);
+      // Retrieve the session data
+      const session = await getSession();
+      console.log("Logged in user:", session?.user);
 
-    if (session) {
-      dispatch(setUserDetails(session?.user));
-      router.push("/");
+      if (session) {
+        dispatch(setUserDetails(session?.user));
+        router.push("/");
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -81,10 +93,10 @@ function LoginBox() {
       <div className="absolute top-20 right-32 w-[500px] h-[500px] bg-[#FFB20080] rounded-full mix-blend-multiply filter blur-[150px] opacity-70 animate-blob animation-delay-2000"></div>
       <div className="hidden xl:block absolute bottom-10 left-32 w-[500px] h-[500px] bg-[#FFB20080] rounded-full mix-blend-multiply filter blur-[150px] opacity-70 animate-blob animation-delay-4000"></div>
       <div className="absolute bottom-10 right-52 w-[500px] h-[500px] bg-[#CAEEF580] rounded-full mix-blend-multiply filter blur-[150px] opacity-70 animate-blob animation-delay-4000"></div>
-      <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-full flex-col justify-center py-5 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h1 className="mt-6 text-center text-4xl font-bold tracking-tight text-gray-900">My Social Space</h1>
-          <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
+          <h1 className="mt-2 text-center text-4xl font-bold tracking-tight text-gray-900">My Social Space</h1>
+          <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
@@ -95,8 +107,13 @@ function LoginBox() {
               fields={fields}
               submitButtonText="Sign in"
               schemaName="userLoginSchema"
+              isLoading={isLoading}
             />
-
+            <div className="text-sm mt-2">
+              <Link href={PublicProjectRoutes.REGISTER} className="font-medium text-indigo-600 hover:text-indigo-500">
+                Register now!
+              </Link>
+            </div>
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">

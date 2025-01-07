@@ -3,12 +3,12 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   border-radius: 8px;
 }
 
 .customComponent {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .dynamicFieldContainer {
@@ -23,7 +23,7 @@
 }
 
 .fieldContainer {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .label {
@@ -71,4 +71,26 @@
   padding: 12px;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -1,36 +1,31 @@
-"use client";
 import axios from "axios";
 import Config from "@/utils/config";
-import { auth } from "@/auth";
 
 const axiosInstance = axios.create({
   baseURL: Config.API_BASE_URL,
 });
-
+  
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const authDetails: any = await auth();
-    const token = authDetails?.user.token;
+    const token = localStorage.getItem("token")
+    console.log("🚀  token:", token)
 
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`; // Attach the token to the Authorization header
+      config.headers["Authorization"] = `Bearer ${token}`; 
     }
 
     return config;
   },
   (error) => {
-    console.log("Error in axios req interceptors=====>", error);
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log("🚀  response:", response);
     return response;
   },
   (error) => {
-    console.log("Error in axios res interceptors=====>", error.message);
     return Promise.reject(error);
   }
 );

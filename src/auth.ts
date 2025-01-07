@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import APIRoutes from "./utils/constants/APIRoutes";
@@ -6,6 +6,15 @@ import jwt from "jsonwebtoken"; // Import the jwt library
 import axios from "axios";
 import Config from "./utils/config";
 import { PublicProjectRoutes } from "./utils/constants/ProjectRoutes";
+import Messages from "./utils/constants/Messages";
+
+export class InvalidLoginError extends CredentialsSignin {
+  code = "invalid_credentials";
+  constructor(message: string) {
+    super(message);
+    this.code = message;
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -26,6 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (response.status === 200 && response.data.success === 1) {
             const token = response.data.data.token;
             const decoded = jwt.decode(token);
+
             if (decoded && typeof decoded === "object") {
               return {
                 id: decoded.id,
@@ -33,13 +43,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token,
               };
             }
-            return null;
+            throw new InvalidLoginError(Messages.jwt.errors.invalidToken);
           } else {
-            return null;
+            throw new InvalidLoginError(Messages.errors.server);
           }
-        } catch (error) {
-          console.error("Login error:", error);
-          return null;
+        } catch (e: any) {
+          throw new InvalidLoginError(e.response?.data?.message);
         }
       },
     }),
