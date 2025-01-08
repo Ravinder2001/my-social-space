@@ -9,6 +9,10 @@ import ReusableForm from "@/components/ReusableForm/ReusableForm";
 import { showToast } from "@/utils/comman/Toast";
 import Link from "next/link";
 import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
+import Constants from "@/utils/constants/Constant";
+import Image from "next/image";
+import Google from "@/assets/images/google.png";
+import Github from "@/assets/images/github.png";
 
 type InitialValuesType = {
   email: string;
@@ -62,7 +66,7 @@ function LoginBox() {
   const handleSubmit = async (values: InitialValuesType) => {
     try {
       setIsLoading(true);
-      const res: any = await signIn("credentials", {
+      const res: any = await signIn(Constants.COMMAN.CREDENTIALS, {
         email: values.email,
         password: values.password,
         redirect: false,
@@ -124,21 +128,21 @@ function LoginBox() {
                 </div>
               </div>
 
-              <div className="mt-6 flex align-center justify-center">
-                <div>
-                  <a
-                    href="#"
-                    className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50"
-                  >
-                    <span className="sr-only">Sign in with Facebook</span>
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path
-                        fillRule="evenodd"
-                        d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </a>
+              <div className="mt-6 gap-8 flex align-center justify-center">
+                <div
+                  onClick={() => {
+                    signIn(Constants.PROVIDERS.GOOGLE);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <Image src={Google} width={30} height={30} alt="" />
+                </div>
+                <div
+                  onClick={() => {
+                    signIn(Constants.PROVIDERS.GITHUB);
+                  }}
+                >
+                  <Image src={Github} width={30} height={30} alt="" />
                 </div>
               </div>
             </div>

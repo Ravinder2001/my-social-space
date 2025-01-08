@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { Field } from "formik";
 import Link from "next/link";
 import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
+import Constants from "@/utils/constants/Constant";
 
 type RegisterValuesType = {
   name: string;
@@ -79,7 +80,7 @@ function RegisterBox() {
       type: "checkbox",
       customComponent: (
         <div className="flex items-center">
-          <Field type="checkbox" name="termsAndConditions"  className="form-radio text-indigo-600" />
+          <Field type="checkbox" name="termsAndConditions" className="form-radio text-indigo-600" />
           <label htmlFor="termsAndConditions" className="ml-2 text-sm text-gray-600">
             I accept the{" "}
             <a href="/terms" className="text-indigo-600 hover:underline">
@@ -107,7 +108,7 @@ function RegisterBox() {
   };
 
   const handleLogin = async () => {
-    const res: any = await signIn("credentials", {
+    const res: any = await signIn(Constants.COMMAN.CREDENTIALS, {
       email: formValuesRef.current?.email,
       password: formValuesRef.current?.password,
       redirect: false,
@@ -132,7 +133,7 @@ function RegisterBox() {
   useEffect(() => {
     if (registerRes?.success && formValuesRef.current) {
       handleLogin();
-    }else{
+    } else {
       setIsLoading(false);
     }
   }, [registerRes]);

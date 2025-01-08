@@ -7,6 +7,7 @@ import axios from "axios";
 import Config from "./utils/config";
 import { PublicProjectRoutes } from "./utils/constants/ProjectRoutes";
 import Messages from "./utils/constants/Messages";
+import Constants from "./utils/constants/Constant";
 
 export class InvalidLoginError extends CredentialsSignin {
   code = "invalid_credentials";
@@ -19,11 +20,11 @@ export class InvalidLoginError extends CredentialsSignin {
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: Config.GOOGLE_CLIENT_ID,
+      clientSecret: Config.GOOGLE_CLIENT_SECRET,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: Constants.PROVIDERS.CREDENTIALS,
       credentials: {},
       authorize: async (cred: any) => {
         try {
@@ -36,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const token = response.data.data.token;
             const decoded = jwt.decode(token);
 
-            if (decoded && typeof decoded === "object") {
+            if (decoded && typeof decoded === Constants.COMMAN.OBJECT) {
               return {
                 id: decoded.id,
                 name: decoded.name,
@@ -61,6 +62,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 4 * 60 * 60,
   },
   callbacks: {
+    async signIn({ user, account }: any) {
+      if (account?.provider === Constants.PROVIDERS.GOOGLE) {
+        try {
+          // Validate Google token with your backend
+          const response = await axios.post(`${Config.API_BASE_URL}${APIRoutes.GOOGLE_SIGN_IN}`, {
+            token: account.id_token,
+          });
+
+          if (response.status === 200 && response.data.success === 1) {
+            user.token = response.data.data.token;
+            return user; // Successful Google sign-in
+          }
+
+          return false; // Reject sign-in if backend verification fails
+        } catch (error) {
+          console.log("Google Sign-In Error:", error);
+          return false; // Reject sign-in if any error occurs
+        }
+      } else if (account?.provider === Constants.COMMAN.CREDENTIALS) {
+        // Allow sign-in only if user exists
+        return !!user;
+      }
+
+      return false; // Reject other providers
+    },
     async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
