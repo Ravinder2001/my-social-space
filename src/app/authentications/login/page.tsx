@@ -91,6 +91,15 @@ function LoginBox() {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleSignIn = () => {
+    const myPromise = signIn(Constants.PROVIDERS.GOOGLE);
+    showToast.promise(myPromise, {
+      loading: "Signing in with Google...",
+      success: "Successfully signed in with Google",
+      error: "Failed to sign in with Google",
+    });
+  };
   return (
     <div className="relative h-screen bg-gray-50 overflow-hidden">
       <div className="absolute top-20 left-2 w-[500px] h-[500px] bg-[#D1208A80] rounded-full mix-blend-multiply filter blur-[150px] opacity-70 animate-blob"></div>
@@ -129,12 +138,7 @@ function LoginBox() {
               </div>
 
               <div className="mt-6 gap-8 flex align-center justify-center">
-                <div
-                  onClick={() => {
-                    signIn(Constants.PROVIDERS.GOOGLE);
-                  }}
-                  className="cursor-pointer"
-                >
+                <div onClick={handleGoogleSignIn} className="cursor-pointer">
                   <Image src={Google} width={30} height={30} alt="" />
                 </div>
                 <div
