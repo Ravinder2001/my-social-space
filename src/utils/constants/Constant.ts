@@ -8,7 +8,7 @@ const Constants = {
   },
   COMMAN: {
     OBJECT: "object",
-    CREDENTIALS:"credentials"
+    CREDENTIALS: "credentials",
   },
 };
 export default Constants;

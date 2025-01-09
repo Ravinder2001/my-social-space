@@ -1,4 +1,3 @@
-import { DialogDemo } from "@/components/CreatePostModal/CreatePostModal";
 import LeftSidebar from "@/components/LeftSidebar/LeftSidebar";
 import MainFeed from "@/components/MainFeed/MainFeed";
 import Navbar from "@/components/Navbar/Navbar";
@@ -12,7 +11,6 @@ function page() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          <DialogDemo/>
           <LeftSidebar />
           <MainFeed />
           <RightSidebar />

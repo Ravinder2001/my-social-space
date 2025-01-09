@@ -1,6 +1,7 @@
-import { Bell, Home, Mail, Search, Users, Settings, PlusCircle, Bookmark, TrendingUp } from "lucide-react";
+import { Bell, Home, Mail, Search, Users, Settings, Bookmark, TrendingUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { DialogDemo } from "../CreatePostModal/CreatePostModal";
 
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -35,10 +36,7 @@ export default function LeftSidebar() {
             </Link>
           ))}
         </nav>
-        <button className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center justify-center space-x-2">
-          <PlusCircle className="w-5 h-5" />
-          <span>Create Post</span>
-        </button>
+        <DialogDemo />
         <div className="space-y-2">
           <h3 className="font-semibold text-gray-700">Quick Links</h3>
           {quickLinks.map((item) => (

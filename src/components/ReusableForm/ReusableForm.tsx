@@ -24,13 +24,13 @@ interface ReusableFormProps {
   isLoading?: boolean; // Added prop
 }
 
-const ReusableForm: React.FC<ReusableFormProps> = ({ 
-  initialValues, 
-  schemaName, 
-  onSubmit, 
-  fields, 
-  submitButtonText = "Submit", 
-  isLoading = false // Default to false 
+const ReusableForm: React.FC<ReusableFormProps> = ({
+  initialValues,
+  schemaName,
+  onSubmit,
+  fields,
+  submitButtonText = "Submit",
+  isLoading = false, // Default to false
 }) => {
   return (
     <Formik initialValues={initialValues} validationSchema={YupSchema[schemaName]} onSubmit={onSubmit}>
