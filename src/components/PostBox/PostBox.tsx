@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PostModal } from "../PostModal/PostModal";
 
 export const PostPreview = ({
   username = "Username",
@@ -11,12 +12,13 @@ export const PostPreview = ({
   images,
   timestamp = "2 hours ago",
   likes = 0,
-  comments = 0,
+  comments = [],
   isPreview = false,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const ImageGrid = ({ images }) => {
     if (!images?.length) return null;
@@ -40,7 +42,7 @@ export const PostPreview = ({
     }
 
     return (
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2" onClick={() => setIsModalOpen(true)}>
         <img src={images[0]} alt="Post 1" className="w-full rounded-lg object-cover max-h-[24rem]" />
         <div className="relative">
           <img src={images[1]} alt="Post 2" className="w-full rounded-lg object-cover max-h-[24rem]" />
@@ -110,7 +112,7 @@ export const PostPreview = ({
             <span className="font-medium mr-2">{username}</span>
             {caption}
           </div>
-          {comments > 0 && <div className="text-sm text-gray-500">View all {comments.toLocaleString()} comments</div>}
+          {comments.length > 0 && <div className="text-sm text-gray-500 cursor-pointer">View all {comments.toLocaleString()} comments</div>}
         </div>
       )}
 
@@ -121,6 +123,18 @@ export const PostPreview = ({
           {caption}
         </div>
       )}
+      <PostModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        images={images}
+        caption={caption}
+        likes={likeCount}
+        comments={[]}
+        currentUser={{
+          username: "CurrentUser",
+          avatar: "/api/placeholder/32/32",
+        }}
+      />
     </div>
   );
 };
