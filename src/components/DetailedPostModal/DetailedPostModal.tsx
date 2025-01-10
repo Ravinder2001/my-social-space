@@ -29,7 +29,7 @@ interface PostModalProps {
   };
 }
 
-export function PostModal({ isOpen, onClose, images, caption, likes, comments, currentUser }: PostModalProps) {
+function DetailedPostModal({ isOpen, onClose, images, caption, likes, comments, currentUser }: PostModalProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [newComment, setNewComment] = useState("");
 
@@ -137,3 +137,5 @@ export function PostModal({ isOpen, onClose, images, caption, likes, comments, c
     </Dialog>
   );
 }
+
+export default DetailedPostModal;

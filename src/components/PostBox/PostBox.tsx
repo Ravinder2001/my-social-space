@@ -3,18 +3,10 @@ import React, { useState } from "react";
 import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { PostModal } from "../PostModal/PostModal";
+import DetailedPostModal from "../DetailedPostModal/DetailedPostModal";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
-export const PostPreview = ({
-  username = "Username",
-  userImage = "/api/placeholder/32/32",
-  caption,
-  images,
-  timestamp = "2 hours ago",
-  likes = 0,
-  comments = [],
-  isPreview = false,
-}) => {
+export const PostPreview = ({ username = "Username", caption, images, timestamp = "2 hours ago", likes = 0, comments = [], isPreview = false }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
@@ -64,9 +56,12 @@ export const PostPreview = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-            <img src={userImage} alt={username} className="w-full h-full object-cover" />
-          </div>
+          {/* <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden"> */}
+          <Avatar className="w-10 h-10">
+            {/* <AvatarImage src={currentUser.avatar} alt={currentUser.username} /> */}
+            <AvatarFallback>RN</AvatarFallback>
+          </Avatar>
+          {/* </div> */}
           <div>
             <div className="font-medium text-sm text-gray-900">{username}</div>
             {!isPreview && <div className="text-xs text-gray-500">{timestamp}</div>}
@@ -123,7 +118,7 @@ export const PostPreview = ({
           {caption}
         </div>
       )}
-      <PostModal
+      <DetailedPostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         images={images}

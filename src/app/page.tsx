@@ -21,7 +21,36 @@ function page() {
       likes: 1234,
       comments: 56,
     },
-    // ... more posts
+    {
+      username: "JohnDoe",
+      userImage: "/api/placeholder/32/32",
+      caption: "Exploring the beautiful beaches of Hawaii! 🌴🌊",
+      images: [
+        "https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+      ],
+      timestamp: "2 hours ago",
+      likes: 1234,
+      comments: 56,
+    },
+    {
+      username: "JohnDoe",
+      userImage: "/api/placeholder/32/32",
+      caption: "Exploring the beautiful beaches of Hawaii! 🌴🌊",
+      images: [
+        "https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+        "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg",
+      ],
+      timestamp: "2 hours ago",
+      likes: 1234,
+      comments: 56,
+    },
   ];
   return (
     <div className="min-h-screen bg-gray-100">
