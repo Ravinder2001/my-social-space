@@ -1,9 +1,10 @@
 "use client";
 import { signOut } from "next-auth/react";
 import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
-import { Bell, Mail, Search } from "lucide-react";
+import { Mail, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { NotificationBell } from "../Notifications/Notifications";
 
 export default function Navbar() {
   return (
@@ -27,7 +28,7 @@ export default function Navbar() {
           </div>
           <div className="flex items-center space-x-4">
             <Link href="/notifications" className="text-gray-600 hover:text-blue-600">
-              <Bell className="w-6 h-6" />
+              <NotificationBell />
             </Link>
             <Link href="/messages" className="text-gray-600 hover:text-blue-600">
               <Mail className="w-6 h-6" />

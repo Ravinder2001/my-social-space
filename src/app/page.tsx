@@ -1,10 +1,13 @@
+"use client";
 import LeftSidebar from "@/components/LeftSidebar/LeftSidebar";
 import Navbar from "@/components/Navbar/Navbar";
 import { PostPreview } from "@/components/PostBox/PostBox";
 import RightSidebar from "@/components/RightSidebar/RightSidebar";
-import React from "react";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import VideoCallNotification from "@/components/VideoCallNotification/VideoCallNotification";
 
-function page() {
+function Page() {
   const posts = [
     {
       username: "JohnDoe",
@@ -52,6 +55,19 @@ function page() {
       comments: 56,
     },
   ];
+
+  //notifications
+  const [showNotification, setShowNotification] = useState(false);
+
+  const handleAccept = () => {
+    console.log("Call accepted");
+    setShowNotification(false);
+  };
+
+  const handleDecline = () => {
+    console.log("Call declined");
+    setShowNotification(false);
+  };
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -61,6 +77,18 @@ function page() {
           <LeftSidebar />
           {/* <MainFeed /> */}
           <div className="max-w-xl mx-auto space-y-4">
+            <Button onClick={() => setShowNotification(true)} className="mb-4">
+              Simulate Incoming Call
+            </Button>
+            {showNotification && (
+              <VideoCallNotification
+                callerName="John Doe"
+                callerImage="/placeholder.svg?height=100&width=100"
+                onAccept={handleAccept}
+                onDecline={handleDecline}
+              />
+            )}
+
             {posts.map((post, index) => (
               <PostPreview key={index} {...post} />
             ))}
@@ -72,4 +100,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
