@@ -96,7 +96,7 @@ function LoginBox() {
     const myPromise = signIn(Constants.PROVIDERS.GOOGLE);
     showToast.promise(myPromise, {
       loading: "Signing in with Google...",
-      success: "Successfully signed in with Google",
+      success: "Redirecting...",
       error: "Failed to sign in with Google",
     });
   };

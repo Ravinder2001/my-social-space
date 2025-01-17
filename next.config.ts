@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
     {
       protocol:"https",
       hostname:"i.imgur.com"
+    },
+    {
+      protocol:"https",
+      hostname:"my-social-space.s3.ap-south-1.amazonaws.com"
     }
   ]
  }

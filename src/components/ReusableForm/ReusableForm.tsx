@@ -3,6 +3,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import styles from "./style.module.css";
 import YupSchema from "@/utils/comman/YupValidations";
+import ButtonComponent from "../Atoms/Button/Button";
 
 type YupSchemaKeys = keyof typeof YupSchema;
 
@@ -74,9 +75,7 @@ const ReusableForm: React.FC<ReusableFormProps> = ({
               </div>
             )
           )}
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? <span className={styles.loader}></span> : submitButtonText}
-          </button>
+          <ButtonComponent isLoading={isLoading} buttonText={submitButtonText} type="submit" />
         </Form>
       )}
     </Formik>

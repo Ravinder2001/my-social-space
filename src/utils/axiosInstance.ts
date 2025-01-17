@@ -1,5 +1,6 @@
 import axios from "axios";
 import Config from "@/utils/config";
+import { getSession } from "next-auth/react";
 
 const axiosInstance = axios.create({
   baseURL: Config.API_BASE_URL,
@@ -7,8 +8,8 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = localStorage.getItem("token");
-    console.log("🚀  token:", token);
+    const session: any = await getSession();
+    const token = session?.user?.token;
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

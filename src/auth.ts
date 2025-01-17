@@ -22,6 +22,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: Config.GOOGLE_CLIENT_ID,
       clientSecret: Config.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+        },
+      },
     }),
     CredentialsProvider({
       name: Constants.PROVIDERS.CREDENTIALS,

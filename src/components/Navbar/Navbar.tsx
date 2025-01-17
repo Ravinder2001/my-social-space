@@ -2,9 +2,9 @@
 import { signOut } from "next-auth/react";
 import { PublicProjectRoutes } from "@/utils/constants/ProjectRoutes";
 import { Mail, Search } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { NotificationBell } from "../Notifications/Notifications";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Navbar() {
   return (
@@ -33,9 +33,10 @@ export default function Navbar() {
             <Link href="/messages" className="text-gray-600 hover:text-blue-600">
               <Mail className="w-6 h-6" />
             </Link>
-            <div onClick={() => signOut({ redirect: true, redirectTo: PublicProjectRoutes.LOGIN })} className="flex items-center space-x-2">
-              <Image src="/placeholder.svg?height=32&width=32" width={32} height={32} alt="User Avatar" className="w-8 h-8 rounded-full" />
-            </div>
+            <Avatar onClick={() => signOut({ redirect: true, redirectTo: PublicProjectRoutes.LOGIN })}>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
           </div>
         </div>
       </div>
