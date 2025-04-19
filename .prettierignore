@@ -1,8 +1,0 @@
-public
-node_modules
-.next
-.cache
-package-lock.json
-next-env.d.ts
-next.config.ts
-yarn.lock
