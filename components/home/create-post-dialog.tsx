@@ -1,0 +1,282 @@
+"use client"
+
+import React, { useState, useRef } from "react"
+import { X, ImageIcon, Smile, Globe, Users, Lock, Sparkles, Loader2 } from "lucide-react"
+import { useApp } from "@/components/providers/app-provider"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+type Visibility = "public" | "friends" | "private"
+
+const visibilityOptions = {
+  public: { label: "Public", icon: Globe },
+  friends: { label: "Friends", icon: Users },
+  private: { label: "Only me", icon: Lock },
+}
+
+export function CreatePostDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  const { user } = useApp()
+  const { toast } = useToast()
+  const [caption, setCaption] = useState("")
+  const [visibility, setVisibility] = useState<Visibility>("public")
+  const [mediaFiles, setMediaFiles] = useState<File[]>([])
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showAiPrompt, setShowAiPrompt] = useState(false)
+  const [aiPrompt, setAiPrompt] = useState("")
+  const [isGeneratingCaption, setIsGeneratingCaption] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+
+    const newFiles: File[] = []
+    const newPreviews: string[] = []
+
+    // Limit to 5 files
+    const totalFiles = mediaFiles.length + files.length
+    const filesToProcess = totalFiles > 5 ? 5 - mediaFiles.length : files.length
+
+    for (let i = 0; i < filesToProcess; i++) {
+      const file = files[i]
+      newFiles.push(file)
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          newPreviews.push(e.target.result as string)
+          if (newPreviews.length === filesToProcess) {
+            setMediaFiles([...mediaFiles, ...newFiles])
+            setMediaPreviews([...mediaPreviews, ...newPreviews])
+          }
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+
+    if (totalFiles > 5) {
+      toast({
+        title: "File limit exceeded",
+        description: "You can only upload up to 5 files",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const removeFile = (index: number) => {
+    const newFiles = [...mediaFiles]
+    const newPreviews = [...mediaPreviews]
+    newFiles.splice(index, 1)
+    newPreviews.splice(index, 1)
+    setMediaFiles(newFiles)
+    setMediaPreviews(newPreviews)
+  }
+
+  const handleSubmit = async () => {
+    if (!caption.trim() && mediaPreviews.length === 0) {
+      toast({
+        title: "Empty post",
+        description: "Please add some text or media to your post",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    toast({
+      title: "Post created",
+      description: "Your post has been published successfully",
+    })
+
+    // Reset form
+    setCaption("")
+    setMediaFiles([])
+    setMediaPreviews([])
+    setIsSubmitting(false)
+    onOpenChange(false)
+  }
+
+  const generateAICaption = async () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: "Empty prompt",
+        description: "Please enter a prompt for the AI",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsGeneratingCaption(true)
+
+    // Simulate AI API call
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    // Mock AI-generated caption
+    const generatedCaption = `✨ ${aiPrompt} ✨\n\nJust living my best life! #blessed #nexus #sociallife`
+
+    setCaption(generatedCaption)
+    setIsGeneratingCaption(false)
+    setAiPrompt("")
+    setShowAiPrompt(false)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle className="text-center text-xl font-semibold">Create Post</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex items-center gap-3 mt-2">
+          <Avatar>
+            <AvatarImage src={user?.avatar || "/placeholder.svg?height=40&width=40"} alt={user?.name || "User"} />
+            <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-medium">{user?.name || "User"}</p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
+                  {React.createElement(visibilityOptions[visibility].icon, { className: "h-3.5 w-3.5" })}
+                  <span>{visibilityOptions[visibility].label}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {(Object.entries(visibilityOptions) as [Visibility, { label: string; icon: any }][]).map(
+                  ([key, { label, icon }]) => (
+                    <DropdownMenuItem key={key} onClick={() => setVisibility(key as Visibility)} className="gap-2">
+                      {React.createElement(icon, { className: "h-4 w-4" })}
+                      {label}
+                    </DropdownMenuItem>
+                  ),
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        <div className="space-y-4 mt-2">
+          <div className="flex justify-between items-center">
+            <p className="text-sm font-medium">What's on your mind?</p>
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowAiPrompt(!showAiPrompt)}>
+              <Sparkles className="h-4 w-4 text-brand-purple" />
+              Ask AI
+            </Button>
+          </div>
+
+          {showAiPrompt && (
+            <div className="space-y-2 p-3 bg-muted/30 rounded-md">
+              <p className="text-sm text-muted-foreground">Let AI help you craft the perfect caption</p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter a prompt for the AI..."
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  disabled={isGeneratingCaption}
+                />
+                <Button onClick={generateAICaption} disabled={isGeneratingCaption || !aiPrompt.trim()}>
+                  {isGeneratingCaption ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Generate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <Textarea
+            placeholder="What's on your mind?"
+            className="min-h-[120px] resize-none"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+          />
+
+          {mediaPreviews.length > 0 && (
+            <div
+              className={`grid gap-2 ${mediaPreviews.length === 1 ? "grid-cols-1" : mediaPreviews.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}
+            >
+              {mediaPreviews.map((preview, index) => (
+                <div key={index} className="relative group aspect-square rounded-md overflow-hidden">
+                  <img
+                    src={preview || "/placeholder.svg"}
+                    alt={`Preview ${index}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => removeFile(index)}
+                  >
+                    <X className="h-3 w-3" />
+                    <span className="sr-only">Remove</span>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-2 mt-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => fileInputRef.current?.click()}>
+            <ImageIcon className="h-4 w-4 text-brand-pink" />
+            <span>Add Photos</span>
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            className="hidden"
+            onChange={handleFileChange}
+          />
+
+          <Button variant="outline" size="sm" className="gap-2">
+            <Smile className="h-4 w-4 text-brand-yellow" />
+            <span>Feeling/Activity</span>
+          </Button>
+        </div>
+
+        <DialogFooter>
+          <Button
+            className="w-full"
+            onClick={handleSubmit}
+            disabled={isSubmitting || (caption.trim() === "" && mediaPreviews.length === 0)}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Posting...
+              </>
+            ) : (
+              "Post"
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
