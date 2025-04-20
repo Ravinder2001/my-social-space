@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation"
 import { Home, MessageSquare, Compass, Bell, User, Settings, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { useApp } from "@/components/providers/app-provider"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { signOut } from "next-auth/react"
 
 const navItems = [
   { name: "Home", href: "/", icon: Home, color: "text-brand-blue" },
@@ -18,7 +18,6 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const { logout } = useApp()
 
   return (
     <aside className="hidden md:flex flex-col w-16 lg:w-64 h-screen border-r bg-card transition-all duration-300 ease-in-out">
@@ -81,7 +80,7 @@ export function Sidebar() {
                 variant="ghost"
                 size="lg"
                 className="w-full justify-start gap-4 text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={() => logout()}
+                onClick={() => signOut()}
               >
                 <LogOut className="size-5" />
                 <span className="hidden lg:inline-block">Logout</span>

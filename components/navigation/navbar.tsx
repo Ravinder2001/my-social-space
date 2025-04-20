@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Search, Bell, Menu, User, Settings, LogOut, Home, MessageSquare, Compass } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -18,9 +17,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { signOut } from "next-auth/react"
 
 export function Navbar() {
-  const { user, logout } = useApp()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -89,7 +88,7 @@ export function Navbar() {
                   variant="ghost"
                   className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={() => {
-                    logout()
+                    signOut()
                     setMobileMenuOpen(false)
                   }}
                 >
@@ -123,8 +122,8 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8 transition-transform hover:scale-110">
-                  <AvatarImage src={user?.avatar || "/placeholder.svg?height=32&width=32"} alt={user?.name || "User"} />
-                  <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+                  <AvatarImage src={ "/placeholder.svg?height=32&width=32"} alt={"User"} />
+                  <AvatarFallback>{"U"}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

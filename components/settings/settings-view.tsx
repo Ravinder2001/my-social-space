@@ -1,15 +1,15 @@
-"\"use client"
+"use client"
 
 import { useState } from "react"
 import { LogOut, User, Key, Sun, Moon } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
+import { signOut } from "next-auth/react"
 
 export function SettingsView() {
-  const { logout, isDarkMode, toggleDarkMode } = useApp()
+  // const { logout, isDarkMode, toggleDarkMode } = useApp()
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
 
   return (
@@ -52,10 +52,10 @@ export function SettingsView() {
               <p className="text-sm font-medium leading-none">Dark Mode</p>
               <p className="text-sm text-muted-foreground">Toggle dark mode.</p>
             </div>
-            <Button variant="outline" size="sm" onClick={toggleDarkMode}>
-              {isDarkMode ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-              {isDarkMode ? "Light" : "Dark"}
-            </Button>
+            {/* <Button variant="outline" size="sm" onClick={toggleDarkMode}> */}
+              {/* {isDarkMode ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />} */}
+              {/* {isDarkMode ? "Light" : "Dark"} */}
+            {/* </Button> */}
           </div>
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
@@ -77,7 +77,7 @@ export function SettingsView() {
           <h2 className="text-lg font-semibold">Danger Zone</h2>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <Button variant="destructive" onClick={() => logout()} className="w-full">
+          <Button variant="destructive" onClick={() => signOut()} className="w-full">
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </Button>
@@ -86,5 +86,3 @@ export function SettingsView() {
     </div>
   )
 }
-\
-"

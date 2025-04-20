@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Camera, Settings, Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -39,12 +38,11 @@ const friends = [
 ]
 
 export function ProfileView() {
-  const { user } = useApp()
   const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   // Mock profile data
   const profile = {
-    name: user?.name || "Demo User",
+    name:  "Demo User",
     username: "@demouser",
     bio: "Digital creator | UI/UX Designer | Photographer\nSharing my journey and creative process",
     location: "San Francisco, CA",
@@ -71,7 +69,7 @@ export function ProfileView() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <Avatar className="h-32 w-32 border-4 border-background">
-              <AvatarImage src={user?.avatar || "/placeholder.svg?height=128&width=128"} alt={profile.name} />
+              <AvatarImage src={ "/placeholder.svg?height=128&width=128"} alt={profile.name} />
               <AvatarFallback>{profile.name[0]}</AvatarFallback>
             </Avatar>
 

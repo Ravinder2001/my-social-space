@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState } from "react"
 import { Camera, Loader2 } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { useToast } from "@/components/ui/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -30,7 +29,6 @@ export function EditProfileDialog({
   onOpenChange: (open: boolean) => void
   profile: ProfileData
 }) {
-  const { user } = useApp()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
@@ -127,7 +125,7 @@ export function EditProfileDialog({
             <div className="relative">
               <Avatar className="h-20 w-20 border-4 border-background">
                 <AvatarImage
-                  src={avatarPreview || user?.avatar || "/placeholder.svg?height=80&width=80"}
+                  src={avatarPreview ||"/placeholder.svg?height=80&width=80"}
                   alt="Avatar preview"
                 />
                 <AvatarFallback>{formData.name[0]}</AvatarFallback>

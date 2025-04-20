@@ -2,22 +2,20 @@
 
 import { useState } from "react"
 import { ImageIcon, Video, Smile, Sparkles } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { CreatePostDialog } from "@/components/home/create-post-dialog"
 
 export function CreatePostBox() {
-  const { user } = useApp()
   const [dialogOpen, setDialogOpen] = useState(false)
 
   return (
     <div className="bg-card rounded-xl p-4 shadow-sm">
       <div className="flex items-start gap-3">
         <Avatar>
-          <AvatarImage src={user?.avatar || "/placeholder.svg?height=40&width=40"} alt={user?.name || "User"} />
-          <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+          <AvatarImage src={"/placeholder.svg?height=40&width=40"} alt={"User"} />
+          <AvatarFallback>{"U"}</AvatarFallback>
         </Avatar>
         <div
           onClick={() => setDialogOpen(true)}

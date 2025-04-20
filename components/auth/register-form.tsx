@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Eye, EyeOff, Mail, Lock, User, Upload, UserPlus } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -31,7 +30,6 @@ type FormValues = z.infer<typeof formSchema>
 
 export function RegisterForm() {
   const router = useRouter()
-  const { register } = useApp()
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -51,7 +49,6 @@ export function RegisterForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true)
     try {
-      await register(values.name, values.email, values.password, avatarFile || undefined)
       router.push("/")
     } catch (error) {
       console.error("Registration failed:", error)

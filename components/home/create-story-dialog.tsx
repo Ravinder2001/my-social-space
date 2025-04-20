@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState, useRef } from "react"
 import { X, ImageIcon, Camera, Loader2 } from "lucide-react"
-import { useApp } from "@/components/providers/app-provider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -17,7 +16,6 @@ export function CreateStoryDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const { user } = useApp()
   const { toast } = useToast()
   const [caption, setCaption] = useState("")
   const [mediaFile, setMediaFile] = useState<File | null>(null)
@@ -82,10 +80,10 @@ export function CreateStoryDialog({
 
         <div className="flex items-center gap-3 mt-2">
           <Avatar>
-            <AvatarImage src={user?.avatar || "/placeholder.svg?height=40&width=40"} alt={user?.name || "User"} />
-            <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+            <AvatarImage src={ "/placeholder.svg?height=40&width=40"} alt={"User"} />
+            <AvatarFallback>{"U"}</AvatarFallback>
           </Avatar>
-          <p className="font-medium">{user?.name || "User"}</p>
+          <p className="font-medium">{ "User"}</p>
         </div>
 
         <div className="mt-4 space-y-4">
