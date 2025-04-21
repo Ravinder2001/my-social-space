@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { UploadFile } from "../utils/functions"
 
 type Visibility = "public" | "friends" | "private"
 
@@ -36,42 +37,54 @@ export function CreatePostDialog({
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-    const newFiles: File[] = []
-    const newPreviews: string[] = []
-
-    // Limit to 5 files
-    const totalFiles = mediaFiles.length + files.length
-    const filesToProcess = totalFiles > 5 ? 5 - mediaFiles.length : files.length
-
-    for (let i = 0; i < filesToProcess; i++) {
-      const file = files[i]
-      newFiles.push(file)
-
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          newPreviews.push(e.target.result as string)
-          if (newPreviews.length === filesToProcess) {
-            setMediaFiles([...mediaFiles, ...newFiles])
-            setMediaPreviews([...mediaPreviews, ...newPreviews])
-          }
+    try {
+        // Limit to 5 files
+        const totalFiles = mediaFiles.length + files.length;
+        if (totalFiles > 5) {
+            toast({
+                title: "File limit exceeded",
+                description: "You can only upload up to 5 files",
+                variant: "destructive",
+            });
+            return;
         }
-      }
-      reader.readAsDataURL(file)
-    }
 
-    if (totalFiles > 5) {
-      toast({
-        title: "File limit exceeded",
-        description: "You can only upload up to 5 files",
-        variant: "destructive",
-      })
+        const filesToProcess = Array.from(files).slice(0, 5 - mediaFiles.length);
+        
+        // Create previews for immediate display
+        const newPreviews = await Promise.all(
+            filesToProcess.map(file => {
+                return new Promise<string>((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target?.result as string);
+                    reader.readAsDataURL(file);
+                });
+            })
+        );
+
+        // Upload files to server
+        const uploadResponse = await UploadFile(filesToProcess);
+        const uploadedFiles = uploadResponse.data; // Assuming this returns array of {key, URL}
+
+        // Update state
+        setMediaFiles(prev => [...prev, ...filesToProcess]);
+        setMediaPreviews(prev => [...prev, ...newPreviews]);
+
+        return uploadedFiles; // Returns array of {key, URL} objects
+    } catch (error) {
+        console.error("Error handling file upload:", error);
+        toast({
+            title: "Upload failed",
+            description: "There was an error uploading your files",
+            variant: "destructive",
+        });
+        throw error;
     }
-  }
+};
 
   const removeFile = (index: number) => {
     const newFiles = [...mediaFiles]
@@ -133,6 +146,8 @@ export function CreatePostDialog({
     setAiPrompt("")
     setShowAiPrompt(false)
   }
+
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

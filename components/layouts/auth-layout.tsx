@@ -18,9 +18,9 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-4">
           <ModeToggle />
           <Button variant="ghost" asChild>
-            <Link href={location.pathname === "/login" ? "/register" : "/login"}>
-              {location.pathname === "/login" ? "Register" : "Login"}
-            </Link>
+            {/* <Link href={location.pathname === "/login" ? "/register" : "/login"}> */}
+              {/* {location.pathname === "/login" ? "Register" : "Login"} */}
+            {/* </Link> */}
           </Button>
         </div>
       </header>

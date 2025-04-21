@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProviders, signIn } from "next-auth/react";
+import useApiFetch from "@/hooks/use-api-fetch";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -26,6 +27,8 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const { fetchData, response } = useApiFetch("");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +40,13 @@ export function LoginForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: true,
+        callbackUrl: "/",
+      });
+      
       router.push("/");
     } catch (error) {
       console.error("Login failed:", error);
