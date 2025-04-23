@@ -46,13 +46,13 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
-        name: { label: "Full Name", type: "text" }, // Added for signup
+        name: { label: "Full Name", type: "text" },
       },
       async authorize(credentials): Promise<ExtendedUser | null> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing credentials");
         }
-
+        
         try {
           // Check if this is a signup attempt (name provided)
           const url = credentials.name
@@ -75,6 +75,11 @@ export const authOptions: NextAuthOptions = {
             const data: ApiResponse = await response.json();
             if (data.success && data.data.token) {
               // Decode JWT to extract id, name, and email
+              console.log("change",()=>{
+                return new Promise((resolve,reject)=>{
+                  try{}catch(err){reject(err)}
+                })
+              })
               const decoded = jwt.decode(data.data.token) as JWTPayload | null;
               if (decoded && typeof decoded === "object") {
                 return {
@@ -157,7 +162,6 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.authToken = token.authToken;
-        
       }
       return session;
     },

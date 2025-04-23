@@ -1,99 +1,94 @@
-"use client"
+"use client";
 
-import React, { useState, useRef } from "react"
-import { X, ImageIcon, Smile, Globe, Users, Lock, Sparkles, Loader2 } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { UploadFile } from "../utils/functions"
+import React, { useState, useRef } from "react";
+import { X, ImageIcon, Smile, Globe, Users, Lock, Sparkles, Loader2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { UploadFile } from "../utils/functions";
+import axiosInstance from "../utils/axiosInstance";
 
-type Visibility = "public" | "friends" | "private"
+type Visibility = "public" | "friends" | "private";
 
 const visibilityOptions = {
   public: { label: "Public", icon: Globe },
   friends: { label: "Friends", icon: Users },
   private: { label: "Only me", icon: Lock },
-}
+};
 
-export function CreatePostDialog({
-  open,
-  onOpenChange,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const { toast } = useToast()
-  const [caption, setCaption] = useState("")
-  const [visibility, setVisibility] = useState<Visibility>("public")
-  const [mediaFiles, setMediaFiles] = useState<File[]>([])
-  const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showAiPrompt, setShowAiPrompt] = useState(false)
-  const [aiPrompt, setAiPrompt] = useState("")
-  const [isGeneratingCaption, setIsGeneratingCaption] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { toast } = useToast();
+  const [caption, setCaption] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>("public");
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAiPrompt, setShowAiPrompt] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     try {
-        // Limit to 5 files
-        const totalFiles = mediaFiles.length + files.length;
-        if (totalFiles > 5) {
-            toast({
-                title: "File limit exceeded",
-                description: "You can only upload up to 5 files",
-                variant: "destructive",
-            });
-            return;
-        }
-
-        const filesToProcess = Array.from(files).slice(0, 5 - mediaFiles.length);
-        
-        // Create previews for immediate display
-        const newPreviews = await Promise.all(
-            filesToProcess.map(file => {
-                return new Promise<string>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target?.result as string);
-                    reader.readAsDataURL(file);
-                });
-            })
-        );
-
-        // Upload files to server
-        const uploadResponse = await UploadFile(filesToProcess);
-        const uploadedFiles = uploadResponse.data; // Assuming this returns array of {key, URL}
-
-        // Update state
-        setMediaFiles(prev => [...prev, ...filesToProcess]);
-        setMediaPreviews(prev => [...prev, ...newPreviews]);
-
-        return uploadedFiles; // Returns array of {key, URL} objects
-    } catch (error) {
-        console.error("Error handling file upload:", error);
+      // Limit to 5 files
+      const totalFiles = mediaFiles.length + files.length;
+      if (totalFiles > 5) {
         toast({
-            title: "Upload failed",
-            description: "There was an error uploading your files",
-            variant: "destructive",
+          title: "File limit exceeded",
+          description: "You can only upload up to 5 files",
+          variant: "destructive",
         });
-        throw error;
+        return;
+      }
+
+      const filesToProcess = Array.from(files).slice(0, 5 - mediaFiles.length);
+
+      // Create previews for immediate display
+      const newPreviews = await Promise.all(
+        filesToProcess.map((file) => {
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target?.result as string);
+            reader.readAsDataURL(file);
+          });
+        })
+      );
+
+      // Upload files to server
+      const uploadResponse = await UploadFile(filesToProcess);
+      const uploadedFiles = uploadResponse.data; // Assuming this returns array of {key, URL}
+
+      // Update state
+      setMediaFiles((prev) => [...prev, ...filesToProcess]);
+      setMediaPreviews((prev) => [...prev, ...newPreviews]);
+
+      return uploadedFiles; // Returns array of {key, URL} objects
+    } catch (error) {
+      console.error("Error handling file upload:", error);
+      toast({
+        title: "Upload failed",
+        description: "There was an error uploading your files",
+        variant: "destructive",
+      });
+      throw error;
     }
-};
+  };
 
   const removeFile = (index: number) => {
-    const newFiles = [...mediaFiles]
-    const newPreviews = [...mediaPreviews]
-    newFiles.splice(index, 1)
-    newPreviews.splice(index, 1)
-    setMediaFiles(newFiles)
-    setMediaPreviews(newPreviews)
-  }
+    const newFiles = [...mediaFiles];
+    const newPreviews = [...mediaPreviews];
+    newFiles.splice(index, 1);
+    newPreviews.splice(index, 1);
+    setMediaFiles(newFiles);
+    setMediaPreviews(newPreviews);
+  };
 
   const handleSubmit = async () => {
     if (!caption.trim() && mediaPreviews.length === 0) {
@@ -101,27 +96,27 @@ export function CreatePostDialog({
         title: "Empty post",
         description: "Please add some text or media to your post",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({
       title: "Post created",
       description: "Your post has been published successfully",
-    })
+    });
 
     // Reset form
-    setCaption("")
-    setMediaFiles([])
-    setMediaPreviews([])
-    setIsSubmitting(false)
-    onOpenChange(false)
-  }
+    setCaption("");
+    setMediaFiles([]);
+    setMediaPreviews([]);
+    setIsSubmitting(false);
+    onOpenChange(false);
+  };
 
   const generateAICaption = async () => {
     if (!aiPrompt.trim()) {
@@ -129,25 +124,53 @@ export function CreatePostDialog({
         title: "Empty prompt",
         description: "Please enter a prompt for the AI",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsGeneratingCaption(true)
+    setIsGeneratingCaption(true);
 
-    // Simulate AI API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      const response = await axiosInstance.post("/post/generate-caption", {
+        prompt: aiPrompt,
+      });
 
-    // Mock AI-generated caption
-    const generatedCaption = `✨ ${aiPrompt} ✨\n\nJust living my best life! #blessed #nexus #sociallife`
+      let generatedCaption = response.data.data; // Adjust based on actual API response structure
+      if (typeof generatedCaption === "string") {
+        generatedCaption = generatedCaption.replace(/^"|"$/g, ""); // Remove leading/trailing quotes
+      }
+      // Split caption into words for typing animation
+      const words = generatedCaption.split(" ")
+      let currentCaption = ""
+      let wordIndex = 0
 
-    setCaption(generatedCaption)
-    setIsGeneratingCaption(false)
-    setAiPrompt("")
-    setShowAiPrompt(false)
-  }
+      setCaption("")
 
+      const typeWord = () => {
+        if (wordIndex < words.length) {
+          currentCaption += (wordIndex > 0 ? " " : "") + words[wordIndex]
+          setCaption(currentCaption)
+          wordIndex++
+          setTimeout(typeWord, 100)
+        } else {
+          setAiPrompt("")
+          setShowAiPrompt(false)
+          setIsGeneratingCaption(false)
+        }
+      }
 
+      typeWord()
+    } catch (error) {
+      console.error("Error generating AI caption:", error);
+      toast({
+        title: "Failed to generate caption",
+        description: "There was an error generating the AI caption",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingCaption(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -158,11 +181,11 @@ export function CreatePostDialog({
 
         <div className="flex items-center gap-3 mt-2">
           <Avatar>
-            <AvatarImage src={"/placeholder.svg?height=40&width=40"} alt={ "User"} />
+            <AvatarImage src={"/placeholder.svg?height=40&width=40"} alt={"User"} />
             <AvatarFallback>{"U"}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{ "User"}</p>
+            <p className="font-medium">{"User"}</p>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
@@ -171,14 +194,12 @@ export function CreatePostDialog({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                {(Object.entries(visibilityOptions) as [Visibility, { label: string; icon: any }][]).map(
-                  ([key, { label, icon }]) => (
-                    <DropdownMenuItem key={key} onClick={() => setVisibility(key as Visibility)} className="gap-2">
-                      {React.createElement(icon, { className: "h-4 w-4" })}
-                      {label}
-                    </DropdownMenuItem>
-                  ),
-                )}
+                {(Object.entries(visibilityOptions) as [Visibility, { label: string; icon: any }][]).map(([key, { label, icon }]) => (
+                  <DropdownMenuItem key={key} onClick={() => setVisibility(key as Visibility)} className="gap-2">
+                    {React.createElement(icon, { className: "h-4 w-4" })}
+                    {label}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -228,16 +249,10 @@ export function CreatePostDialog({
           />
 
           {mediaPreviews.length > 0 && (
-            <div
-              className={`grid gap-2 ${mediaPreviews.length === 1 ? "grid-cols-1" : mediaPreviews.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}
-            >
+            <div className={`grid gap-2 ${mediaPreviews.length === 1 ? "grid-cols-1" : mediaPreviews.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
               {mediaPreviews.map((preview, index) => (
                 <div key={index} className="relative group aspect-square rounded-md overflow-hidden">
-                  <img
-                    src={preview || "/placeholder.svg"}
-                    alt={`Preview ${index}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={preview || "/placeholder.svg"} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                   <Button
                     variant="destructive"
                     size="icon"
@@ -258,14 +273,7 @@ export function CreatePostDialog({
             <ImageIcon className="h-4 w-4 text-brand-pink" />
             <span>Add Photos</span>
           </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            className="hidden"
-            onChange={handleFileChange}
-          />
+          <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleFileChange} />
 
           <Button variant="outline" size="sm" className="gap-2">
             <Smile className="h-4 w-4 text-brand-yellow" />
@@ -274,11 +282,7 @@ export function CreatePostDialog({
         </div>
 
         <DialogFooter>
-          <Button
-            className="w-full"
-            onClick={handleSubmit}
-            disabled={isSubmitting || (caption.trim() === "" && mediaPreviews.length === 0)}
-          >
+          <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting || (caption.trim() === "" && mediaPreviews.length === 0)}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -291,5 +295,5 @@ export function CreatePostDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
