@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getProviders, signIn } from "next-auth/react";
+import { getProviders, getSession, signIn } from "next-auth/react";
 import useApiFetch from "@/hooks/use-api-fetch";
 
 const formSchema = z.object({
@@ -40,14 +40,24 @@ export function LoginForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         email: values.email,
         password: values.password,
-        redirect: true,
+        redirect: false, // Set to false to handle response manually
         callbackUrl: "/",
       });
-      
-      router.push("/");
+
+      if (response?.ok) {
+        // Fetch the session to get the user object with the token
+        const session = await getSession();
+        if (session?.user?.authToken) {
+          // Save the backend token to localStorage
+          localStorage.setItem("authToken", session?.user?.authToken);
+        }
+        router.push("/");
+      } else {
+        console.error("Login failed:", response?.error);
+      }
     } catch (error) {
       console.error("Login failed:", error);
     } finally {

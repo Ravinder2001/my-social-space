@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getSession } from "next-auth/react";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:7777",
@@ -9,20 +8,10 @@ const axiosInstance = axios.create({
   timeout: 10000,
 });
 
-// Helper function to get the session token (not using hooks)
-const getAuthToken = async () => {
-  const session = await getSession();
-  return session?.user?.authToken;
-};
 // Request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // Skip adding auth header for auth-related endpoints
-    if (config.url?.includes("/auth/")) {
-      return config;
-    }
-
-    const token = await getAuthToken();
+    const token = localStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
