@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState } from "react"
 import { Camera, Loader2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,7 +28,6 @@ export function EditProfileDialog({
   onOpenChange: (open: boolean) => void
   profile: ProfileData
 }) {
-  const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: profile.name,
@@ -74,11 +72,6 @@ export function EditProfileDialog({
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    toast({
-      title: "Profile updated",
-      description: "Your profile has been updated successfully",
-    })
 
     setIsSubmitting(false)
     onOpenChange(false)

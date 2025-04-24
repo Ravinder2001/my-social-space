@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { UploadFile } from "../utils/functions";
@@ -21,7 +20,6 @@ const visibilityOptions = {
 };
 
 export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const { toast } = useToast();
   const [caption, setCaption] = useState("");
   const [visibility, setVisibility] = useState<Visibility>("public");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -40,11 +38,7 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       // Limit to 5 files
       const totalFiles = mediaFiles.length + files.length;
       if (totalFiles > 5) {
-        toast({
-          title: "File limit exceeded",
-          description: "You can only upload up to 5 files",
-          variant: "destructive",
-        });
+
         return;
       }
 
@@ -72,11 +66,7 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       return uploadedFiles; // Returns array of {key, URL} objects
     } catch (error) {
       console.error("Error handling file upload:", error);
-      toast({
-        title: "Upload failed",
-        description: "There was an error uploading your files",
-        variant: "destructive",
-      });
+
       throw error;
     }
   };
@@ -92,11 +82,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
 
   const handleSubmit = async () => {
     if (!caption.trim() && mediaPreviews.length === 0) {
-      toast({
-        title: "Empty post",
-        description: "Please add some text or media to your post",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -104,11 +89,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    toast({
-      title: "Post created",
-      description: "Your post has been published successfully",
-    });
 
     // Reset form
     setCaption("");
@@ -120,11 +100,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
 
   const generateAICaption = async () => {
     if (!aiPrompt.trim()) {
-      toast({
-        title: "Empty prompt",
-        description: "Please enter a prompt for the AI",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -162,11 +137,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       typeWord()
     } catch (error) {
       console.error("Error generating AI caption:", error);
-      toast({
-        title: "Failed to generate caption",
-        description: "There was an error generating the AI caption",
-        variant: "destructive",
-      });
     } finally {
       setIsGeneratingCaption(false);
     }

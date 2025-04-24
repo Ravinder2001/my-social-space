@@ -6,7 +6,6 @@ import { X, ImageIcon, Camera, Loader2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 export function CreateStoryDialog({
@@ -16,7 +15,6 @@ export function CreateStoryDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const { toast } = useToast()
   const [caption, setCaption] = useState("")
   const [mediaFile, setMediaFile] = useState<File | null>(null)
   const [mediaPreview, setMediaPreview] = useState<string | null>(null)
@@ -45,11 +43,6 @@ export function CreateStoryDialog({
 
   const handleSubmit = async () => {
     if (!mediaPreview) {
-      toast({
-        title: "No media selected",
-        description: "Please add a photo or video to your story",
-        variant: "destructive",
-      })
       return
     }
 
@@ -57,11 +50,6 @@ export function CreateStoryDialog({
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    toast({
-      title: "Story created",
-      description: "Your story has been published successfully",
-    })
 
     // Reset form
     setCaption("")
