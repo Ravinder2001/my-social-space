@@ -49,7 +49,7 @@ export function LoginForm() {
 
       if (response?.ok) {
         // Fetch the session to get the user object with the token
-        const session = await getSession();
+        const session: any = await getSession();
         if (session?.user?.authToken) {
           // Save the backend token to localStorage
           localStorage.setItem("authToken", session?.user?.authToken);
@@ -72,7 +72,7 @@ export function LoginForm() {
       const response = await signIn("google", { callbackUrl: "/" });
       if (response?.ok) {
         // Fetch the session to get the user object with the token
-        const session = await getSession();
+        const session: any = await getSession();
         if (session?.user?.authToken) {
           // Save the backend token to localStorage
           localStorage.setItem("authToken", session?.user?.authToken);
