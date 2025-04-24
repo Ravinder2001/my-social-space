@@ -1,4 +1,5 @@
 import axios from "axios";
+import { showToast } from "./toast";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:7777",
@@ -28,7 +29,10 @@ axiosInstance.interceptors.response.use(
   (error) => {
     console.log("🚀 error:", error);
     const message = error?.response?.data?.message || "Something went wrong!";
-    // errorAlert(message);
+    showToast({
+      message: message,
+      type: "error",
+    });
     return Promise.reject(error);
   }
 );

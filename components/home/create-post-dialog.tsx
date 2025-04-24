@@ -38,7 +38,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       // Limit to 5 files
       const totalFiles = mediaFiles.length + files.length;
       if (totalFiles > 5) {
-
         return;
       }
 
@@ -115,26 +114,26 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
         generatedCaption = generatedCaption.replace(/^"|"$/g, ""); // Remove leading/trailing quotes
       }
       // Split caption into words for typing animation
-      const words = generatedCaption.split(" ")
-      let currentCaption = ""
-      let wordIndex = 0
+      const words = generatedCaption.split(" ");
+      let currentCaption = "";
+      let wordIndex = 0;
 
-      setCaption("")
+      setCaption("");
 
       const typeWord = () => {
         if (wordIndex < words.length) {
-          currentCaption += (wordIndex > 0 ? " " : "") + words[wordIndex]
-          setCaption(currentCaption)
-          wordIndex++
-          setTimeout(typeWord, 100)
+          currentCaption += (wordIndex > 0 ? " " : "") + words[wordIndex];
+          setCaption(currentCaption);
+          wordIndex++;
+          setTimeout(typeWord, 100);
         } else {
-          setAiPrompt("")
-          setShowAiPrompt(false)
-          setIsGeneratingCaption(false)
+          setAiPrompt("");
+          setShowAiPrompt(false);
+          setIsGeneratingCaption(false);
         }
-      }
+      };
 
-      typeWord()
+      typeWord();
     } catch (error) {
       console.error("Error generating AI caption:", error);
     } finally {
