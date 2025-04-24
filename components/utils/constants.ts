@@ -19,7 +19,8 @@ const CONSTANTS = {
     GOOGLE_SIGNIN: "/user/google-signin",
     CREATE_POST:"/post",
     EDIT_POST:"/post",
-    GET_ALL_POST:"/post"
+    GET_ALL_POST:"/post",
+    GENERATE_CAPTION:"/post/generate-caption"
   },
 };
 

@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { PostType } from "../utils/CommanTypes";
+import { EditPostType, PostType } from "../utils/CommanTypes";
 import moment from "moment";
 
-export function PostCard({ post }: { post: PostType }) {
+type Props = {
+  post: PostType;
+  onEditClick: (e: EditPostType) => void;
+};
+
+export function PostCard({ post, onEditClick }: Props) {
   const [liked, setLiked] = useState(post.is_liked);
   const [likesCount, setLikesCount] = useState(post.like_count);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
@@ -70,8 +75,20 @@ export function PostCard({ post }: { post: PostType }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {post.ownPost ? <DropdownMenuItem>Edit Post</DropdownMenuItem> : null}
-
+            {post.ownPost ? (
+              <DropdownMenuItem
+                onClick={() => {
+                  onEditClick({
+                    id: post.post_id,
+                    caption: post.caption,
+                    visibility: post.visibility,
+                    images: post.images.map((item) => ({ key: item, url: item })),
+                  });
+                }}
+              >
+                Edit Post
+              </DropdownMenuItem>
+            ) : null}
             <DropdownMenuItem>Save Post</DropdownMenuItem>
             <DropdownMenuItem>Hide Post</DropdownMenuItem>
             <DropdownMenuSeparator />

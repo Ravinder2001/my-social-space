@@ -20,7 +20,7 @@ interface ApiResponse {
 }
 
 // Server-side API call function
-export const serverAPICall = async (url: string): Promise<ApiResponse> => {
+export const serverAPICall = async (url: string, methodType: "get" | "post" = "get"): Promise<ApiResponse> => {
   try {
     // Get the server session
     const session = (await getServerSession(authOptions)) as CustomSession | null;
@@ -31,7 +31,7 @@ export const serverAPICall = async (url: string): Promise<ApiResponse> => {
     }
 
     // Make the API call
-    const res: AxiosResponse<ApiResponse> = await axios.get(Config.API_BASE_URL + url, {
+    const res: AxiosResponse<ApiResponse> = await axios[methodType](Config.API_BASE_URL + url, {
       headers: {
         Authorization: `Bearer ${session.user.authToken}`,
       },

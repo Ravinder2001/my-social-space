@@ -1,9 +1,10 @@
+export type VisibilityType = "PUBLIC" | "FRIENDS" | "PRIVATE";
 export type PostType = {
   post_id: number;
   user_name: string;
   caption: string;
   profile_picture: string;
-  visibility: string;
+  visibility: VisibilityType;
   created_at: string;
   images: string[];
   comment_count: number;
@@ -15,4 +16,12 @@ export type PostType = {
     user_name: string;
     profile_picture: string;
   };
+};
+
+
+export type EditPostType = {
+  id: number;
+  caption: string;
+  visibility: VisibilityType;
+  images: { key: string; url: string }[];
 };

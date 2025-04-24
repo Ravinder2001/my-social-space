@@ -20,27 +20,35 @@ const useApiFetch = (initialUrl: string, initialOptions?: AxiosRequestConfig) =>
       setIsLoading(true);
       try {
         const { data } = await axiosInstance(url, {
-          ...options, // Spread existing options
+          ...options,
         });
-        setResponse({
+  
+        const formattedResponse = {
           data: data.data,
           message: data.message,
           success: data.success,
-        });
+        };
+  
+        setResponse(formattedResponse);
+        return formattedResponse; // ✅ return result here
       } catch (error: any) {
         const errorMessage = error?.data?.message || error.response?.data?.message || "Something went wrong";
-
+  
         if (error.status === 401) {
           localStorage.clear();
           window.location.href = "/";
         }
-        setResponse({ error: errorMessage, success: 0 });
+  
+        const errorResponse = { error: errorMessage, success: 0 };
+        setResponse(errorResponse);
+        return errorResponse; // ✅ return error
       } finally {
         setIsLoading(false);
       }
     },
-    [initialUrl, initialOptions] // Dependencies that, if changed, recreate fetchData
+    [initialUrl, initialOptions]
   );
+  
 
   return { response, isLoading, fetchData };
 };

@@ -13,8 +13,8 @@ import axiosInstance from "../utils/axiosInstance";
 import { showToast } from "../utils/toast";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
+import { EditPostType, VisibilityType } from "../utils/CommanTypes";
 
-type Visibility = "PUBLIC" | "FRIENDS" | "PRIVATE";
 
 const visibilityOptions = {
   PUBLIC: { label: "Public", icon: Globe },
@@ -29,15 +29,10 @@ export function CreatePostDialog({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editPost?: {
-    id: string;
-    caption: string;
-    visibility: Visibility;
-    images: { key: string; url: string }[];
-  };
+  editPost?: EditPostType | null;
 }) {
   const [caption, setCaption] = useState(editPost?.caption || "");
-  const [visibility, setVisibility] = useState<Visibility>(editPost?.visibility || "PUBLIC");
+  const [visibility, setVisibility] = useState<VisibilityType>(editPost?.visibility || "PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>(editPost?.images || []);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
@@ -159,10 +154,10 @@ export function CreatePostDialog({
     setIsGeneratingCaption(true);
 
     try {
-      const response = await axiosInstance.post("/post/generate-caption", {
+      const response = await axiosInstance.post(CONSTANTS.API_ROUTES.GENERATE_CAPTION, {
         prompt: aiPrompt,
       });
-      
+
       let generatedCaption = response.data.data;
       if (typeof generatedCaption === "string") {
         generatedCaption = generatedCaption.replace(/^"|"$/g, "");
@@ -216,8 +211,8 @@ export function CreatePostDialog({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                {(Object.entries(visibilityOptions) as [Visibility, { label: string; icon: any }][]).map(([key, { label, icon }]) => (
-                  <DropdownMenuItem key={key} onClick={() => setVisibility(key as Visibility)} className="gap-2">
+                {(Object.entries(visibilityOptions) as [VisibilityType, { label: string; icon: any }][]).map(([key, { label, icon }]) => (
+                  <DropdownMenuItem key={key} onClick={() => setVisibility(key as VisibilityType)} className="gap-2">
                     {React.createElement(icon, { className: "h-4 w-4" })}
                     {label}
                   </DropdownMenuItem>
