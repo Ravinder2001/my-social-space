@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getProviders, getSession, signIn } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "@/lib/Slices/UserSlice";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -22,6 +24,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LoginForm() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,6 +53,7 @@ export function LoginForm() {
         if (session?.user?.authToken) {
           // Save the backend token to localStorage
           localStorage.setItem("authToken", session?.user?.authToken);
+          dispatch(setUserDetails(session.user));
         }
         router.push("/");
       } else {
@@ -65,11 +69,18 @@ export function LoginForm() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      // Mock Google sign-in
-      await signIn("google", { callbackUrl: "/" });
-      // await new Promise((resolve) => setTimeout(resolve, 1000))
-      // await login("google-user@example.com", "google-auth")
-      // router.push("/")
+      const response = await signIn("google", { callbackUrl: "/" });
+      if (response?.ok) {
+        // Fetch the session to get the user object with the token
+        const session = await getSession();
+        if (session?.user?.authToken) {
+          // Save the backend token to localStorage
+          localStorage.setItem("authToken", session?.user?.authToken);
+        }
+        router.push("/");
+      } else {
+        console.error("Login failed:", response?.error);
+      }
     } catch (error) {
       console.error("Google sign-in failed:", error);
     } finally {

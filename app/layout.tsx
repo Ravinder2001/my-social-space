@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/providers/session-provider";
 import { Toaster } from "@/components/utils/toast";
+import StoreProvider from "@/lib/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,8 +25,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            {children}
-            <Toaster />
+            <StoreProvider>
+              {children}
+              <Toaster />
+            </StoreProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

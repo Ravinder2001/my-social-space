@@ -9,7 +9,7 @@ import CONSTANTS from "@/components/utils/constants";
 interface JWTPayload {
   id: number;
   name: string;
-  email: string;
+  profile_picture: string;
   iat?: number;
   exp?: number;
   iss?: string;
@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
               if (decoded && typeof decoded === "object") {
                 return {
                   id: decoded.id.toString(),
-                  email: decoded.email,
+                  profile_picture: decoded.profile_picture,
                   name: decoded.name,
                   token: data.data.token, // Store token in user object
                 };
@@ -130,7 +130,7 @@ export const authOptions: NextAuthOptions = {
               if (decoded && typeof decoded === "object") {
                 // Ensure user.id is set to the decoded JWT id, not Google's ID
                 (user as ExtendedUser).id = decoded.id.toString();
-                user.email = decoded.email;
+                user.profile_picture = decoded.profile_picture;
                 user.name = decoded.name;
                 (user as any).token = data.data.token; // Store token in user object
                 return true;
@@ -149,7 +149,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }): Promise<Record<string, any>> {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
+        token.profile_picture = user.profile_picture;
         token.name = user.name;
         token.authToken = (user as any).token; // Store token in JWT
       }
@@ -159,7 +159,7 @@ export const authOptions: NextAuthOptions = {
      
       if (token) {
         session.user.id = token.id;
-        session.user.email = token.email;
+        session.user.profile_picture = token.profile_picture;
         session.user.name = token.name;
         session.user.authToken = token.authToken;
       }

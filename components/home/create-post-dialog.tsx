@@ -14,7 +14,9 @@ import { showToast } from "../utils/toast";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { EditPostType, VisibilityType } from "../utils/CommanTypes";
-
+import { getSession } from "next-auth/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const visibilityOptions = {
   PUBLIC: { label: "Public", icon: Globe },
@@ -31,6 +33,8 @@ export function CreatePostDialog({
   onOpenChange: (open: boolean) => void;
   editPost?: EditPostType | null;
 }) {
+  const UserDetails = useSelector((state:RootState)=>state.user)
+
   const [caption, setCaption] = useState(editPost?.caption || "");
   const [visibility, setVisibility] = useState<VisibilityType>(editPost?.visibility || "PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -198,8 +202,8 @@ export function CreatePostDialog({
 
         <div className="flex items-center gap-3 mt-2">
           <Avatar>
-            <AvatarImage src={"/placeholder.svg?height=40&width=40"} alt={"User"} />
-            <AvatarFallback>{"U"}</AvatarFallback>
+            <AvatarImage src={UserDetails.profile_picture} alt={"User"} />
+            <AvatarFallback>{UserDetails.name[0]}</AvatarFallback>
           </Avatar>
           <div>
             <p className="font-medium">{"User"}</p>
