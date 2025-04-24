@@ -19,6 +19,9 @@ interface JWTPayload {
 // Extend the default User type to ensure id is included
 interface ExtendedUser extends User {
   id: string;
+  name: string;
+  profile_picture?: string; // Optional to handle cases where it might not be set
+  token?: string; // Optional for the JWT token
 }
 
 // Define the expected API response structure
@@ -52,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing credentials");
         }
-        
+
         try {
           // Check if this is a signup attempt (name provided)
           const url = credentials.name
@@ -75,11 +78,14 @@ export const authOptions: NextAuthOptions = {
             const data: ApiResponse = await response.json();
             if (data.success && data.data.token) {
               // Decode JWT to extract id, name, and email
-              console.log("change",()=>{
-                return new Promise((resolve,reject)=>{
-                  try{}catch(err){reject(err)}
-                })
-              })
+              console.log("change", () => {
+                return new Promise((resolve, reject) => {
+                  try {
+                  } catch (err) {
+                    reject(err);
+                  }
+                });
+              });
               const decoded = jwt.decode(data.data.token) as JWTPayload | null;
               if (decoded && typeof decoded === "object") {
                 return {
@@ -106,7 +112,7 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async signIn({ user, account }): Promise<boolean> {
+    async signIn({ user, account }: any): Promise<boolean> {
       try {
         if (account?.provider === "google") {
           // Check if Google user exists or create new user (not using signup endpoint)
@@ -146,7 +152,7 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async jwt({ token, user }): Promise<Record<string, any>> {
+    async jwt({ token, user }: any): Promise<Record<string, any>> {
       if (user) {
         token.id = user.id;
         token.profile_picture = user.profile_picture;
@@ -155,8 +161,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }): Promise<any> {
-     
+    async session({ session, token }: any): Promise<any> {
       if (token) {
         session.user.id = token.id;
         session.user.profile_picture = token.profile_picture;
