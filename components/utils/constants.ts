@@ -17,7 +17,8 @@ const CONSTANTS = {
     LOGIN: "/user/login",
     SIGNUP: "/user/register",
     GOOGLE_SIGNIN: "/user/google-signin",
-    CREATE_POST:"/post"
+    CREATE_POST:"/post",
+    EDIT_POST:"/post"
   },
 };
 

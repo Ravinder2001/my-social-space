@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X, ImageIcon, Smile, Globe, Users, Lock, Sparkles, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,17 +22,43 @@ const visibilityOptions = {
   PRIVATE: { label: "Only me", icon: Lock },
 };
 
-export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const [caption, setCaption] = useState("");
-  const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
+export function CreatePostDialog({
+  open,
+  onOpenChange,
+  editPost,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  editPost?: {
+    id: string;
+    caption: string;
+    visibility: Visibility;
+    images: { key: string; url: string }[];
+  };
+}) {
+  const [caption, setCaption] = useState(editPost?.caption || "");
+  const [visibility, setVisibility] = useState<Visibility>(editPost?.visibility || "PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
-  const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>([]);
+  const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>(editPost?.images || []);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { fetchData: UploadPost, isLoading: UploadPostLoading } = useApiFetch("");
+
+  useEffect(() => {
+    if (editPost) {
+      setCaption(editPost.caption);
+      setVisibility(editPost.visibility);
+      setUploadedMedia(editPost.images);
+    } else {
+      setCaption("");
+      setVisibility("PUBLIC");
+      setMediaFiles([]);
+      setUploadedMedia([]);
+    }
+  }, [editPost]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -75,11 +101,10 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
     setUploadedMedia(newUploadedMedia);
   };
 
-  const handleSubmit = async () => {
+  const handleCreatePost = async () => {
     if (!caption.trim() && uploadedMedia.length === 0) {
       return;
     }
-    // Log only the keys
     const keys = uploadedMedia.map((media) => media.key);
 
     await UploadPost(CONSTANTS.API_ROUTES.CREATE_POST, {
@@ -91,11 +116,39 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       },
     }).finally(() => {
       showToast({
-        message: "Post uploaded Succesfully!",
+        message: "Post uploaded successfully!",
         type: "success",
       });
       onOpenChange(false);
     });
+  };
+
+  const handleEditPost = async () => {
+    if (!editPost || (!caption.trim() && uploadedMedia.length === 0)) {
+      return;
+    }
+
+    await UploadPost(CONSTANTS.API_ROUTES.EDIT_POST + `/${editPost.id}`, {
+      method: "PUT",
+      data: {
+        caption: caption,
+        visibility: visibility,
+      },
+    }).finally(() => {
+      showToast({
+        message: "Post updated successfully!",
+        type: "success",
+      });
+      onOpenChange(false);
+    });
+  };
+
+  const handleSubmit = () => {
+    if (editPost) {
+      handleEditPost();
+    } else {
+      handleCreatePost();
+    }
   };
 
   const generateAICaption = async () => {
@@ -145,7 +198,7 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold">Create Post</DialogTitle>
+          <DialogTitle className="text-center text-xl font-semibold">{editPost ? "Edit Post" : "Create Post"}</DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center gap-3 mt-2">
@@ -222,15 +275,17 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
               {uploadedMedia.map((media, index) => (
                 <div key={index} className="relative group aspect-square rounded-md overflow-hidden">
                   <img src={media.url || "/placeholder.svg"} alt={`Preview ${index}`} className="w-full h-full object-cover" />
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => removeFile(index)}
-                  >
-                    <X className="h-3 w-3" />
-                    <span className="sr-only">Remove</span>
-                  </Button>
+                  {!editPost && (
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => removeFile(index)}
+                    >
+                      <X className="h-3 w-3" />
+                      <span className="sr-only">Remove</span>
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
@@ -255,8 +310,10 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
             {UploadPostLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Posting...
+                {editPost ? "Updating..." : "Posting..."}
               </>
+            ) : editPost ? (
+              "Update"
             ) : (
               "Post"
             )}
