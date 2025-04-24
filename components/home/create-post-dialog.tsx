@@ -11,6 +11,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { UploadFile } from "../utils/functions";
 import axiosInstance from "../utils/axiosInstance";
 import { showToast } from "../utils/toast";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
 
 type Visibility = "PUBLIC" | "FRIENDS" | "PRIVATE";
 
@@ -25,11 +27,12 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
   const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { fetchData: UploadPost, isLoading: UploadPostLoading } = useApiFetch("");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -50,7 +53,6 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
 
       // Upload files to server
       const uploadResponse = await UploadFile(filesToProcess);
-      console.log("🚀 uploadResponse:", uploadResponse)
       const uploadedFiles = uploadResponse; // Array of {key, URL}
 
       // Update state
@@ -77,21 +79,23 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
     if (!caption.trim() && uploadedMedia.length === 0) {
       return;
     }
-
-    setIsSubmitting(true);
     // Log only the keys
     const keys = uploadedMedia.map((media) => media.key);
-    console.log("keys",caption, keys,visibility);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Reset form
-    setCaption("");
-    setMediaFiles([]);
-    setUploadedMedia([]);
-    setIsSubmitting(false);
-    onOpenChange(false);
+    await UploadPost(CONSTANTS.API_ROUTES.CREATE_POST, {
+      method: "POST",
+      data: {
+        caption: caption,
+        visibility: visibility,
+        images: keys,
+      },
+    }).finally(() => {
+      showToast({
+        message: "Post uploaded Succesfully!",
+        type: "success",
+      });
+      onOpenChange(false);
+    });
   };
 
   const generateAICaption = async () => {
@@ -247,8 +251,8 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
         </div>
 
         <DialogFooter>
-          <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting || (caption.trim() === "" && uploadedMedia.length === 0)}>
-            {isSubmitting ? (
+          <Button className="w-full" onClick={handleSubmit} disabled={UploadPostLoading || (caption.trim() === "" && uploadedMedia.length === 0)}>
+            {UploadPostLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Posting...
