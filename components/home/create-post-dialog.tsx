@@ -206,7 +206,7 @@ export function CreatePostDialog({
             <AvatarFallback>{UserDetails.name[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{"User"}</p>
+            <p className="font-medium">{UserDetails.name}</p>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
