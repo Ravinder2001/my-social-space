@@ -162,7 +162,7 @@ export function CreatePostDialog({
       const response = await axiosInstance.post("/post/generate-caption", {
         prompt: aiPrompt,
       });
-
+      
       let generatedCaption = response.data.data;
       if (typeof generatedCaption === "string") {
         generatedCaption = generatedCaption.replace(/^"|"$/g, "");

@@ -1,77 +1,49 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Heart, MessageCircle, Share, Bookmark, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { useState } from "react";
+import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { PostType } from "../utils/CommanTypes";
+import moment from "moment";
 
-type PostProps = {
-  id: string
-  user: {
-    id: string
-    name: string
-    avatar: string
-    verified: boolean
-  }
-  content: string
-  media: string[]
-  timestamp: string
-  likes: number
-  comments: number
-  shares: number
-  liked: boolean
-  saved: boolean
-}
-
-export function PostCard({ post }: { post: PostProps }) {
-  const [liked, setLiked] = useState(post.liked)
-  const [saved, setSaved] = useState(post.saved)
-  const [likesCount, setLikesCount] = useState(post.likes)
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
-  const [expanded, setExpanded] = useState(false)
+export function PostCard({ post }: { post: PostType }) {
+  const [liked, setLiked] = useState(post.is_liked);
+  const [likesCount, setLikesCount] = useState(post.like_count);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
   const toggleLike = () => {
     if (liked) {
-      setLikesCount(likesCount - 1)
+      setLikesCount(likesCount - 1);
     } else {
-      setLikesCount(likesCount + 1)
+      setLikesCount(likesCount + 1);
     }
-    setLiked(!liked)
-  }
-
-  const toggleSave = () => {
-    setSaved(!saved)
-  }
+    setLiked(!liked);
+  };
 
   const nextMedia = () => {
-    if (currentMediaIndex < post.media.length - 1) {
-      setCurrentMediaIndex(currentMediaIndex + 1)
+    if (currentMediaIndex < post.images.length - 1) {
+      setCurrentMediaIndex(currentMediaIndex + 1);
     }
-  }
+  };
 
   const prevMedia = () => {
     if (currentMediaIndex > 0) {
-      setCurrentMediaIndex(currentMediaIndex - 1)
+      setCurrentMediaIndex(currentMediaIndex - 1);
     }
-  }
+  };
 
   // Truncate content if it's too long
-  const shouldTruncate = post.content.length > 150 && !expanded
-  const displayContent = shouldTruncate ? post.content.substring(0, 150) + "..." : post.content
+  const shouldTruncate = post.caption.length > 150 && !expanded;
+  const displayContent = shouldTruncate ? post.caption.substring(0, 150) + "..." : post.caption;
 
   // Determine how many images to show (max 4)
-  const visibleMedia = post.media.slice(0, 4)
-  const remainingCount = post.media.length > 4 ? post.media.length - 4 : 0
+  const visibleMedia = post.images.slice(0, 4);
+  const remainingCount = post.images.length > 4 ? post.images.length - 4 : 0;
 
   return (
     <div className="bg-card rounded-xl shadow-sm overflow-hidden animate-fade-in">
@@ -79,19 +51,14 @@ export function PostCard({ post }: { post: PostProps }) {
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={post.user.avatar || "/placeholder.svg"} alt={post.user.name} />
-            <AvatarFallback>{post.user.name[0]}</AvatarFallback>
+            <AvatarImage src={post.profile_picture} alt={post.user_name} />
+            <AvatarFallback>{post.user_name[0]}</AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-1">
-              <span className="font-medium">{post.user.name}</span>
-              {post.user.verified && (
-                <Badge variant="outline" className="h-4 rounded-full bg-brand-blue text-white px-1.5 text-[10px]">
-                  ✓
-                </Badge>
-              )}
+              <span className="font-medium">{post.user_name}</span>
             </div>
-            <p className="text-xs text-muted-foreground">{post.timestamp}</p>
+            <p className="text-xs text-muted-foreground">{moment(post.created_at).format("DD-MM-YYYY HH:MM")}</p>
           </div>
         </div>
 
@@ -103,6 +70,8 @@ export function PostCard({ post }: { post: PostProps }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {post.ownPost ? <DropdownMenuItem>Edit Post</DropdownMenuItem> : null}
+
             <DropdownMenuItem>Save Post</DropdownMenuItem>
             <DropdownMenuItem>Hide Post</DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -123,26 +92,18 @@ export function PostCard({ post }: { post: PostProps }) {
         </p>
       </div>
 
-      {/* Post media */}
-      {post.media.length > 0 && (
+      {/* Post images */}
+      {post.images.length > 0 && (
         <div className="relative">
-          {post.media.length === 1 ? (
+          {post.images.length === 1 ? (
             // Single image
-            <img
-              src={post.media[0] || "/placeholder.svg"}
-              alt={`Post by ${post.user.name}`}
-              className="w-full object-cover max-h-[400px]"
-            />
+            <img src={post.images[0] || "/placeholder.svg"} alt={`Post by ${post.user_name}`} className="w-full object-cover max-h-[400px]" />
           ) : (
             // Multiple images grid
-            <div className={`grid gap-1 ${post.media.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}>
-              {visibleMedia.map((media, index) => (
+            <div className={`grid gap-1 ${post.images.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}>
+              {visibleMedia.map((images, index) => (
                 <div key={index} className="relative aspect-square">
-                  <img
-                    src={media || "/placeholder.svg"}
-                    alt={`Post by ${post.user.name}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={images || "/placeholder.svg"} alt={`Post by ${post.user_name}`} className="w-full h-full object-cover" />
                   {/* Show count overlay on the last visible image if there are more */}
                   {index === visibleMedia.length - 1 && remainingCount > 0 && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -155,7 +116,7 @@ export function PostCard({ post }: { post: PostProps }) {
           )}
 
           {/* Navigation arrows for single image view */}
-          {post.media.length > 1 && post.media.length <= 1 && (
+          {post.images.length > 1 && post.images.length <= 1 && (
             <>
               <Button
                 variant="ghost"
@@ -173,7 +134,7 @@ export function PostCard({ post }: { post: PostProps }) {
                 size="icon"
                 className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/20 text-white hover:bg-black/40 rounded-full"
                 onClick={nextMedia}
-                disabled={currentMediaIndex === post.media.length - 1}
+                disabled={currentMediaIndex === post.images.length - 1}
               >
                 <ChevronRight className="h-5 w-5" />
                 <span className="sr-only">Next</span>
@@ -193,14 +154,9 @@ export function PostCard({ post }: { post: PostProps }) {
           )}
         </div>
         <div className="flex gap-4">
-          {post.comments > 0 && (
+          {post.comment_count > 0 && (
             <span>
-              {post.comments} {post.comments === 1 ? "comment" : "comments"}
-            </span>
-          )}
-          {post.shares > 0 && (
-            <span>
-              {post.shares} {post.shares === 1 ? "share" : "shares"}
+              {post.comment_count} {post.comment_count === 1 ? "comment" : "comments"}
             </span>
           )}
         </div>
@@ -210,12 +166,7 @@ export function PostCard({ post }: { post: PostProps }) {
 
       {/* Post actions */}
       <div className="px-2 py-1 flex justify-between">
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn("gap-2 flex-1", liked ? "text-brand-red" : "")}
-          onClick={toggleLike}
-        >
+        <Button variant="ghost" size="sm" className={cn("gap-2 flex-1", liked ? "text-brand-red" : "")} onClick={toggleLike}>
           <Heart className={cn("h-5 w-5", liked ? "fill-current animate-pulse-once" : "")} />
           <span>Like</span>
         </Button>
@@ -229,26 +180,30 @@ export function PostCard({ post }: { post: PostProps }) {
           <Share className="h-5 w-5" />
           <span>Share</span>
         </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn("gap-2 flex-1", saved ? "text-brand-yellow" : "")}
-          onClick={toggleSave}
-        >
-          <Bookmark className={cn("h-5 w-5", saved ? "fill-current animate-pulse-once" : "")} />
-          <span>Save</span>
-        </Button>
       </div>
 
       {/* Comments preview */}
-      {post.comments > 0 && (
+      {post.comment_count > 0 && (
         <div className="px-4 py-2 bg-muted/30">
           <Button variant="link" className="p-0 h-auto text-sm text-muted-foreground">
-            View all {post.comments} comments
+            View all {post.comment_count} comments
           </Button>
         </div>
       )}
+      {post.latest_comment ? (
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarImage src={post.latest_comment.profile_picture} alt={post.latest_comment.user_name} />
+            <AvatarFallback>{post.latest_comment.user_name[0]}</AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">{post.latest_comment.user_name}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">{post.latest_comment.content}</p>
+          </div>
+        </div>
+      ) : null}
     </div>
-  )
+  );
 }

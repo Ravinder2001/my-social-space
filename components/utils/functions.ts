@@ -18,3 +18,4 @@ export const UploadFile = async (files: File[]) => {
     throw error;
   }
 };
+
