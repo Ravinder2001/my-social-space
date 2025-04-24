@@ -2,15 +2,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Config from "@/lib/config";
 import axios, { AxiosResponse } from "axios";
 import { getServerSession } from "next-auth";
-import { AuthSession } from "next-auth"; // Optional: Adjust based on your session type
-
-// Define a type for the expected session (optional, for type safety)
-interface CustomSession extends AuthSession {
-  user: {
-    authToken?: string;
-    [key: string]: any; // Allow other user properties
-  };
-}
 
 // Define a type for the expected API response (adjust based on your API)
 interface ApiResponse {
@@ -23,7 +14,7 @@ interface ApiResponse {
 export const serverAPICall = async (url: string, methodType: "get" | "post" = "get"): Promise<ApiResponse> => {
   try {
     // Get the server session
-    const session = (await getServerSession(authOptions)) as CustomSession | null;
+    const session = (await getServerSession(authOptions)) as any;
 
     // Check if session and authToken exist
     if (!session || !session.user?.authToken) {
