@@ -10,20 +10,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { UploadFile } from "../utils/functions";
 import axiosInstance from "../utils/axiosInstance";
+import { showToast } from "../utils/toast";
 
-type Visibility = "public" | "friends" | "private";
+type Visibility = "PUBLIC" | "FRIENDS" | "PRIVATE";
 
 const visibilityOptions = {
-  public: { label: "Public", icon: Globe },
-  friends: { label: "Friends", icon: Users },
-  private: { label: "Only me", icon: Lock },
+  PUBLIC: { label: "Public", icon: Globe },
+  FRIENDS: { label: "Friends", icon: Users },
+  PRIVATE: { label: "Only me", icon: Lock },
 };
 
 export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [caption, setCaption] = useState("");
-  const [visibility, setVisibility] = useState<Visibility>("public");
+  const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
-  const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
+  const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
@@ -38,53 +39,49 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
       // Limit to 5 files
       const totalFiles = mediaFiles.length + files.length;
       if (totalFiles > 5) {
+        showToast({
+          message: "Only 5 images are allowed.",
+          type: "error",
+        });
         return;
       }
 
       const filesToProcess = Array.from(files).slice(0, 5 - mediaFiles.length);
 
-      // Create previews for immediate display
-      const newPreviews = await Promise.all(
-        filesToProcess.map((file) => {
-          return new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target?.result as string);
-            reader.readAsDataURL(file);
-          });
-        })
-      );
-
       // Upload files to server
       const uploadResponse = await UploadFile(filesToProcess);
-      const uploadedFiles = uploadResponse.data; // Assuming this returns array of {key, URL}
+      console.log("🚀 uploadResponse:", uploadResponse)
+      const uploadedFiles = uploadResponse; // Array of {key, URL}
 
       // Update state
       setMediaFiles((prev) => [...prev, ...filesToProcess]);
-      setMediaPreviews((prev) => [...prev, ...newPreviews]);
+      setUploadedMedia((prev) => [...prev, ...uploadedFiles]);
 
       return uploadedFiles; // Returns array of {key, URL} objects
     } catch (error) {
       console.error("Error handling file upload:", error);
-
       throw error;
     }
   };
 
   const removeFile = (index: number) => {
     const newFiles = [...mediaFiles];
-    const newPreviews = [...mediaPreviews];
+    const newUploadedMedia = [...uploadedMedia];
     newFiles.splice(index, 1);
-    newPreviews.splice(index, 1);
+    newUploadedMedia.splice(index, 1);
     setMediaFiles(newFiles);
-    setMediaPreviews(newPreviews);
+    setUploadedMedia(newUploadedMedia);
   };
 
   const handleSubmit = async () => {
-    if (!caption.trim() && mediaPreviews.length === 0) {
+    if (!caption.trim() && uploadedMedia.length === 0) {
       return;
     }
 
     setIsSubmitting(true);
+    // Log only the keys
+    const keys = uploadedMedia.map((media) => media.key);
+    console.log("keys",caption, keys,visibility);
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -92,7 +89,7 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
     // Reset form
     setCaption("");
     setMediaFiles([]);
-    setMediaPreviews([]);
+    setUploadedMedia([]);
     setIsSubmitting(false);
     onOpenChange(false);
   };
@@ -109,11 +106,10 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
         prompt: aiPrompt,
       });
 
-      let generatedCaption = response.data.data; // Adjust based on actual API response structure
+      let generatedCaption = response.data.data;
       if (typeof generatedCaption === "string") {
-        generatedCaption = generatedCaption.replace(/^"|"$/g, ""); // Remove leading/trailing quotes
+        generatedCaption = generatedCaption.replace(/^"|"$/g, "");
       }
-      // Split caption into words for typing animation
       const words = generatedCaption.split(" ");
       let currentCaption = "";
       let wordIndex = 0;
@@ -217,11 +213,11 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
             onChange={(e) => setCaption(e.target.value)}
           />
 
-          {mediaPreviews.length > 0 && (
-            <div className={`grid gap-2 ${mediaPreviews.length === 1 ? "grid-cols-1" : mediaPreviews.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
-              {mediaPreviews.map((preview, index) => (
+          {uploadedMedia.length > 0 && (
+            <div className={`grid gap-2 ${uploadedMedia.length === 1 ? "grid-cols-1" : uploadedMedia.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+              {uploadedMedia.map((media, index) => (
                 <div key={index} className="relative group aspect-square rounded-md overflow-hidden">
-                  <img src={preview || "/placeholder.svg"} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                  <img src={media.url || "/placeholder.svg"} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                   <Button
                     variant="destructive"
                     size="icon"
@@ -251,7 +247,7 @@ export function CreatePostDialog({ open, onOpenChange }: { open: boolean; onOpen
         </div>
 
         <DialogFooter>
-          <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting || (caption.trim() === "" && mediaPreviews.length === 0)}>
+          <Button className="w-full" onClick={handleSubmit} disabled={isSubmitting || (caption.trim() === "" && uploadedMedia.length === 0)}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
