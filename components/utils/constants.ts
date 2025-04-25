@@ -25,6 +25,7 @@ const CONSTANTS = {
     TOGGLE_SAVE: "/post/toggleSave",
     FETCH_COMMENTS: "/post/comments",
     ADD_COMMENT: "/post/comments",
+    SEARCH_USERS: "/friend/searchUsers",
   },
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, Bell, Menu, User, Settings, LogOut, Home, MessageSquare, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,86 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { signOut } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+
+type UserType = {
+  user_id: number;
+  user_name: string;
+  profile_picture: string;
+};
 
 export function Navbar() {
   const UserDetails = useSelector((state: RootState) => state.user);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<UserType[]>([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { fetchData: fetchUsers } = useApiFetch("");
+
+  // Debounce function
+  const debounce = (func: (...args: any[]) => void, delay: number) => {
+    let timer: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  // Search users function
+  const searchUsers = useCallback(
+    async (query: string) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        await fetchUsers(CONSTANTS.API_ROUTES.SEARCH_USERS + `?name=${query}`).then((res:any) => {
+          if (res?.success == 1) {
+            setSearchResults(res.data);
+          }
+        });
+      } catch (error) {
+        console.error("Error searching users:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchUsers]
+  );
+
+  // Debounced search
+  const debouncedSearch = useCallback(
+    debounce((query: string) => {
+      searchUsers(query);
+    }, 500),
+    [searchUsers]
+  );
+
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
+  };
+
+  // Close search dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isSearchOpen]);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -104,11 +180,48 @@ export function Navbar() {
         </Sheet>
 
         {/* Search bar */}
-        <div className="flex-1 flex items-center max-w-md mx-auto md:mx-0">
+        <div className="flex-1 flex items-center max-w-md mx-auto md:mx-0 relative">
           <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Search for friends..." className="w-full pl-9 bg-muted/40 border-none focus-visible:ring-primary/20" />
+            <Input
+              type="search"
+              placeholder="Search for friends..."
+              className="w-full pl-9 bg-muted/40 border-none focus-visible:ring-primary/20"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onClick={() => setIsSearchOpen(true)}
+            />
           </div>
+
+          {/* Search results dropdown */}
+          {isSearchOpen && (searchResults.length > 0 || isLoading) && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-background border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+              {isLoading ? (
+                <div className="p-4 text-center text-muted-foreground">Searching...</div>
+              ) : (
+                <ul>
+                  {searchResults.map((user) => (
+                    <li key={user.user_id} className="border-b last:border-b-0">
+                      <Link
+                        href={`/profile/${user.user_id}`}
+                        className="flex items-center p-3 hover:bg-muted/50 transition-colors"
+                        onClick={() => {
+                          setIsSearchOpen(false);
+                          setSearchQuery("");
+                        }}
+                      >
+                        <Avatar className="h-8 w-8 mr-3">
+                          <AvatarImage src={user.profile_picture} alt={user.user_name} />
+                          <AvatarFallback>{user.user_name[0]}</AvatarFallback>
+                        </Avatar>
+                        <span>{user.user_name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right side actions */}
