@@ -1,4 +1,5 @@
 import axiosInstance from "./axiosInstance";
+import moment from "moment";
 
 export const UploadFile = async (files: File[]) => {
   const formData = new FormData();
@@ -19,3 +20,6 @@ export const UploadFile = async (files: File[]) => {
   }
 };
 
+export function formatTimeAgo(dateInput: string | number | Date): string {
+  return moment(dateInput).fromNow();
+}

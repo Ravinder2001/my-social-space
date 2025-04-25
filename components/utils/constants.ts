@@ -22,6 +22,8 @@ const CONSTANTS = {
     GET_ALL_POST: "/post",
     GENERATE_CAPTION: "/post/generate-caption",
     TOGGLE_LIKE: "/post/toggleLike",
+    FETCH_COMMENTS: "/post/comments",
+    ADD_COMMENT: "/post/comments",
   },
 };
 
