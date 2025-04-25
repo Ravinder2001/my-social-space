@@ -1,11 +1,13 @@
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, MessageSquare, Compass, Bell, User, Settings, LogOut } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { signOut } from "next-auth/react"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Home, MessageSquare, Compass, Bell, User, Settings, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { signOut } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { setLoggedOutUser } from "@/lib/Slices/UserSlice";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home, color: "text-brand-blue" },
@@ -14,10 +16,11 @@ const navItems = [
   { name: "Notifications", href: "/notifications", icon: Bell, color: "text-brand-orange" },
   { name: "Profile", href: "/profile", icon: User, color: "text-brand-pink" },
   { name: "Settings", href: "/settings", icon: Settings, color: "text-brand-yellow" },
-]
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const dispatch = useDispatch();
 
   return (
     <aside className="hidden md:flex flex-col w-16 lg:w-64 h-screen border-r bg-card transition-all duration-300 ease-in-out">
@@ -33,7 +36,7 @@ export function Sidebar() {
       <nav className="flex-1 py-8">
         <ul className="space-y-2 px-2">
           {navItems.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <li key={item.name}>
                 <TooltipProvider delayDuration={300}>
@@ -46,14 +49,14 @@ export function Sidebar() {
                           className={cn(
                             "w-full justify-start gap-4 transition-all",
                             isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted",
-                            "group relative overflow-hidden",
+                            "group relative overflow-hidden"
                           )}
                         >
                           <item.icon
                             className={cn(
                               "size-5",
                               isActive ? "text-primary-foreground" : item.color,
-                              "transition-transform group-hover:scale-110 duration-200",
+                              "transition-transform group-hover:scale-110 duration-200"
                             )}
                           />
                           <span className="hidden lg:inline-block">{item.name}</span>
@@ -67,7 +70,7 @@ export function Sidebar() {
                   </Tooltip>
                 </TooltipProvider>
               </li>
-            )
+            );
           })}
         </ul>
       </nav>
@@ -80,7 +83,10 @@ export function Sidebar() {
                 variant="ghost"
                 size="lg"
                 className="w-full justify-start gap-4 text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={() => signOut()}
+                onClick={() => {
+                  signOut();
+                  dispatch(setLoggedOutUser());
+                }}
               >
                 <LogOut className="size-5" />
                 <span className="hidden lg:inline-block">Logout</span>
@@ -93,5 +99,5 @@ export function Sidebar() {
         </TooltipProvider>
       </div>
     </aside>
-  )
+  );
 }

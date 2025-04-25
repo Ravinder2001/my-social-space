@@ -17,7 +17,7 @@ export function HomeFeed() {
   const { fetchData } = useApiFetch(CONSTANTS.API_ROUTES.GET_ALL_POST);
 
   useEffect(() => {
-    fetchData().then((res) => {
+    fetchData().then((res:any) => {
       setPostList(res.data);
     });
   }, []);

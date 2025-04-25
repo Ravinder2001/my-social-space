@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CreatePostDialog } from "@/components/home/create-post-dialog";
 import { EditPostType } from "../utils/CommanTypes";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 type Props = {
   selectedPost: null | EditPostType;
@@ -15,18 +17,19 @@ type Props = {
 };
 
 export function CreatePostBox(props: Props) {
+  const UserDetails = useSelector((state: RootState) => state.user);
   return (
     <div className="bg-card rounded-xl p-4 shadow-sm">
       <div className="flex items-start gap-3">
         <Avatar>
-          <AvatarImage src={"/placeholder.svg?height=40&width=40"} alt={"User"} />
-          <AvatarFallback>{"U"}</AvatarFallback>
+          <AvatarImage src={UserDetails.profile_picture} alt={"User"} />
+          <AvatarFallback>{UserDetails.name[0]}</AvatarFallback>
         </Avatar>
         <div
           onClick={() => props.setDialogOpen(true)}
           className="flex-1 bg-muted rounded-full px-4 py-2.5 text-muted-foreground cursor-pointer hover:bg-muted/80 transition-colors"
         >
-          What's on your mind?
+        What's on your mind?
         </div>
       </div>
 

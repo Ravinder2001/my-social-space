@@ -21,9 +21,14 @@ export const userSlice = createSlice({
       state.name = action.payload.name;
       state.profile_picture = action.payload.profile_picture;
     },
+    setLoggedOutUser: (state) => {
+      state.id = -1;
+      state.name = "";
+      state.profile_picture = "";
+    },
   },
 });
 
-export const { setUserDetails } = userSlice.actions;
+export const { setUserDetails, setLoggedOutUser } = userSlice.actions;
 
 export default userSlice.reducer;

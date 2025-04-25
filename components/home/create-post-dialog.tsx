@@ -33,7 +33,7 @@ export function CreatePostDialog({
   onOpenChange: (open: boolean) => void;
   editPost?: EditPostType | null;
 }) {
-  const UserDetails = useSelector((state:RootState)=>state.user)
+  const UserDetails = useSelector((state: RootState) => state.user);
 
   const [caption, setCaption] = useState(editPost?.caption || "");
   const [visibility, setVisibility] = useState<VisibilityType>(editPost?.visibility || "PUBLIC");
@@ -292,16 +292,20 @@ export function CreatePostDialog({
         </div>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => fileInputRef.current?.click()}>
-            <ImageIcon className="h-4 w-4 text-brand-pink" />
-            <span>Add Photos</span>
-          </Button>
-          <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleFileChange} />
+          {!editPost && (
+            <>
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => fileInputRef.current?.click()}>
+                <ImageIcon className="h-4 w-4 text-brand-pink" />
+                <span>Add Photos</span>
+              </Button>
+              <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleFileChange} />
 
-          <Button variant="outline" size="sm" className="gap-2">
-            <Smile className="h-4 w-4 text-brand-yellow" />
-            <span>Feeling/Activity</span>
-          </Button>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Smile className="h-4 w-4 text-brand-yellow" />
+                <span>Feeling/Activity</span>
+              </Button>
+            </>
+          )}
         </div>
 
         <DialogFooter>
