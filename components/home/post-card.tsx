@@ -65,7 +65,7 @@ export function PostCard({ post, onEditClick }: Props) {
   const remainingCount = post.images.length > 4 ? post.images.length - 4 : 0;
 
   return (
-    <div className="bg-card rounded-xl shadow-sm overflow-hidden animate-fade-in">
+    <div className="bg-card rounded-xl shadow-sm overflow-hidden animate-fade-in border-2">
       {/* Post header */}
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -222,7 +222,7 @@ export function PostCard({ post, onEditClick }: Props) {
         </div>
       )}
       {post.latest_comment ? (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 p-2">
           <Avatar>
             <AvatarImage src={post.latest_comment.profile_picture} alt={post.latest_comment.user_name} />
             <AvatarFallback>{post.latest_comment.user_name[0]}</AvatarFallback>

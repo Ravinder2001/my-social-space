@@ -298,7 +298,7 @@ export function CreatePostDialog({
                 <ImageIcon className="h-4 w-4 text-brand-pink" />
                 <span>Add Photos</span>
               </Button>
-              <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleFileChange} />
+              <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
 
               <Button variant="outline" size="sm" className="gap-2">
                 <Smile className="h-4 w-4 text-brand-yellow" />
@@ -306,7 +306,7 @@ export function CreatePostDialog({
               </Button>
             </>
           )}
-        </div>
+        </div>  
 
         <DialogFooter>
           <Button className="w-full" onClick={handleSubmit} disabled={UploadPostLoading || (caption.trim() === "" && uploadedMedia.length === 0)}>
