@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Search, Bell, Menu, User, Settings, LogOut, Home, MessageSquare, Compass } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ModeToggle } from "@/components/ui/mode-toggle"
-import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown"
+import { useState } from "react";
+import Link from "next/link";
+import { Search, Bell, Menu, User, Settings, LogOut, Home, MessageSquare, Compass } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { NotificationsDropdown } from "@/components/notifications/notifications-dropdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +15,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { signOut } from "next-auth/react"
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { signOut } from "next-auth/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const UserDetails = useSelector((state: RootState) => state.user);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -88,8 +91,8 @@ export function Navbar() {
                   variant="ghost"
                   className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={() => {
-                    signOut()
-                    setMobileMenuOpen(false)
+                    signOut();
+                    setMobileMenuOpen(false);
                   }}
                 >
                   <LogOut className="mr-2 h-5 w-5" />
@@ -104,11 +107,7 @@ export function Navbar() {
         <div className="flex-1 flex items-center max-w-md mx-auto md:mx-0">
           <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search for friends..."
-              className="w-full pl-9 bg-muted/40 border-none focus-visible:ring-primary/20"
-            />
+            <Input type="search" placeholder="Search for friends..." className="w-full pl-9 bg-muted/40 border-none focus-visible:ring-primary/20" />
           </div>
         </div>
 
@@ -122,8 +121,8 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8 transition-transform hover:scale-110">
-                  <AvatarImage src={ "/placeholder.svg?height=32&width=32"} alt={"User"} />
-                  <AvatarFallback>{"U"}</AvatarFallback>
+                  <AvatarImage src={UserDetails.profile_picture} alt={"User"} />
+                  <AvatarFallback>{UserDetails.name[0]}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -143,10 +142,7 @@ export function Navbar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive cursor-pointer"
-                onClick={() => signOut()}
-              >
+              <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={() => signOut()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>
@@ -155,5 +151,5 @@ export function Navbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -10,6 +10,7 @@ export type PostType = {
   comment_count: number;
   like_count: number;
   is_liked: boolean;
+  is_saved: boolean;
   ownPost: boolean;
   latest_comment: null | {
     content: string;

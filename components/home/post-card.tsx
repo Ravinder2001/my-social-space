@@ -1,12 +1,12 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Heart, MessageCircle, MoreHorizontal, ChevronLeft, ChevronRight, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EditPostType, PostType } from "../utils/CommanTypes";
 import moment from "moment";
 import useApiFetch from "@/hooks/use-api-fetch";
@@ -20,10 +20,11 @@ type Props = {
 
 export function PostCard({ post, onEditClick }: Props) {
   const [liked, setLiked] = useState(post.is_liked);
+  const [saved, setSaved] = useState(post.is_saved);
   const [likesCount, setLikesCount] = useState<number>(post.like_count);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { fetchData: ToggleLike } = useApiFetch("");
 
@@ -36,6 +37,13 @@ export function PostCard({ post, onEditClick }: Props) {
           setLikesCount(likesCount + 1);
         }
         setLiked(!liked);
+      }
+    });
+  };
+  const toggleSave = async () => {
+    await ToggleLike(CONSTANTS.API_ROUTES.TOGGLE_SAVE + `/${post.post_id}`).then((res) => {
+      if (res.success == 1) {
+        setSaved(!saved);
       }
     });
   };
@@ -53,8 +61,8 @@ export function PostCard({ post, onEditClick }: Props) {
   };
 
   const openPostModal = () => {
-    setModalOpen(true)
-  }
+    setModalOpen(true);
+  };
 
   // Truncate content if it's too long
   const shouldTruncate = post.caption.length > 150 && !expanded;
@@ -81,15 +89,15 @@ export function PostCard({ post, onEditClick }: Props) {
           </div>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-5 w-5" />
-              <span className="sr-only">More options</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {post.ownPost ? (
+        {post.ownPost ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreHorizontal className="h-5 w-5" />
+                <span className="sr-only">More options</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => {
                   onEditClick({
@@ -102,13 +110,9 @@ export function PostCard({ post, onEditClick }: Props) {
               >
                 Edit Post
               </DropdownMenuItem>
-            ) : null}
-            <DropdownMenuItem>Save Post</DropdownMenuItem>
-            <DropdownMenuItem>Hide Post</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">Report Post</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
       </div>
 
       {/* Post content */}
@@ -207,9 +211,9 @@ export function PostCard({ post, onEditClick }: Props) {
           <span>Comment</span>
         </Button>
 
-        <Button variant="ghost" size="sm" className="gap-2 flex-1">
-          <Share className="h-5 w-5" />
-          <span>Share</span>
+        <Button variant="ghost" size="sm" className={cn("gap-2 flex-1", saved ? "text-brand-white" : "")} onClick={toggleSave}>
+          <Bookmark className={cn("h-5 w-5", saved ? "fill-current animate-pulse-once" : "")} />
+          <span>Save</span>
         </Button>
       </div>
 
