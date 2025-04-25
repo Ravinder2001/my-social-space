@@ -1,18 +1,20 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Eye, EyeOff, Mail, Lock, User, Upload, UserPlus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import type React from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Eye, EyeOff, Mail, Lock, User, Upload, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { getSession, signIn } from "next-auth/react";
+import { setUserDetails } from "@/lib/Slices/UserSlice";
+import { useDispatch } from "react-redux";
 
 const formSchema = z
   .object({
@@ -24,17 +26,16 @@ const formSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
-  })
+  });
 
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof formSchema>;
 
 export function RegisterForm() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const dispatch = useDispatch()
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,30 +45,37 @@ export function RegisterForm() {
       password: "",
       confirmPassword: "",
     },
-  })
+  });
 
   const onSubmit = async (values: FormValues) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      router.push("/")
-    } catch (error) {
-      console.error("Registration failed:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      const response = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        full_name: values.name,
+        redirect: false, // Set to false to handle response manually
+        callbackUrl: "/",
+      });
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setAvatarFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string)
+      if (response?.ok) {
+        // Fetch the session to get the user object with the token
+        const session: any = await getSession();
+        if (session?.user?.authToken) {
+          // Save the backend token to localStorage
+          localStorage.setItem("authToken", session?.user?.authToken);
+          dispatch(setUserDetails(session.user));
+        }
+        router.push("/");
+      } else {
+        console.error("Login failed:", response?.error);
       }
-      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error("Registration failed:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full shadow-lg animate-slide-up">
@@ -76,31 +84,6 @@ export function RegisterForm() {
         <CardDescription>Enter your information to create an account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex flex-col items-center justify-center mb-4">
-          <div className="relative group">
-            <Avatar className="h-24 w-24 border-2 border-primary">
-              <AvatarImage src={avatarPreview || "/placeholder.svg?height=96&width=96"} alt="Avatar preview" />
-              <AvatarFallback className="text-2xl">{form.watch("name")?.charAt(0) || "U"}</AvatarFallback>
-            </Avatar>
-            <label
-              htmlFor="avatar-upload"
-              className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
-            >
-              <Upload className="h-6 w-6" />
-              <span className="sr-only">Upload avatar</span>
-            </label>
-            <input
-              id="avatar-upload"
-              type="file"
-              accept="image/*"
-              className="sr-only"
-              onChange={handleAvatarChange}
-              disabled={isLoading}
-            />
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">Click to upload profile picture</p>
-        </div>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -144,13 +127,7 @@ export function RegisterForm() {
                   <FormControl>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        className="pl-10"
-                        {...field}
-                        disabled={isLoading}
-                      />
+                      <Input type={showPassword ? "text" : "password"} placeholder="••••••••" className="pl-10" {...field} disabled={isLoading} />
                       <Button
                         type="button"
                         variant="ghost"
@@ -158,11 +135,7 @@ export function RegisterForm() {
                         className="absolute right-1 top-1"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
+                        {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                         <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
                       </Button>
                     </div>
@@ -210,20 +183,8 @@ export function RegisterForm() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4 mr-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
+                  <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path
                       className="opacity-75"
                       fill="currentColor"
@@ -251,5 +212,5 @@ export function RegisterForm() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

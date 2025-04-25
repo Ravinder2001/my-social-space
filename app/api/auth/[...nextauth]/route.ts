@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
-        name: { label: "Full Name", type: "text" },
+        full_name: { label: "Full Name", type: "text" },
       },
       async authorize(credentials): Promise<ExtendedUser | null> {
         if (!credentials?.email || !credentials?.password) {
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Check if this is a signup attempt (name provided)
-          const url = credentials.name
+          const url = credentials.full_name
             ? `${Config.API_BASE_URL}${CONSTANTS.API_ROUTES.SIGNUP}`
             : `${Config.API_BASE_URL}${CONSTANTS.API_ROUTES.LOGIN}`;
 
@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
             body: JSON.stringify({
               email: credentials.email,
               password: credentials.password,
-              ...(credentials.name && { name: credentials.name }),
+              ...(credentials.full_name && { full_name: credentials.full_name, gender: "M" }),
             }),
           });
 
