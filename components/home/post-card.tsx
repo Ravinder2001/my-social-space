@@ -9,6 +9,9 @@ import { Separator } from "@/components/ui/separator";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { EditPostType, PostType } from "../utils/CommanTypes";
 import moment from "moment";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+import { PostViewModal } from "./post-view-modal";
 
 type Props = {
   post: PostType;
@@ -17,17 +20,24 @@ type Props = {
 
 export function PostCard({ post, onEditClick }: Props) {
   const [liked, setLiked] = useState(post.is_liked);
-  const [likesCount, setLikesCount] = useState(post.like_count);
+  const [likesCount, setLikesCount] = useState<number>(post.like_count);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false)
 
-  const toggleLike = () => {
-    if (liked) {
-      setLikesCount(likesCount - 1);
-    } else {
-      setLikesCount(likesCount + 1);
-    }
-    setLiked(!liked);
+  const { fetchData: ToggleLike } = useApiFetch("");
+
+  const toggleLike = async () => {
+    await ToggleLike(CONSTANTS.API_ROUTES.TOGGLE_LIKE + `/${post.post_id}`).then((res) => {
+      if (res.success == 1) {
+        if (liked) {
+          setLikesCount(likesCount - 1);
+        } else {
+          setLikesCount(likesCount + 1);
+        }
+        setLiked(!liked);
+      }
+    });
   };
 
   const nextMedia = () => {
@@ -41,6 +51,10 @@ export function PostCard({ post, onEditClick }: Props) {
       setCurrentMediaIndex(currentMediaIndex - 1);
     }
   };
+
+  const openPostModal = () => {
+    setModalOpen(true)
+  }
 
   // Truncate content if it's too long
   const shouldTruncate = post.caption.length > 150 && !expanded;
@@ -111,7 +125,7 @@ export function PostCard({ post, onEditClick }: Props) {
 
       {/* Post images */}
       {post.images.length > 0 && (
-        <div className="relative">
+        <div className="relative cursor-pointer" onClick={openPostModal}>
           {post.images.length === 1 ? (
             // Single image
             <img src={post.images[0] || "/placeholder.svg"} alt={`Post by ${post.user_name}`} className="w-full object-cover max-h-[400px]" />
@@ -202,7 +216,7 @@ export function PostCard({ post, onEditClick }: Props) {
       {/* Comments preview */}
       {post.comment_count > 0 && (
         <div className="px-4 py-2 bg-muted/30">
-          <Button variant="link" className="p-0 h-auto text-sm text-muted-foreground">
+          <Button variant="link" className="p-0 h-auto text-sm text-muted-foreground" onClick={openPostModal}>
             View all {post.comment_count} comments
           </Button>
         </div>
@@ -221,6 +235,8 @@ export function PostCard({ post, onEditClick }: Props) {
           </div>
         </div>
       ) : null}
+
+      <PostViewModal open={modalOpen} onOpenChange={setModalOpen} post={post} />
     </div>
   );
 }
