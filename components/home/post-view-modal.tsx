@@ -1,71 +1,71 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight, Smile, Send } from "lucide-react"
-import { cn } from "@/lib/utils"
-import type { PostType } from "../utils/CommanTypes"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/lib/store"
-import moment from "moment"
-import useApiFetch from "@/hooks/use-api-fetch"
-import CONSTANTS from "../utils/constants"
-import { formatTimeAgo } from "../utils/functions"
+import { useState, useRef, useEffect } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight, Smile, Send } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { PostType } from "../utils/CommanTypes";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/lib/store";
+import moment from "moment";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+import { formatTimeAgo } from "../utils/functions";
 
 type PostViewModalProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  post: PostType
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  post: PostType;
+};
 
 type CommentType = {
-  comment_id: number
-  user_name: string
-  profile_picture: string
-  content: string
-  created_at: string
-}
+  comment_id: number;
+  user_name: string;
+  profile_picture: string;
+  content: string;
+  created_at: string;
+};
 
 export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) {
-  const UserDetails = useSelector((state: RootState) => state.user)
+  const UserDetails = useSelector((state: RootState) => state.user);
 
-  const [liked, setLiked] = useState(post.is_liked)
-  const [likesCount, setLikesCount] = useState(post.like_count)
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
-  const [comments, setComments] = useState<CommentType[]>([])
-  const [newComment, setNewComment] = useState("")
-  const commentInputRef = useRef<HTMLTextAreaElement>(null)
+  const [liked, setLiked] = useState(post.is_liked);
+  const [likesCount, setLikesCount] = useState(post.like_count);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
-  const { fetchData: ToggleLike } = useApiFetch("")
-  const { fetchData: AddComment } = useApiFetch("")
-  const { fetchData: FetchCommentsList } = useApiFetch(CONSTANTS.API_ROUTES.FETCH_COMMENTS + `/${post.post_id}`)
+  const { fetchData: ToggleLike } = useApiFetch("");
+  const { fetchData: AddComment } = useApiFetch("");
+  const { fetchData: FetchCommentsList } = useApiFetch(CONSTANTS.API_ROUTES.FETCH_COMMENTS + `/${post.post_id}`);
 
   const toggleLike = async () => {
     await ToggleLike(CONSTANTS.API_ROUTES.TOGGLE_LIKE + `/${post.post_id}`).then((res) => {
       if (res.success == 1) {
         if (liked) {
-          setLikesCount(likesCount - 1)
+          setLikesCount(likesCount - 1);
         } else {
-          setLikesCount(likesCount + 1)
+          setLikesCount(likesCount + 1);
         }
-        setLiked(!liked)
+        setLiked(!liked);
       }
-    })
-  }
+    });
+  };
 
   const addComment = async () => {
-    if (!newComment.trim()) return
+    if (!newComment.trim()) return;
 
     await AddComment(CONSTANTS.API_ROUTES.ADD_COMMENT + `/${post.post_id}`, {
       method: "POST",
       data: {
         content: newComment,
       },
-    }).then((res) => {
+    }).then((res: any) => {
       if (res.success == 1) {
         setComments((prev) => [
           {
@@ -76,35 +76,35 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
             created_at: res?.data.created_at,
           },
           ...prev,
-        ])
-        setNewComment("")
+        ]);
+        setNewComment("");
       }
-    })
-  }
+    });
+  };
 
   const nextMedia = () => {
     if (post && currentMediaIndex < post.images.length - 1) {
-      setCurrentMediaIndex(currentMediaIndex + 1)
+      setCurrentMediaIndex(currentMediaIndex + 1);
     }
-  }
+  };
 
   const prevMedia = () => {
     if (currentMediaIndex > 0) {
-      setCurrentMediaIndex(currentMediaIndex - 1)
+      setCurrentMediaIndex(currentMediaIndex - 1);
     }
-  }
+  };
 
   useEffect(() => {
     if (open) {
-      FetchCommentsList().then((res) => {
+      FetchCommentsList().then((res: any) => {
         if (res.success == 1) {
-          setComments(res.data)
+          setComments(res.data);
         }
-      })
+      });
     }
-  }, [open])
+  }, [open]);
 
-  if (!post) return null
+  if (!post) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -177,11 +177,6 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
                 <p className="text-xs text-muted-foreground">{moment(post.created_at).format("DD-MM-YYYY HH:MM")}</p>
               </div>
             </div>
-
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreHorizontal className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="sr-only">More options</span>
-            </Button>
           </div>
 
           {/* Post content */}
@@ -209,22 +204,12 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
 
           {/* Post actions */}
           <div className="px-1 md:px-2 py-1 flex justify-between border-b">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn("gap-1 md:gap-2 flex-1", liked ? "text-brand-red" : "")}
-              onClick={toggleLike}
-            >
+            <Button variant="ghost" size="sm" className={cn("gap-1 md:gap-2 flex-1", liked ? "text-brand-red" : "")} onClick={toggleLike}>
               <Heart className={cn("h-4 w-4 md:h-5 md:w-5", liked ? "fill-current animate-pulse-once" : "")} />
               <span className="text-xs md:text-sm">Like</span>
             </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-1 md:gap-2 flex-1"
-              onClick={() => commentInputRef.current?.focus()}
-            >
+            <Button variant="ghost" size="sm" className="gap-1 md:gap-2 flex-1" onClick={() => commentInputRef.current?.focus()}>
               <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
               <span className="text-xs md:text-sm">Comment</span>
             </Button>
@@ -249,13 +234,9 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
                       <div className="bg-muted rounded-xl p-2 md:p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-semibold text-xs md:text-sm text-primary">{comment.user_name}</span>
-                          <span className="text-[10px] md:text-xs text-gray-400">
-                            {formatTimeAgo(comment.created_at)}
-                          </span>
+                          <span className="text-[10px] md:text-xs text-gray-400">{formatTimeAgo(comment.created_at)}</span>
                         </div>
-                        <p className="text-xs md:text-sm text-gray-100 leading-relaxed break-words">
-                          {comment.content}
-                        </p>
+                        <p className="text-xs md:text-sm text-gray-100 leading-relaxed break-words">{comment.content}</p>
                       </div>
                     </div>
                   </div>
@@ -285,8 +266,8 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
                   onChange={(e) => setNewComment(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault()
-                      addComment()
+                      e.preventDefault();
+                      addComment();
                     }
                   }}
                 />
@@ -312,5 +293,5 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
