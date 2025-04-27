@@ -1,29 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Camera, Settings, Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { EditProfileDialog } from "@/components/profile/edit-profile-dialog"
-import { ProfilePosts } from "@/components/profile/profile-posts"
-import { ProfilePhotos } from "@/components/profile/profile-photos"
-import { ProfileFriends } from "@/components/profile/profile-friends"
-import { ProfileSaved } from "@/components/profile/profile-saved"
-
-// Mock data for posts
-const posts = [
-  { id: "1", image: "/placeholder.svg?height=300&width=300", likes: 245, comments: 32 },
-  { id: "2", image: "/placeholder.svg?height=300&width=300", likes: 187, comments: 24 },
-  { id: "3", image: "/placeholder.svg?height=300&width=300", likes: 312, comments: 41 },
-  { id: "4", image: "/placeholder.svg?height=300&width=300", likes: 156, comments: 18 },
-  { id: "5", image: "/placeholder.svg?height=300&width=300", likes: 278, comments: 36 },
-  { id: "6", image: "/placeholder.svg?height=300&width=300", likes: 203, comments: 27 },
-  { id: "7", image: "/placeholder.svg?height=300&width=300", likes: 189, comments: 22 },
-  { id: "8", image: "/placeholder.svg?height=300&width=300", likes: 231, comments: 29 },
-  { id: "9", image: "/placeholder.svg?height=300&width=300", likes: 267, comments: 34 },
-]
+import { useEffect, useState } from "react";
+import { Camera, Settings, Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EditProfileDialog } from "@/components/profile/edit-profile-dialog";
+import { ProfilePosts } from "@/components/profile/profile-posts";
+import { ProfilePhotos } from "@/components/profile/profile-photos";
+import { ProfileFriends } from "@/components/profile/profile-friends";
+import { ProfileSaved } from "@/components/profile/profile-saved";
+import { PostType, ProfilePhotosType, ProfileSavedPostType } from "../utils/CommanTypes";
+import CONSTANTS from "../utils/constants";
+import useApiFetch from "@/hooks/use-api-fetch";
 
 // Mock data for friends
 const friends = [
@@ -35,24 +25,48 @@ const friends = [
   { id: "6", name: "William Moore", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 4 },
   { id: "7", name: "Sophia Taylor", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 9 },
   { id: "8", name: "James Anderson", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 6 },
-]
+];
+
+// Mock profile data
+const profile = {
+  name: "Demo User",
+  username: "@demouser",
+  bio: "Digital creator | UI/UX Designer | Photographer\nSharing my journey and creative process",
+  location: "San Francisco, CA",
+  website: "https://example.com",
+  joinDate: "Joined January 2023",
+  followers: 1240,
+  following: 365,
+  posts: 9,
+  verified: true,
+};
 
 export function ProfileView() {
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [savedPosts, setSavedPosts] = useState<ProfileSavedPostType[]>([]);
+  const [photos, setPhotos] = useState<ProfilePhotosType[]>([]);
 
-  // Mock profile data
-  const profile = {
-    name:  "Demo User",
-    username: "@demouser",
-    bio: "Digital creator | UI/UX Designer | Photographer\nSharing my journey and creative process",
-    location: "San Francisco, CA",
-    website: "https://example.com",
-    joinDate: "Joined January 2023",
-    followers: 1240,
-    following: 365,
-    posts: posts.length,
-    verified: true,
-  }
+  const { fetchData: fetchPosts } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_POSTS);
+  const { fetchData: fetchPhotos } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_PHOTOS);
+  const { fetchData: fetchSaved } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_SAVED);
+  useEffect(() => {
+    fetchPosts().then((res: any) => {
+      if (res.success == 1) {
+        setPosts(res?.data);
+      }
+    });
+    fetchPhotos().then((res: any) => {
+      if (res.success == 1) {
+        setPhotos(res?.data);
+      }
+    });
+    fetchSaved().then((res: any) => {
+      if (res.success == 1) {
+        setSavedPosts(res?.data);
+      }
+    });
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -69,7 +83,7 @@ export function ProfileView() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <Avatar className="h-32 w-32 border-4 border-background">
-              <AvatarImage src={ "/placeholder.svg?height=128&width=128"} alt={profile.name} />
+              <AvatarImage src={"/placeholder.svg?height=128&width=128"} alt={profile.name} />
               <AvatarFallback>{profile.name[0]}</AvatarFallback>
             </Avatar>
 
@@ -111,12 +125,7 @@ export function ProfileView() {
             {profile.website && (
               <div className="flex items-center gap-1">
                 <LinkIcon className="h-4 w-4" />
-                <a
-                  href={profile.website}
-                  className="text-primary hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={profile.website} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
                   {profile.website.replace(/^https?:\/\//, "")}
                 </a>
               </div>
@@ -172,7 +181,7 @@ export function ProfileView() {
             </TabsContent>
 
             <TabsContent value="photos">
-              <ProfilePhotos photos={posts} />
+              <ProfilePhotos photos={photos} />
             </TabsContent>
 
             <TabsContent value="friends">
@@ -180,7 +189,7 @@ export function ProfileView() {
             </TabsContent>
 
             <TabsContent value="saved">
-              <ProfileSaved posts={posts.slice(0, 5)} />
+              <ProfileSaved posts={savedPosts} />
             </TabsContent>
           </Tabs>
         </div>
@@ -188,5 +197,5 @@ export function ProfileView() {
 
       <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} profile={profile} />
     </div>
-  )
+  );
 }

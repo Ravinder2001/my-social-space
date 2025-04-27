@@ -239,8 +239,7 @@ export function PostCard({ post, onEditClick }: Props) {
           </div>
         </div>
       ) : null}
-
-      <PostViewModal open={modalOpen} onOpenChange={setModalOpen} post={post} />
+      {modalOpen && <PostViewModal open={modalOpen} onOpenChange={setModalOpen} post={post} />}
     </div>
   );
 }

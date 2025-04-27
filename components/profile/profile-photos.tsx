@@ -1,13 +1,10 @@
-"use client"
+"use client";
+
+import { ProfilePhotosType } from "../utils/CommanTypes";
 
 type ProfilePhotosProps = {
-  photos: {
-    id: string
-    image: string
-    likes: number
-    comments: number
-  }[]
-}
+  photos: ProfilePhotosType[];
+};
 
 export function ProfilePhotos({ photos }: ProfilePhotosProps) {
   return (
@@ -42,5 +39,5 @@ export function ProfilePhotos({ photos }: ProfilePhotosProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight, Smile, Send } from "lucide-react";
+import { Heart, MessageCircle, Share, MoreHorizontal, ChevronLeft, ChevronRight, Smile, Send, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PostType } from "../utils/CommanTypes";
 import { useSelector } from "react-redux";
@@ -34,6 +34,7 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
   const UserDetails = useSelector((state: RootState) => state.user);
 
   const [liked, setLiked] = useState(post.is_liked);
+  const [saved, setSaved] = useState(post.is_saved);
   const [likesCount, setLikesCount] = useState(post.like_count);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [comments, setComments] = useState<CommentType[]>([]);
@@ -53,6 +54,14 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
           setLikesCount(likesCount + 1);
         }
         setLiked(!liked);
+      }
+    });
+  };
+
+  const toggleSave = async () => {
+    await ToggleLike(CONSTANTS.API_ROUTES.TOGGLE_SAVE + `/${post.post_id}`).then((res) => {
+      if (res.success == 1) {
+        setSaved(!saved);
       }
     });
   };
@@ -214,9 +223,9 @@ export function PostViewModal({ open, onOpenChange, post }: PostViewModalProps) 
               <span className="text-xs md:text-sm">Comment</span>
             </Button>
 
-            <Button variant="ghost" size="sm" className="gap-1 md:gap-2 flex-1">
-              <Share className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="text-xs md:text-sm">Share</span>
+            <Button variant="ghost" size="sm" className={cn("gap-2 flex-1", saved ? "text-brand-white" : "")} onClick={toggleSave}>
+              <Bookmark className={cn("h-5 w-5", saved ? "fill-current animate-pulse-once" : "")} />
+              <span>Save</span>
             </Button>
           </div>
 

@@ -19,10 +19,25 @@ export type PostType = {
   };
 };
 
-
 export type EditPostType = {
   id: number;
   caption: string;
   visibility: VisibilityType;
   images: { key: string; url: string }[];
+};
+
+export type ProfilePhotosType = {
+  id: number;
+  image: string;
+  likes: string;
+  comments: string;
+};
+
+export type ProfileSavedPostType = {
+  id: number;
+  image: string | null;
+  likes: string;
+  comments: string;
+  caption: string | null;
+  created_at: string;
 };

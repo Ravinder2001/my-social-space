@@ -1,16 +1,13 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Heart, MessageCircle } from "lucide-react"
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Heart, MessageCircle } from "lucide-react";
+import { ProfileSavedPostType } from "../utils/CommanTypes";
+import { formatTimeAgo } from "../utils/functions";
 
 type ProfileSavedProps = {
-  posts: {
-    id: string
-    image: string
-    likes: number
-    comments: number
-  }[]
-}
+  posts: ProfileSavedPostType[];
+};
 
 export function ProfileSaved({ posts }: ProfileSavedProps) {
   return (
@@ -18,13 +15,17 @@ export function ProfileSaved({ posts }: ProfileSavedProps) {
       {posts.length > 0 ? (
         posts.map((post) => (
           <Card key={post.id} className="overflow-hidden">
-            <CardContent className="p-0">
-              <img
-                src={post.image || "/placeholder.svg"}
-                alt="Saved post"
-                className="w-full object-cover max-h-[300px]"
-              />
-            </CardContent>
+            {post.caption && (
+              <div className="p-4">
+                <p className="whitespace-pre-line">{post.caption}</p>
+              </div>
+            )}
+            {post.image && (
+              <CardContent className="p-0">
+                <img src={post.image || "/placeholder.svg"} alt="Saved post" className="w-full object-cover max-h-[300px]" />
+              </CardContent>
+            )}
+
             <CardFooter className="flex justify-between p-4">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
@@ -36,7 +37,7 @@ export function ProfileSaved({ posts }: ProfileSavedProps) {
                   <span>{post.comments}</span>
                 </div>
               </div>
-              <span className="text-sm text-muted-foreground">Saved 2 days ago</span>
+              <span className="text-sm text-muted-foreground">{formatTimeAgo(post.created_at)}</span>
             </CardFooter>
           </Card>
         ))
@@ -61,5 +62,5 @@ export function ProfileSaved({ posts }: ProfileSavedProps) {
         </div>
       )}
     </div>
-  )
+  );
 }
