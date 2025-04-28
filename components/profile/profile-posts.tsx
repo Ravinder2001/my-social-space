@@ -1,11 +1,9 @@
 "use client";
 
 import { PostCard } from "@/components/home/post-card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { EditPostType, PostType } from "../utils/CommanTypes";
-import useApiFetch from "@/hooks/use-api-fetch";
-import CONSTANTS from "../utils/constants";
-import { CreatePostBox } from "../home/create-post-box";
+import { CreatePostDialog } from "../home/create-post-dialog";
 
 type Props = {
   posts: PostType[];
@@ -27,7 +25,7 @@ export function ProfilePosts(props: Props) {
           }}
         />
       ))}
-      <CreatePostBox selectedPost={selectedPost} dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
+      {dialogOpen && <CreatePostDialog open={dialogOpen} onOpenChange={setDialogOpen} editPost={selectedPost} />}
     </div>
   );
 }
