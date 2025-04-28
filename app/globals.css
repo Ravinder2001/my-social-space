@@ -140,3 +140,7 @@
 .bg-gradient {
   @apply bg-gradient-to-r from-purple-600 via-pink-500 to-blue-500;
 }
+
+img{
+  object-fit: cover;
+}

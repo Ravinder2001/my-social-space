@@ -98,7 +98,7 @@ export function ProfileView() {
       </div>
 
       {/* Profile info */}
-      <div className="relative px-4 sm:px-6 -mt-16">
+      <div className="relative px-4 sm:px-6 -mt-6">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <Avatar className="h-32 w-32 border-4 border-background">
@@ -110,7 +110,7 @@ export function ProfileView() {
               <div className="flex items-center gap-2 mt-2 sm:mt-0">
                 <h1 className="text-2xl font-bold">{profileDetails.full_name}</h1>
               </div>
-              <p className="text-muted-foreground">{profileDetails.username}</p>
+              <p className="text-muted-foreground">@{profileDetails.username}</p>
             </div>
           </div>
 

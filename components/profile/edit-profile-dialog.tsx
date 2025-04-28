@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Camera, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -39,6 +38,10 @@ export function EditProfileDialog({
     location: profile.city,
     website: profile.website,
   });
+  const [usernameValidation, setUsernameValidation] = useState({
+    isValid: true,
+    message: "",
+  });
   const [avatarPreview, setAvatarPreview] = useState<UploadedFileType>({
     url: profile.profile_picture,
     key: profile.profile_picture,
@@ -49,11 +52,42 @@ export function EditProfileDialog({
   });
 
   const { fetchData: updateProfileDetails } = useApiFetch("");
+  const { fetchData: validateUsername } = useApiFetch("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    // Only run this effect when `username` changes
+    const debounceTimeout = setTimeout(async () => {
+      if (formData.username !== profile.username) {
+        // Call API to validate username
+        await validateUsername(CONSTANTS.API_ROUTES.VALIDATE_USERNAME, {
+          method: "POST",
+          data: { username: formData.username },
+        }).then((res: any) => {
+          if (res?.success === 1) {
+            setUsernameValidation({
+              isValid: true,
+              message: "Username available",
+            });
+          } else {
+            setUsernameValidation({
+              isValid: false,
+              message: "Username already taken",
+            });
+          }
+        });
+      }
+    }, 500); // Wait for 1 second after the last keystroke
+
+    // Cleanup: Clear previous timeout if the username changes again before the timeout
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
+  }, [formData.username]); // Effect runs only when `username` changes
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +119,14 @@ export function EditProfileDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!usernameValidation.isValid) {
+      showToast({
+        message: "Please add a valid Username.",
+        type: "error",
+      });
+    }
+
     setIsSubmitting(true);
 
     const updatedFields: Record<string, any> = {};
@@ -207,7 +249,20 @@ export function EditProfileDialog({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" name="username" value={formData.username} onChange={handleChange} disabled={isSubmitting} />
+                <Input
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className={`${
+                    formData.username !== profile.username &&
+                    (usernameValidation.isValid ? "border-green-500 focus-visible:ring-green-500" : "border-red-500 focus-visible:ring-red-500")
+                  }`}
+                />
+                {formData.username !== profile.username && (
+                  <p className={`text-sm ${usernameValidation.isValid ? "text-green-500" : "text-red-500"}`}>{usernameValidation.message}</p>
+                )}
               </div>
             </div>
 
