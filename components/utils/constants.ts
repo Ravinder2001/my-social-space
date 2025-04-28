@@ -1,7 +1,7 @@
 const CONSTANTS = {
   PROJECT_ROUTES: {
     PRIVATE_ROUTES: {
-      HOME: "/",  
+      HOME: "/",
       EXPLORE: "/explore",
       MESSAGES: "/messages",
       NOTIFICATIONS: "/notifications",
@@ -29,6 +29,9 @@ const CONSTANTS = {
     PROFILE_POSTS: "/profile/posts",
     PROFILE_PHOTOS: "/profile/photos",
     PROFILE_SAVED: "/profile/saved",
+    EDIT_PROFILE_DETAILS: "/profile",
+    GET_PROFILE_DETAILS: "/profile",
+    VALIDATE_USERNAME: "/profile/validateUsername",
   },
 };
 

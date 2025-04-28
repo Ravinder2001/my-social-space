@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { Camera, Settings, Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditProfileDialog } from "@/components/profile/edit-profile-dialog";
 import { ProfilePosts } from "@/components/profile/profile-posts";
 import { ProfilePhotos } from "@/components/profile/profile-photos";
 import { ProfileFriends } from "@/components/profile/profile-friends";
 import { ProfileSaved } from "@/components/profile/profile-saved";
-import { PostType, ProfilePhotosType, ProfileSavedPostType } from "../utils/CommanTypes";
+import { PostType, ProfileDetailsType, ProfilePhotosType, ProfileSavedPostType } from "../utils/CommanTypes";
 import CONSTANTS from "../utils/constants";
 import useApiFetch from "@/hooks/use-api-fetch";
+import moment from "moment";
+import Image from "next/image";
 
 // Mock data for friends
 const friends = [
@@ -46,11 +47,28 @@ export function ProfileView() {
   const [posts, setPosts] = useState<PostType[]>([]);
   const [savedPosts, setSavedPosts] = useState<ProfileSavedPostType[]>([]);
   const [photos, setPhotos] = useState<ProfilePhotosType[]>([]);
+  const [profileDetails, setProfileDetails] = useState<ProfileDetailsType>({
+    username: "",
+    full_name: "",
+    profile_picture: "",
+    cover_picture: "",
+    bio: "",
+    city: "",
+    website: "",
+    created_at: "",
+  });
 
   const { fetchData: fetchPosts } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_POSTS);
   const { fetchData: fetchPhotos } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_PHOTOS);
   const { fetchData: fetchSaved } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_SAVED);
+  const { fetchData: fetchProfileDetails } = useApiFetch(CONSTANTS.API_ROUTES.GET_PROFILE_DETAILS);
+
   useEffect(() => {
+    fetchProfileDetails().then((res: any) => {
+      if (res.success == 1) {
+        setProfileDetails(res?.data);
+      }
+    });
     fetchPosts().then((res: any) => {
       if (res.success == 1) {
         setPosts(res?.data);
@@ -72,10 +90,11 @@ export function ProfileView() {
     <div className="max-w-4xl mx-auto">
       {/* Cover photo */}
       <div className="relative h-48 md:h-64 rounded-xl bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue overflow-hidden">
-        <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 bg-background/80 backdrop-blur-sm">
+        <Image src={profileDetails.cover_picture} alt="" width={100} height={100} className="w-[100%] h-[100%]" />
+        {/* <Button variant="secondary" size="icon" className="absolute bottom-4 right-4 bg-background/80 backdrop-blur-sm">
           <Camera className="h-4 w-4" />
           <span className="sr-only">Change cover photo</span>
-        </Button>
+        </Button> */}
       </div>
 
       {/* Profile info */}
@@ -83,20 +102,15 @@ export function ProfileView() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <Avatar className="h-32 w-32 border-4 border-background">
-              <AvatarImage src={"/placeholder.svg?height=128&width=128"} alt={profile.name} />
-              <AvatarFallback>{profile.name[0]}</AvatarFallback>
+              <AvatarImage src={profileDetails.profile_picture} alt={profileDetails.full_name} />
+              <AvatarFallback>{profileDetails.full_name[0]}</AvatarFallback>
             </Avatar>
 
             <div>
               <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                <h1 className="text-2xl font-bold">{profile.name}</h1>
-                {profile.verified && (
-                  <Badge variant="outline" className="h-5 rounded-full bg-brand-blue text-white px-1.5">
-                    ✓
-                  </Badge>
-                )}
+                <h1 className="text-2xl font-bold">{profileDetails.full_name}</h1>
               </div>
-              <p className="text-muted-foreground">{profile.username}</p>
+              <p className="text-muted-foreground">{profileDetails.username}</p>
             </div>
           </div>
 
@@ -113,27 +127,27 @@ export function ProfileView() {
         </div>
 
         <div className="mt-6 space-y-4">
-          <p className="whitespace-pre-line">{profile.bio}</p>
+          <p className="whitespace-pre-line">{profileDetails.bio}</p>
 
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            {profile.location && (
+            {profileDetails.city && (
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />
-                <span>{profile.location}</span>
+                <span>{profileDetails.city}</span>
               </div>
             )}
-            {profile.website && (
+            {profileDetails.website && (
               <div className="flex items-center gap-1">
                 <LinkIcon className="h-4 w-4" />
-                <a href={profile.website} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
-                  {profile.website.replace(/^https?:\/\//, "")}
+                <a href={profileDetails.website} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+                  {profileDetails.website.replace(/^https?:\/\//, "")}
                 </a>
               </div>
             )}
-            {profile.joinDate && (
+            {profileDetails.created_at && (
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                <span>{profile.joinDate}</span>
+                <span>Joined {moment(profileDetails.created_at).format("MMMM YYYY")}</span>
               </div>
             )}
           </div>
@@ -195,7 +209,7 @@ export function ProfileView() {
         </div>
       </div>
 
-      <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} profile={profile} />
+      {editDialogOpen && <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} profile={profileDetails} setProfileDetails={setProfileDetails} />}
     </div>
   );
 }

@@ -1,81 +1,162 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Camera, Loader2 } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-type ProfileData = {
-  name: string
-  username: string
-  bio: string
-  location: string
-  website: string
-}
+import { Dispatch, SetStateAction, useState } from "react";
+import { Camera, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileDetailsType, UploadedFileType } from "../utils/CommanTypes";
+import { UploadFile } from "../utils/functions";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+import { showToast } from "../utils/toast";
+import { useDispatch } from "react-redux";
+import { setUserProfilePicture } from "@/lib/Slices/UserSlice";
 
 export function EditProfileDialog({
   open,
   onOpenChange,
   profile,
+  setProfileDetails,
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  profile: ProfileData
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  profile: ProfileDetailsType;
+  setProfileDetails: Dispatch<SetStateAction<ProfileDetailsType>>;
 }) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const dispatch = useDispatch();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: profile.name,
+    name: profile.full_name,
     username: profile.username,
     bio: profile.bio,
-    location: profile.location,
+    location: profile.city,
     website: profile.website,
-  })
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  });
+  const [avatarPreview, setAvatarPreview] = useState<UploadedFileType>({
+    url: profile.profile_picture,
+    key: profile.profile_picture,
+  });
+  const [coverPreview, setCoverPreview] = useState<UploadedFileType>({
+    url: profile.cover_picture,
+    key: profile.cover_picture,
+  });
+
+  const { fetchData: updateProfileDetails } = useApiFetch("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
+      const uploadResponse = await UploadFile([file]);
+      const uploadedFiles = uploadResponse; // Array of {key, URL}
 
-  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setCoverPreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
+      // Update state
+      setAvatarPreview({
+        url: uploadedFiles[0].url,
+        key: uploadedFiles[0].key,
+      });
     }
-  }
+  };
+
+  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const uploadResponse = await UploadFile([file]);
+      const uploadedFiles = uploadResponse; // Array of {key, URL}
+
+      // Update state
+      setCoverPreview({
+        url: uploadedFiles[0].url,
+        key: uploadedFiles[0].key,
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    const updatedFields: Record<string, any> = {};
 
-    setIsSubmitting(false)
-    onOpenChange(false)
-  }
+    if (formData.name !== profile.full_name) {
+      updatedFields.full_name = formData.name;
+    }
+    if (formData.username !== profile.username) {
+      updatedFields.username = formData.username;
+    }
+    if (formData.bio !== profile.bio) {
+      updatedFields.bio = formData.bio;
+    }
+    if (formData.location !== profile.city) {
+      updatedFields.city = formData.location;
+    }
+    if (formData.website !== profile.website) {
+      updatedFields.website = formData.website;
+    }
+    if (avatarPreview.key !== profile.profile_picture) {
+      updatedFields.profile_picture = avatarPreview.key;
+    }
+    if (coverPreview.key !== profile.cover_picture) {
+      updatedFields.cover_picture = coverPreview.key;
+    }
+
+    if (Object.keys(updatedFields).length > 0) {
+      try {
+        const res: any = await updateProfileDetails(CONSTANTS.API_ROUTES.EDIT_PROFILE_DETAILS, {
+          method: "PUT",
+          data: updatedFields,
+        });
+
+        showToast({
+          message: res.message,
+          type: "success",
+        });
+
+        // ✅ Now update profileDetails properly
+        setProfileDetails((prev) => ({
+          ...prev,
+          ...(updatedFields.full_name && { full_name: updatedFields.full_name }),
+          ...(updatedFields.username && { username: updatedFields.username }),
+          ...(updatedFields.bio && { bio: updatedFields.bio }),
+          ...(updatedFields.city && { city: updatedFields.city }),
+          ...(updatedFields.website && { website: updatedFields.website }),
+          ...(updatedFields.profile_picture && { profile_picture: avatarPreview.url }), // URL not key
+          ...(updatedFields.cover_picture && { cover_picture: coverPreview.url }), // URL not key
+        }));
+
+        if (updatedFields.profile_picture) {
+          dispatch(setUserProfilePicture(avatarPreview.url));
+        }
+
+        onOpenChange(false);
+      } catch (error) {
+        console.error("Failed to update profile", error);
+        showToast({
+          message: "Something went wrong while updating profile",
+          type: "error",
+        });
+      }
+    } else {
+      showToast({
+        message: "No value changed",
+        type: "info",
+      });
+      onOpenChange(false);
+    }
+
+    setIsSubmitting(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,13 +168,7 @@ export function EditProfileDialog({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Cover photo */}
           <div className="relative h-32 rounded-lg bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue overflow-hidden">
-            {coverPreview && (
-              <img
-                src={coverPreview || "/placeholder.svg"}
-                alt="Cover preview"
-                className="w-full h-full object-cover"
-              />
-            )}
+            {coverPreview && <img src={coverPreview.url || "/placeholder.svg"} alt="Cover preview" className="w-full h-full object-cover" />}
             <div className="absolute inset-0 flex items-center justify-center">
               <label
                 htmlFor="cover-upload"
@@ -102,14 +177,7 @@ export function EditProfileDialog({
                 <Camera className="h-4 w-4" />
                 <span>Change Cover</span>
               </label>
-              <input
-                id="cover-upload"
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={handleCoverChange}
-                disabled={isSubmitting}
-              />
+              <input id="cover-upload" type="file" accept="image/*" className="sr-only" onChange={handleCoverChange} disabled={isSubmitting} />
             </div>
           </div>
 
@@ -117,10 +185,7 @@ export function EditProfileDialog({
           <div className="flex justify-center -mt-10">
             <div className="relative">
               <Avatar className="h-20 w-20 border-4 border-background">
-                <AvatarImage
-                  src={avatarPreview ||"/placeholder.svg?height=80&width=80"}
-                  alt="Avatar preview"
-                />
+                <AvatarImage src={avatarPreview.url || "/placeholder.svg?height=80&width=80"} alt="Avatar preview" />
                 <AvatarFallback>{formData.name[0]}</AvatarFallback>
               </Avatar>
               <label
@@ -130,14 +195,7 @@ export function EditProfileDialog({
                 <Camera className="h-6 w-6" />
                 <span className="sr-only">Change avatar</span>
               </label>
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={handleAvatarChange}
-                disabled={isSubmitting}
-              />
+              <input id="avatar-upload" type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} disabled={isSubmitting} />
             </div>
           </div>
 
@@ -149,48 +207,23 @@ export function EditProfileDialog({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
+                <Input id="username" name="username" value={formData.username} onChange={handleChange} disabled={isSubmitting} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                rows={3}
-                disabled={isSubmitting}
-              />
+              <Textarea id="bio" name="bio" value={formData.bio} onChange={handleChange} rows={3} disabled={isSubmitting} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
+                <Input id="location" name="location" value={formData.location} onChange={handleChange} disabled={isSubmitting} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleChange}
-                  disabled={isSubmitting}
-                />
+                <Input id="website" name="website" value={formData.website} onChange={handleChange} disabled={isSubmitting} />
               </div>
             </div>
           </div>
@@ -213,5 +246,5 @@ export function EditProfileDialog({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

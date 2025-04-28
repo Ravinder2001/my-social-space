@@ -41,3 +41,19 @@ export type ProfileSavedPostType = {
   caption: string | null;
   created_at: string;
 };
+
+export type ProfileDetailsType = {
+  username: string;
+  full_name: string;
+  profile_picture: string;
+  cover_picture: string;
+  bio: string;
+  city: string;
+  website: string;
+  created_at: string;
+};
+
+export type UploadedFileType = {
+  key: string;
+  url: string;
+};
