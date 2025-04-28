@@ -58,7 +58,7 @@ export function Navbar() {
 
       setIsLoading(true);
       try {
-        await fetchUsers(CONSTANTS.API_ROUTES.SEARCH_USERS + `?name=${query}`).then((res:any) => {
+        await fetchUsers(CONSTANTS.API_ROUTES.SEARCH_USERS + `?name=${query}`).then((res: any) => {
           if (res?.success == 1) {
             setSearchResults(res.data);
           }
@@ -203,7 +203,7 @@ export function Navbar() {
                   {searchResults.map((user) => (
                     <li key={user.user_id} className="border-b last:border-b-0">
                       <Link
-                        href={`/profile?user=${user.user_id}`}
+                        href={UserDetails.id == user.user_id ? CONSTANTS.PROJECT_ROUTES.PRIVATE_ROUTES.PROFILE : `${CONSTANTS.PROJECT_ROUTES.PRIVATE_ROUTES.PROFILE}?user=${user.user_id}`}
                         className="flex items-center p-3 hover:bg-muted/50 transition-colors"
                         onClick={() => {
                           setIsSearchOpen(false);

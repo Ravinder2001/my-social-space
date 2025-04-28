@@ -57,3 +57,11 @@ export type UploadedFileType = {
   key: string;
   url: string;
 };
+
+export type SearchUserType = {
+  user_id: number;
+  user_name: string;
+  profile_picture: string;
+  bio: string;
+  isFriend: boolean;
+};
