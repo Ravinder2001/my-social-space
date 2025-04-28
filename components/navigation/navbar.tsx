@@ -203,7 +203,7 @@ export function Navbar() {
                   {searchResults.map((user) => (
                     <li key={user.user_id} className="border-b last:border-b-0">
                       <Link
-                        href={`/profile/${user.user_id}`}
+                        href={`/profile?user=${user.user_id}`}
                         className="flex items-center p-3 hover:bg-muted/50 transition-colors"
                         onClick={() => {
                           setIsSearchOpen(false);

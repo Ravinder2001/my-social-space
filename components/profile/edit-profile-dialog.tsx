@@ -59,36 +59,6 @@ export function EditProfileDialog({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    // Only run this effect when `username` changes
-    const debounceTimeout = setTimeout(async () => {
-      if (formData.username !== profile.username) {
-        // Call API to validate username
-        await validateUsername(CONSTANTS.API_ROUTES.VALIDATE_USERNAME, {
-          method: "POST",
-          data: { username: formData.username },
-        }).then((res: any) => {
-          if (res?.success === 1) {
-            setUsernameValidation({
-              isValid: true,
-              message: "Username available",
-            });
-          } else {
-            setUsernameValidation({
-              isValid: false,
-              message: "Username already taken",
-            });
-          }
-        });
-      }
-    }, 500); // Wait for 1 second after the last keystroke
-
-    // Cleanup: Clear previous timeout if the username changes again before the timeout
-    return () => {
-      clearTimeout(debounceTimeout);
-    };
-  }, [formData.username]); // Effect runs only when `username` changes
-
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -125,6 +95,7 @@ export function EditProfileDialog({
         message: "Please add a valid Username.",
         type: "error",
       });
+      return;
     }
 
     setIsSubmitting(true);
@@ -199,6 +170,36 @@ export function EditProfileDialog({
 
     setIsSubmitting(false);
   };
+
+  useEffect(() => {
+    // Only run this effect when `username` changes
+    const debounceTimeout = setTimeout(async () => {
+      if (formData.username !== profile.username) {
+        // Call API to validate username
+        await validateUsername(CONSTANTS.API_ROUTES.VALIDATE_USERNAME, {
+          method: "POST",
+          data: { username: formData.username },
+        }).then((res: any) => {
+          if (res?.success === 1) {
+            setUsernameValidation({
+              isValid: true,
+              message: "Username available",
+            });
+          } else {
+            setUsernameValidation({
+              isValid: false,
+              message: "Username already taken",
+            });
+          }
+        });
+      }
+    }, 500); // Wait for 1 second after the last keystroke
+
+    // Cleanup: Clear previous timeout if the username changes again before the timeout
+    return () => {
+      clearTimeout(debounceTimeout);
+    };
+  }, [formData.username]); // Effect runs only when `username` changes
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

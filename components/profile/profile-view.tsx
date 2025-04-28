@@ -15,6 +15,7 @@ import CONSTANTS from "../utils/constants";
 import useApiFetch from "@/hooks/use-api-fetch";
 import moment from "moment";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 // Mock data for friends
 const friends = [
@@ -43,6 +44,9 @@ const profile = {
 };
 
 export function ProfileView() {
+  const searchParams = useSearchParams();
+  const isAnotherUser = searchParams.get("user");
+
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [savedPosts, setSavedPosts] = useState<ProfileSavedPostType[]>([]);
@@ -58,10 +62,12 @@ export function ProfileView() {
     created_at: "",
   });
 
-  const { fetchData: fetchPosts } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_POSTS);
-  const { fetchData: fetchPhotos } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_PHOTOS);
+  const { fetchData: fetchPosts } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_POSTS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`);
+  const { fetchData: fetchPhotos } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_PHOTOS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`);
   const { fetchData: fetchSaved } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_SAVED);
-  const { fetchData: fetchProfileDetails } = useApiFetch(CONSTANTS.API_ROUTES.GET_PROFILE_DETAILS);
+  const { fetchData: fetchProfileDetails } = useApiFetch(
+    CONSTANTS.API_ROUTES.GET_PROFILE_DETAILS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`
+  );
 
   useEffect(() => {
     fetchProfileDetails().then((res: any) => {
@@ -79,11 +85,12 @@ export function ProfileView() {
         setPhotos(res?.data);
       }
     });
-    fetchSaved().then((res: any) => {
-      if (res.success == 1) {
-        setSavedPosts(res?.data);
-      }
-    });
+    !isAnotherUser &&
+      fetchSaved().then((res: any) => {
+        if (res.success == 1) {
+          setSavedPosts(res?.data);
+        }
+      });
   }, []);
 
   return (
@@ -113,17 +120,18 @@ export function ProfileView() {
               <p className="text-muted-foreground">@{profileDetails.username}</p>
             </div>
           </div>
-
-          <div className="flex gap-2 mt-4 sm:mt-0">
-            <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditDialogOpen(true)}>
-              <Edit className="h-4 w-4" />
-              Edit Profile
-            </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9">
-              <Settings className="h-4 w-4" />
-              <span className="sr-only">Settings</span>
-            </Button>
-          </div>
+          {!isAnotherUser && (
+            <div className="flex gap-2 mt-4 sm:mt-0">
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditDialogOpen(true)}>
+                <Edit className="h-4 w-4" />
+                Edit Profile
+              </Button>
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Settings className="h-4 w-4" />
+                <span className="sr-only">Settings</span>
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 space-y-4">
@@ -180,14 +188,19 @@ export function ProfileView() {
                 <Grid className="h-4 w-4" />
                 <span className="hidden sm:inline">Photos</span>
               </TabsTrigger>
-              <TabsTrigger value="friends" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Friends</span>
-              </TabsTrigger>
-              <TabsTrigger value="saved" className="flex items-center gap-2">
-                <Bookmark className="h-4 w-4" />
-                <span className="hidden sm:inline">Saved</span>
-              </TabsTrigger>
+              {!isAnotherUser && (
+                <TabsTrigger value="friends" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span className="hidden sm:inline">Friends</span>
+                </TabsTrigger>
+              )}
+
+              {!isAnotherUser && (
+                <TabsTrigger value="saved" className="flex items-center gap-2">
+                  <Bookmark className="h-4 w-4" />
+                  <span className="hidden sm:inline">Saved</span>
+                </TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="posts">
@@ -209,7 +222,9 @@ export function ProfileView() {
         </div>
       </div>
 
-      {editDialogOpen && <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} profile={profileDetails} setProfileDetails={setProfileDetails} />}
+      {editDialogOpen && (
+        <EditProfileDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} profile={profileDetails} setProfileDetails={setProfileDetails} />
+      )}
     </div>
   );
 }
