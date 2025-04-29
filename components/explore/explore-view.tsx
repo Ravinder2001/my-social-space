@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { UserCard } from "@/components/explore/user-card";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
-import { SearchUserType } from "../utils/CommanTypes";
+import { FriendRequestType, SearchUserType } from "../utils/CommanTypes";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { formatTimeAgo } from "../utils/functions";
+import { showToast } from "../utils/toast";
 
 const posts = [
   { id: "1", user: "Emma Johnson", image: "/placeholder.svg?height=400&width=400", likes: 245, comments: 32 },
@@ -21,49 +22,40 @@ const posts = [
   { id: "6", user: "William Moore", image: "/placeholder.svg?height=400&width=400", likes: 203, comments: 27 },
 ];
 
-const initialFriendRequests = [
-  {
-    id: "101",
-    name: "Sophia Martinez",
-    avatar: "/placeholder.svg?height=64&width=64",
-    mutualFriends: 4,
-    timeAgo: "2 days ago",
-    verified: false,
-  },
-  {
-    id: "102",
-    name: "Jackson Lee",
-    avatar: "/placeholder.svg?height=64&width=64",
-    mutualFriends: 2,
-    timeAgo: "1 week ago",
-    verified: true,
-  },
-  {
-    id: "103",
-    name: "Isabella Garcia",
-    avatar: "/placeholder.svg?height=64&width=64",
-    mutualFriends: 6,
-    timeAgo: "3 hours ago",
-    verified: false,
-  },
-];
-
 export function ExploreView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<SearchUserType[]>([]);
+  const [friendReqList, setFriendReqList] = useState<FriendRequestType[]>([]);
 
   const { fetchData: fetchUsers } = useApiFetch("");
+  const { fetchData: fetchReqList } = useApiFetch("");
+  const { fetchData: handleReqRes } = useApiFetch("");
+
+  const handleReq = async (req_id: number, status: "ACCEPTED" | "REJECTED") => {
+    await handleReqRes(CONSTANTS.API_ROUTES.RESPOND_TO_REQ + `/${req_id}`, {
+      method: "PUT",
+      data: {
+        status,
+      },
+    }).then((res) => {
+      if (res.success == 1) {
+        setFriendReqList((prev) => prev.filter((req) => req.request_id !== req_id));
+        showToast({ message: `You ${status == "ACCEPTED" ? "accepted" : "rejected"} the friend request.`, type: "success" });
+      }
+    });
+  };
 
   useEffect(() => {
-    fetchUsers(CONSTANTS.API_ROUTES.SEARCH_USERS)
-      .then((res: any) => {
-        if (res?.success == 1) {
-          setUsers(res.data); // Assuming API returns { success: true, data: [...] }
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-      });
+    fetchUsers(CONSTANTS.API_ROUTES.SEARCH_USERS).then((res: any) => {
+      if (res?.success == 1) {
+        setUsers(res.data); // Assuming API returns { success: true, data: [...] }
+      }
+    });
+    fetchReqList(CONSTANTS.API_ROUTES.GET_REQUEST_LIST).then((res: any) => {
+      if (res?.success == 1) {
+        setFriendReqList(res.data); // Assuming API returns { success: true, data: [...] }
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -103,56 +95,45 @@ export function ExploreView() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-4">Explore</h1>
 
-        {initialFriendRequests.length > 0 && (
+        {friendReqList.length > 0 && (
           <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Friend Requests</h2>
-              {initialFriendRequests.length > 3 && (
+              {friendReqList.length > 3 && (
                 <Button variant="link" className="text-sm">
-                  See all ({initialFriendRequests.length})
+                  See all ({friendReqList.length})
                 </Button>
               )}
             </div>
 
             <div className="space-y-4">
-              {initialFriendRequests.map((request) => (
-                <Card key={request.id} className="p-4">
+              {friendReqList.map((request) => (
+                <Card key={request.request_id} className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={request.avatar || "/placeholder.svg"} alt={request.name} />
-                        <AvatarFallback>{request.name[0]}</AvatarFallback>
+                        <AvatarImage src={request.sender_picture} alt={request.sender_name} />
+                        <AvatarFallback>{request.sender_name[0]}</AvatarFallback>
                       </Avatar>
 
                       <div>
                         <div className="flex items-center gap-1">
-                          <span className="font-medium">{request.name}</span>
-                          {request.verified && (
-                            <Badge variant="outline" className="h-5 rounded-full bg-brand-blue text-white px-1.5">
-                              ✓
-                            </Badge>
-                          )}
+                          <span className="font-medium">{request.sender_name}</span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs text-muted-foreground">
-                          {request.mutualFriends > 0 && (
-                            <span>
-                              {request.mutualFriends} mutual {request.mutualFriends === 1 ? "friend" : "friends"}
-                            </span>
-                          )}
-                          <span className="hidden sm:inline">•</span>
-                          <span>Requested {request.timeAgo}</span>
+                          <span>Requested {formatTimeAgo(request.created_at)}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex gap-2">
-                      <Button variant="default" size="sm" className="gap-1">
+                      <Button variant="default" size="sm" className="gap-1" onClick={() => handleReq(request.request_id, "ACCEPTED")}>
                         <UserCheck className="h-4 w-4" />
                         <span className="hidden sm:inline">Accept</span>
                       </Button>
 
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button variant="outline" size="sm" className="gap-1" onClick={() => handleReq(request.request_id, "REJECTED")}>
                         <UserX className="h-4 w-4" />
                         <span className="hidden sm:inline">Reject</span>
                       </Button>

@@ -75,3 +75,10 @@ export type NotificationType = {
   is_read: boolean;
   post_image_url: string | null;
 };
+
+export type FriendRequestType = {
+  request_id: number;
+  created_at: string;
+  sender_name: string;
+  sender_picture: string;
+};

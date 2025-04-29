@@ -35,6 +35,8 @@ const CONSTANTS = {
     SEND_REQUEST:"/friend/requests",
     GET_NOTIFICATIONS:"/notifications",
     GET_UN_READ_COUNT:"/notifications/unReadCount",
+    GET_REQUEST_LIST:"/friend/requests",
+    RESPOND_TO_REQ:"/friend/requests",
   },
 };
 
