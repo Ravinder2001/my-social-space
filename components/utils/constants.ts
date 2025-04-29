@@ -32,6 +32,7 @@ const CONSTANTS = {
     EDIT_PROFILE_DETAILS: "/profile",
     GET_PROFILE_DETAILS: "/profile",
     VALIDATE_USERNAME: "/profile/validateUsername",
+    SEND_REQUEST:"/friend/requests"
   },
 };
 

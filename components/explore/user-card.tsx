@@ -4,20 +4,31 @@ import { useState } from "react";
 import { UserPlus, Check, UserRoundCheck } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { SearchUserType } from "../utils/CommanTypes";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
 
 type UserCardProps = {
   user: SearchUserType;
 };
 
 export function UserCard({ user }: UserCardProps) {
-  const [requestSent, setRequestSent] = useState(false);
+  const [requestSent, setRequestSent] = useState(user.isRequested);
 
-  const sendFriendRequest = () => {
-    setRequestSent(true);
-    // Here you would typically call an API to send the friend request
+  const { fetchData } = useApiFetch("");
+
+  const handleSendRequest = async () => {
+    await fetchData(CONSTANTS.API_ROUTES.SEND_REQUEST, {
+      method: "POST",
+      data: {
+        receiver_id: user.user_id,
+      },
+    }).then((res: any) => {
+      if (res.success == 1) {
+        setRequestSent(true);
+      }
+    });
   };
 
   return (
@@ -44,7 +55,7 @@ export function UserCard({ user }: UserCardProps) {
             Friends
           </Button>
         ) : (
-          <Button variant={requestSent ? "secondary" : "default"} className="w-full gap-2" onClick={sendFriendRequest} disabled={requestSent}>
+          <Button variant={requestSent ? "secondary" : "default"} className="w-full gap-2" onClick={handleSendRequest} disabled={requestSent}>
             {requestSent ? (
               <>
                 <Check className="h-4 w-4" />

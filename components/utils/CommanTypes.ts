@@ -64,4 +64,5 @@ export type SearchUserType = {
   profile_picture: string;
   bio: string;
   isFriend: boolean;
+  isRequested: boolean;
 };
