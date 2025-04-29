@@ -13,23 +13,27 @@ import { Card } from "@/components/ui/card";
 import { formatTimeAgo } from "../utils/functions";
 import { showToast } from "../utils/toast";
 
-const posts = [
-  { id: "1", user: "Emma Johnson", image: "/placeholder.svg?height=400&width=400", likes: 245, comments: 32 },
-  { id: "2", user: "Noah Williams", image: "/placeholder.svg?height=400&width=400", likes: 187, comments: 24 },
-  { id: "3", user: "Olivia Brown", image: "/placeholder.svg?height=400&width=400", likes: 312, comments: 41 },
-  { id: "4", user: "Liam Davis", image: "/placeholder.svg?height=400&width=400", likes: 156, comments: 18 },
-  { id: "5", user: "Ava Wilson", image: "/placeholder.svg?height=400&width=400", likes: 278, comments: 36 },
-  { id: "6", user: "William Moore", image: "/placeholder.svg?height=400&width=400", likes: 203, comments: 27 },
-];
+type PublicPostType = {
+  post_id: number;
+  caption: string;
+  created_at: string;
+  full_name: string;
+  profile_picture: string;
+  image_url: string;
+  likes_count: string;
+  comments_count: string;
+};
 
 export function ExploreView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<SearchUserType[]>([]);
   const [friendReqList, setFriendReqList] = useState<FriendRequestType[]>([]);
+  const [publicPost, setPublicPost] = useState<PublicPostType[]>([]);
 
   const { fetchData: fetchUsers } = useApiFetch("");
   const { fetchData: fetchReqList } = useApiFetch("");
   const { fetchData: handleReqRes } = useApiFetch("");
+  const { fetchData: fetchPublicPosts } = useApiFetch("");
 
   const handleReq = async (req_id: number, status: "ACCEPTED" | "REJECTED") => {
     await handleReqRes(CONSTANTS.API_ROUTES.RESPOND_TO_REQ + `/${req_id}`, {
@@ -54,6 +58,11 @@ export function ExploreView() {
     fetchReqList(CONSTANTS.API_ROUTES.GET_REQUEST_LIST).then((res: any) => {
       if (res?.success == 1) {
         setFriendReqList(res.data); // Assuming API returns { success: true, data: [...] }
+      }
+    });
+    fetchPublicPosts(CONSTANTS.API_ROUTES.GET_ALL_PUBLIC_POST).then((res: any) => {
+      if (res?.success == 1) {
+        setPublicPost(res.data); // Assuming API returns { success: true, data: [...] }
       }
     });
   }, []);
@@ -87,8 +96,6 @@ export function ExploreView() {
 
     return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
-
-  const filteredPosts = posts.filter((post) => post.user.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div className="max-w-7xl mx-auto px-4">
@@ -161,22 +168,25 @@ export function ExploreView() {
         <section>
           <h2 className="text-xl font-semibold mb-4">Recent Public Posts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <div key={post.id} className="overflow-hidden rounded-lg border bg-background shadow-sm">
+            {publicPost.map((post) => (
+              <div key={post.post_id} className="overflow-hidden rounded-lg border bg-background shadow-sm">
                 <div className="p-4 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">{post.user[0]}</div>
-                  <span className="font-medium">{post.user}</span>
+                  <Avatar>
+                    <AvatarImage src={post.profile_picture} alt={post.full_name} />
+                    <AvatarFallback>{post.full_name[0]}</AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{post.full_name}</span>
                 </div>
-                <img src={post.image || "/placeholder.svg"} alt={`Post by ${post.user}`} className="w-full aspect-square object-cover" />
+                <img src={post.image_url} alt={`Post by ${post.full_name}`} className="w-full aspect-square object-cover" />
                 <div className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                       <span>❤️</span>
-                      <span>{post.likes}</span>
+                      <span>{post.likes_count}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span>💬</span>
-                      <span>{post.comments}</span>
+                      <span>{post.comments_count}</span>
                     </div>
                   </div>
                 </div>

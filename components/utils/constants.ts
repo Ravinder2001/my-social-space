@@ -20,6 +20,7 @@ const CONSTANTS = {
     CREATE_POST: "/post",
     EDIT_POST: "/post",
     GET_ALL_POST: "/post",
+    GET_ALL_PUBLIC_POST: "/post/publicPosts",
     GENERATE_CAPTION: "/post/generate-caption",
     TOGGLE_LIKE: "/post/toggleLike",
     TOGGLE_SAVE: "/post/toggleSave",
