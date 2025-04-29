@@ -18,6 +18,7 @@ const notifications = [
     content: "liked your post",
     time: "2 minutes ago",
     read: false,
+    postImage: "/placeholder.svg?height=60&width=60&text=Post+Image",
   },
   {
     id: "2",
@@ -26,6 +27,7 @@ const notifications = [
     content: "commented on your post",
     time: "15 minutes ago",
     read: false,
+    postImage: "/placeholder.svg?height=60&width=60&text=Beach+Photo",
   },
   {
     id: "3",
@@ -42,6 +44,7 @@ const notifications = [
     content: "mentioned you in a comment",
     time: "3 hours ago",
     read: true,
+    postImage: "/placeholder.svg?height=60&width=60&text=Group+Photo",
   },
   {
     id: "5",
@@ -50,6 +53,7 @@ const notifications = [
     content: "liked your photo",
     time: "5 hours ago",
     read: true,
+    postImage: "/placeholder.svg?height=60&width=60&text=Vacation",
   },
 ]
 
@@ -104,14 +108,25 @@ export function NotificationsDropdown() {
                       <AvatarImage src={notification.user.avatar || "/placeholder.svg"} alt={notification.user.name} />
                       <AvatarFallback>{notification.user.name[0]}</AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm">
                         <span className="font-medium">{notification.user.name}</span> {notification.content}
                       </p>
                       <p className="text-xs text-muted-foreground">{notification.time}</p>
                     </div>
+                    {notification.postImage && (
+                      <div className="flex-shrink-0">
+                        <div className="h-10 w-10 rounded-md overflow-hidden border">
+                          <img
+                            src={notification.postImage || "/placeholder.svg"}
+                            alt="Post preview"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
                     {!notification.read && (
-                      <div className="ml-auto">
+                      <div className="ml-auto flex-shrink-0">
                         <div className="h-2 w-2 rounded-full bg-brand-blue" />
                       </div>
                     )}

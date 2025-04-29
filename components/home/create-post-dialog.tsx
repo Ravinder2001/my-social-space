@@ -42,6 +42,7 @@ export function CreatePostDialog({
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { fetchData: UploadPost, isLoading: UploadPostLoading } = useApiFetch("");

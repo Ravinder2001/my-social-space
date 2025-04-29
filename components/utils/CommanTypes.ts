@@ -66,3 +66,12 @@ export type SearchUserType = {
   isFriend: boolean;
   isRequested: boolean;
 };
+
+export type NotificationType = {
+  notification_id: number;
+  created_at: string;
+  profile_picture: string | null;
+  content: string;
+  is_read: boolean;
+  post_image_url: string | null;
+};

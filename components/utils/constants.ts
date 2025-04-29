@@ -32,7 +32,9 @@ const CONSTANTS = {
     EDIT_PROFILE_DETAILS: "/profile",
     GET_PROFILE_DETAILS: "/profile",
     VALIDATE_USERNAME: "/profile/validateUsername",
-    SEND_REQUEST:"/friend/requests"
+    SEND_REQUEST:"/friend/requests",
+    GET_NOTIFICATIONS:"/notifications",
+    GET_UN_READ_COUNT:"/notifications/unReadCount",
   },
 };
 
