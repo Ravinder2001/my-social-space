@@ -10,24 +10,13 @@ import { ProfilePosts } from "@/components/profile/profile-posts";
 import { ProfilePhotos } from "@/components/profile/profile-photos";
 import { ProfileFriends } from "@/components/profile/profile-friends";
 import { ProfileSaved } from "@/components/profile/profile-saved";
-import { PostType, ProfileDetailsType, ProfilePhotosType, ProfileSavedPostType } from "../utils/CommanTypes";
+import { FriendsType, PostType, ProfileDetailsType, ProfilePhotosType, ProfileSavedPostType } from "../utils/CommanTypes";
 import CONSTANTS from "../utils/constants";
 import useApiFetch from "@/hooks/use-api-fetch";
 import moment from "moment";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-
-// Mock data for friends
-const friends = [
-  { id: "1", name: "Emma Johnson", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 12 },
-  { id: "2", name: "Noah Williams", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 8 },
-  { id: "3", name: "Olivia Brown", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 5 },
-  { id: "4", name: "Liam Davis", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 3 },
-  { id: "5", name: "Ava Wilson", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 7 },
-  { id: "6", name: "William Moore", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 4 },
-  { id: "7", name: "Sophia Taylor", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 9 },
-  { id: "8", name: "James Anderson", avatar: "/placeholder.svg?height=64&width=64", mutualFriends: 6 },
-];
+import { showToast } from "../utils/toast";
 
 // Mock profile data
 const profile = {
@@ -50,6 +39,7 @@ export function ProfileView() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [savedPosts, setSavedPosts] = useState<ProfileSavedPostType[]>([]);
+  const [friendsList, setFriendsList] = useState<FriendsType[]>([]);
   const [photos, setPhotos] = useState<ProfilePhotosType[]>([]);
   const [profileDetails, setProfileDetails] = useState<ProfileDetailsType>({
     username: "",
@@ -65,9 +55,22 @@ export function ProfileView() {
   const { fetchData: fetchPosts } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_POSTS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`);
   const { fetchData: fetchPhotos } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_PHOTOS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`);
   const { fetchData: fetchSaved } = useApiFetch(CONSTANTS.API_ROUTES.PROFILE_SAVED);
+  const { fetchData: fetchFriendsList } = useApiFetch(CONSTANTS.API_ROUTES.GET_FRIENDS_LIST);
   const { fetchData: fetchProfileDetails } = useApiFetch(
     CONSTANTS.API_ROUTES.GET_PROFILE_DETAILS + `${isAnotherUser ? `?user_id=${isAnotherUser}` : ""}`
   );
+  const { fetchData: removeFriend } = useApiFetch("");
+
+  const handleRemoveFriend = async (friendship_id: number) => {
+    await removeFriend(CONSTANTS.API_ROUTES.REMOVE_FRIEND + `/${friendship_id}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (res.success == 1) {
+        showToast({ message: "Friend Removed Successfully", type: "success" });
+        setFriendsList((prev) => prev.filter((req) => req.friendship_id !== friendship_id));
+      }
+    });
+  };
 
   useEffect(() => {
     fetchProfileDetails().then((res: any) => {
@@ -89,6 +92,12 @@ export function ProfileView() {
       fetchSaved().then((res: any) => {
         if (res.success == 1) {
           setSavedPosts(res?.data);
+        }
+      });
+    !isAnotherUser &&
+      fetchFriendsList().then((res: any) => {
+        if (res.success == 1) {
+          setFriendsList(res?.data);
         }
       });
   }, []);
@@ -212,7 +221,7 @@ export function ProfileView() {
             </TabsContent>
 
             <TabsContent value="friends">
-              <ProfileFriends friends={friends} />
+              <ProfileFriends friends={friendsList} onRemoveClick={handleRemoveFriend} />
             </TabsContent>
 
             <TabsContent value="saved">

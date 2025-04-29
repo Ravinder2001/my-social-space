@@ -82,3 +82,10 @@ export type FriendRequestType = {
   sender_name: string;
   sender_picture: string;
 };
+
+export type FriendsType = {
+  friendship_id: number;
+  friend_name: string;
+  friend_picture: string;
+  created_at: string;
+};

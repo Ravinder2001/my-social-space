@@ -38,6 +38,8 @@ const CONSTANTS = {
     GET_UN_READ_COUNT:"/notifications/unReadCount",
     GET_REQUEST_LIST:"/friend/requests",
     RESPOND_TO_REQ:"/friend/requests",
+    GET_FRIENDS_LIST:"/friend/friends",
+    REMOVE_FRIEND:"/friend/friends",
   },
 };
 
