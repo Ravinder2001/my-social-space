@@ -51,6 +51,8 @@ export type ProfileDetailsType = {
   city: string;
   website: string;
   created_at: string;
+  post_count?: string;
+  friends_count?: string;
 };
 
 export type UploadedFileType = {

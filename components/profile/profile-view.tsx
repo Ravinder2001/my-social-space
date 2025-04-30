@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Camera, Settings, Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react";
+import { Edit, MapPin, Calendar, LinkIcon, Grid, BookOpen, Users, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,20 +17,6 @@ import moment from "moment";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { showToast } from "../utils/toast";
-
-// Mock profile data
-const profile = {
-  name: "Demo User",
-  username: "@demouser",
-  bio: "Digital creator | UI/UX Designer | Photographer\nSharing my journey and creative process",
-  location: "San Francisco, CA",
-  website: "https://example.com",
-  joinDate: "Joined January 2023",
-  followers: 1240,
-  following: 365,
-  posts: 9,
-  verified: true,
-};
 
 export function ProfileView() {
   const searchParams = useSearchParams();
@@ -135,10 +121,6 @@ export function ProfileView() {
                 <Edit className="h-4 w-4" />
                 Edit Profile
               </Button>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Settings className="h-4 w-4" />
-                <span className="sr-only">Settings</span>
-              </Button>
             </div>
           )}
         </div>
@@ -171,16 +153,12 @@ export function ProfileView() {
 
           <div className="flex gap-6 pt-2">
             <div className="text-center">
-              <p className="font-semibold">{profile.posts}</p>
+              <p className="font-semibold">{profileDetails.post_count}</p>
               <p className="text-xs text-muted-foreground">Posts</p>
             </div>
             <div className="text-center">
-              <p className="font-semibold">{profile.followers.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Followers</p>
-            </div>
-            <div className="text-center">
-              <p className="font-semibold">{profile.following.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Following</p>
+              <p className="font-semibold">{profileDetails.friends_count}</p>
+              <p className="text-xs text-muted-foreground">Friends</p>
             </div>
           </div>
         </div>
