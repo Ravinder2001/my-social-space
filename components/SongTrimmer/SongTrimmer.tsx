@@ -13,6 +13,11 @@ interface DraggableHook {
   setPosition: (x: number) => void;
 }
 
+interface SongTrimmerProps {
+  songURL: string;
+  onTrimChange?: (data: any) => void;
+}
+
 // Audio wave component
 const AudioWave: React.FC<AudioWaveProps> = ({ count = 40, active = false }) => {
   // Generate random heights for wave bars
@@ -95,11 +100,10 @@ const useDraggable = (
 };
 
 // Main component
-const SongTrimmer: React.FC = () => {
+const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<any>(null);
-  const songURL: string = "https://aac.saavncdn.com/024/636458df7eb4cb44b1e6e6566b1da871_320.mp4";
   
   const [isPlaying, setIsPlaying] = useState<boolean>(true); // Start playing by default
   const [duration, setDuration] = useState<number>(30); // Default duration
@@ -152,12 +156,17 @@ const SongTrimmer: React.FC = () => {
       // Resume playing after drag stops
       audioRef.current.play();
     }
-    console.log("Trimmed values =>", {
-      song: songURL,
-      start: startTime.toFixed(2),
-      end: endTime.toFixed(2),
-      duration: (endTime - startTime).toFixed(2)
-    });
+    
+    // Only notify about trim changes after dragging stops
+    if (onTrimChange) {
+      const trimData = {
+        song: songURL,
+        start: startTime.toFixed(2),
+        end: endTime.toFixed(2),
+        duration: (endTime - startTime).toFixed(2)
+      };
+      onTrimChange(trimData);
+    }
   };
 
   // Use custom draggable hook
@@ -168,11 +177,26 @@ const SongTrimmer: React.FC = () => {
     if (audioRef.current) {
       const handleMetadataLoaded = (): void => {
         setDuration(audioRef.current!.duration);
-        const width = ((endTime - startTime) / audioRef.current!.duration) * 100;
-        setHandleWidth(width);
+        
+        // Ensure we have a 10 second selection by default
+        const defaultDuration = 10;
+        const totalDuration = audioRef.current!.duration;
+        
+        // If the song is shorter than 10 seconds, use the whole song
+        if (totalDuration <= defaultDuration) {
+          setStartTime(0);
+          setEndTime(totalDuration);
+          setHandleWidth(100);
+        } else {
+          // Otherwise select the first 10 seconds
+          setStartTime(0);
+          setEndTime(defaultDuration);
+          const width = (defaultDuration / totalDuration) * 100;
+          setHandleWidth(width);
+        }
         
         // Set the current time to the start position
-        audioRef.current!.currentTime = startTime;
+        audioRef.current!.currentTime = 0;
         
         // Try to auto-play
         audioRef.current!.play().catch(err => {
@@ -194,7 +218,7 @@ const SongTrimmer: React.FC = () => {
         }
       };
     }
-  }, []);
+  }, [songURL]);
 
   // Create separate effect for updating handle width when times change
   useEffect(() => {
@@ -243,18 +267,11 @@ const SongTrimmer: React.FC = () => {
     }
   };
 
-  // Log trimmed values
-  const logTrimmedValues = (): void => {
-    console.log("Trimmed values =>", {
-      song: songURL,
-      start: startTime.toFixed(2),
-      end: endTime.toFixed(2),
-      duration: (endTime - startTime).toFixed(2)
-    });
-  };
+  // We don't need to notify about every trim change automatically
+  // Only when explicitly requested (like on drag stop)
 
   return (
-    <div className="w-full max-w-lg p-4 bg-gray-800 rounded-lg text-white shadow-lg">
+    <div className="w-full p-4 bg-gray-800 rounded-lg text-white shadow-lg">
       <audio ref={audioRef} src={songURL} preload="metadata" />
       
       <div className="flex justify-between items-center mb-4">
@@ -268,13 +285,6 @@ const SongTrimmer: React.FC = () => {
         <div className="text-sm font-medium bg-gray-700 px-3 py-1 rounded">
           {startTime.toFixed(1)}s - {endTime.toFixed(1)}s
         </div>
-        
-        <button 
-          onClick={logTrimmedValues}
-          className="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm rounded shadow-md transition-colors"
-        >
-          Save Trim
-        </button>
       </div>
       
       <div 
