@@ -15,6 +15,7 @@ interface DraggableHook {
 
 interface SongTrimmerProps {
   songURL: string;
+  defaultTrimDuration?: number; // Added configurable trim duration
   onTrimChange?: (data: any) => void;
 }
 
@@ -100,7 +101,11 @@ const useDraggable = (
 };
 
 // Main component
-const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
+const SongTrimmer: React.FC<SongTrimmerProps> = ({ 
+  songURL, 
+  defaultTrimDuration = 15, // Default to 15 seconds now
+  onTrimChange 
+}) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<any>(null);
@@ -109,9 +114,9 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
   const [duration, setDuration] = useState<number>(30); // Default duration
   const [progress, setProgress] = useState<number>(0);
   const [startTime, setStartTime] = useState<number>(0);
-  const [endTime, setEndTime] = useState<number>(10);
+  const [endTime, setEndTime] = useState<number>(defaultTrimDuration);
   const [handlePosition, setHandlePosition] = useState<number>(0);
-  const [handleWidth, setHandleWidth] = useState<number>(33.3); // Default width (10s/30s * 100)
+  const [handleWidth, setHandleWidth] = useState<number>(50); // Will be recalculated
 
   // Calculate time based on position
   const calculateTime = (x: number): number => {
@@ -178,20 +183,20 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
       const handleMetadataLoaded = (): void => {
         setDuration(audioRef.current!.duration);
         
-        // Ensure we have a 10 second selection by default
-        const defaultDuration = 10;
+        // Use the configurable default trim duration
+        const songTiming = defaultTrimDuration;
         const totalDuration = audioRef.current!.duration;
         
-        // If the song is shorter than 10 seconds, use the whole song
-        if (totalDuration <= defaultDuration) {
+        // If the song is shorter than the default trim duration, use the whole song
+        if (totalDuration <= songTiming) {
           setStartTime(0);
           setEndTime(totalDuration);
           setHandleWidth(100);
         } else {
-          // Otherwise select the first 10 seconds
+          // Otherwise select the first portion based on songTiming
           setStartTime(0);
-          setEndTime(defaultDuration);
-          const width = (defaultDuration / totalDuration) * 100;
+          setEndTime(songTiming);
+          const width = (songTiming / totalDuration) * 100;
           setHandleWidth(width);
         }
         
@@ -218,7 +223,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
         }
       };
     }
-  }, [songURL]);
+  }, [songURL, defaultTrimDuration]);
 
   // Create separate effect for updating handle width when times change
   useEffect(() => {
@@ -266,9 +271,6 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
       setIsPlaying(!isPlaying);
     }
   };
-
-  // We don't need to notify about every trim change automatically
-  // Only when explicitly requested (like on drag stop)
 
   return (
     <div className="w-full p-4 bg-gray-800 rounded-lg text-white shadow-lg">
@@ -321,7 +323,7 @@ const SongTrimmer: React.FC<SongTrimmerProps> = ({ songURL, onTrimChange }) => {
       </div>
       
       <div className="mt-4 text-xs text-gray-400 flex items-center justify-center">
-        <span className="px-2 py-1 bg-gray-700 rounded">Drag the indigo section to set your trim position</span>
+        <span className="px-2 py-1 bg-gray-700 rounded">Drag the indigo section to set your trim position ({defaultTrimDuration}s default)</span>
       </div>
     </div>
   );

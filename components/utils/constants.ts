@@ -40,6 +40,9 @@ const CONSTANTS = {
     RESPOND_TO_REQ:"/friend/requests",
     GET_FRIENDS_LIST:"/friend/friends",
     REMOVE_FRIEND:"/friend/friends",
+    CREATE_STORY:"/story",
+    REMOVE_STORY:"/story",
+    GET_STORIES:"/story",
   },
 };
 
