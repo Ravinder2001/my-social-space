@@ -49,7 +49,7 @@ export function Sidebar() {
                           className={cn(
                             "w-full justify-start gap-4 transition-all",
                             isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted",
-                            "group relative overflow-hidden"
+                            "group relative overflow-hidden px-4"
                           )}
                         >
                           <item.icon
