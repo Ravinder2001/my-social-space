@@ -105,6 +105,5 @@ export type StoryType = {
     song_start_time?: string;
     song_end_time?: string;
     created_at: string;
-    ownStory: boolean;
   }[];
 };

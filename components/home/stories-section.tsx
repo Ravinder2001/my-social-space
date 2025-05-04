@@ -14,6 +14,7 @@ export function StoriesSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [storyDialogOpen, setStoryDialogOpen] = React.useState(false);
   const [stories, setStories] = useState<StoryType[]>([]);
+  const [showScrollButtons, setShowScrollButtons] = useState(false);
   const [storyViewOpen, setStoryViewOpen] = useState<{ selectedStory: StoryType | null; status: boolean }>({
     selectedStory: null,
     status: false,
@@ -38,12 +39,28 @@ export function StoriesSection() {
     });
   };
 
+  // Check if scrolling is needed
+  const checkScrollable = () => {
+    if (scrollContainerRef.current) {
+      const { scrollWidth, clientWidth } = scrollContainerRef.current;
+      setShowScrollButtons(scrollWidth > clientWidth);
+    }
+  };
+
   useEffect(() => {
     fetchStories().then((res: any) => {
       if (res.success == 1) {
         setStories(res.data);
+        // Check after stories are loaded and rendered
+        setTimeout(checkScrollable, 100);
       }
     });
+  }, []);
+
+  // Also check when window resizes
+  useEffect(() => {
+    window.addEventListener('resize', checkScrollable);
+    return () => window.removeEventListener('resize', checkScrollable);
   }, []);
 
   return (
@@ -51,20 +68,23 @@ export function StoriesSection() {
       <h2 className="text-lg font-semibold mb-4">Stories</h2>
 
       <div className="relative">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm rounded-full shadow-md hover:bg-background"
-          onClick={() => scroll("left")}
-        >
-          <ChevronLeft className="h-5 w-5" />
-          <span className="sr-only">Scroll left</span>
-        </Button>
+        {showScrollButtons && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm rounded-full shadow-md hover:bg-background"
+            onClick={() => scroll("left")}
+          >
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Scroll left</span>
+          </Button>
+        )}
 
         <div
           ref={scrollContainerRef}
           className="flex space-x-4 overflow-x-auto pb-2 scrollbar-hide"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          onScroll={checkScrollable} // Check on scroll as well
         >
           <div className="flex flex-col items-center space-y-2 flex-shrink-0">
             <button
@@ -96,15 +116,17 @@ export function StoriesSection() {
           ))}
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm rounded-full shadow-md hover:bg-background"
-          onClick={() => scroll("right")}
-        >
-          <ChevronRight className="h-5 w-5" />
-          <span className="sr-only">Scroll right</span>
-        </Button>
+        {showScrollButtons && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm rounded-full shadow-md hover:bg-background"
+            onClick={() => scroll("right")}
+          >
+            <ChevronRight className="h-5 w-5" />
+            <span className="sr-only">Scroll right</span>
+          </Button>
+        )}
       </div>
 
       <CreateStoryDialog open={storyDialogOpen} onOpenChange={setStoryDialogOpen} />

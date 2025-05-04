@@ -122,9 +122,7 @@ export const authOptions: NextAuthOptions = {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              email: user.email,
-              name: user.name,
-              googleId: account.providerAccountId,
+              token: account.id_token,
             }),
           });
 

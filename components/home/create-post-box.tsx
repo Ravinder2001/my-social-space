@@ -18,6 +18,7 @@ type Props = {
 
 export function CreatePostBox(props: Props) {
   const UserDetails = useSelector((state: RootState) => state.user);
+
   return (
     <div className="bg-card rounded-xl p-4 shadow-sm">
       <div className="flex items-start gap-3">

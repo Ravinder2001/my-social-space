@@ -298,7 +298,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
               {isMuted ? <VolumeX className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} /> : <Volume2 className={cn(isMobile ? "h-3 w-3" : "h-4 w-4")} />}
             </Button>
 
-            {currentStory.ownStory && (
+            {stories.ownStory && (
               <Button
                 variant="ghost"
                 size={isMobile ? "sm" : "icon"}
