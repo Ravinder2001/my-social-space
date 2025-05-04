@@ -14,7 +14,10 @@ export function StoriesSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [storyDialogOpen, setStoryDialogOpen] = React.useState(false);
   const [stories, setStories] = useState<StoryType[]>([]);
-  const [storyViewOpen, setStoryViewOpen] = useState(false);
+  const [storyViewOpen, setStoryViewOpen] = useState<{ selectedStory: StoryType | null; status: boolean }>({
+    selectedStory: null,
+    status: false,
+  });
 
   const { fetchData: fetchStories } = useApiFetch(CONSTANTS.API_ROUTES.GET_STORIES);
 
@@ -26,6 +29,13 @@ export function StoriesSection() {
         behavior: "smooth",
       });
     }
+  };
+
+  const handleStoryChange = (story: StoryType | null) => {
+    setStoryViewOpen({
+      selectedStory: story,
+      status: !storyViewOpen.status,
+    });
   };
 
   useEffect(() => {
@@ -67,8 +77,8 @@ export function StoriesSection() {
             </button>
             <span className="text-xs font-medium">Add Story</span>
           </div>
-          {stories.map((story) => (
-            <div key={story.story_id} className="flex flex-col items-center space-y-2 flex-shrink-0" onClick={() => setStoryViewOpen(!storyViewOpen)}>
+          {stories.map((story, index) => (
+            <div key={index} className="flex flex-col items-center space-y-2 flex-shrink-0" onClick={() => handleStoryChange(story)}>
               <button className="relative w-16 h-16 rounded-full group">
                 <div
                   className={`absolute inset-0 rounded-full ${
@@ -76,12 +86,12 @@ export function StoriesSection() {
                   }`}
                 />
                 <Avatar className="absolute inset-0.5 w-[calc(100%-4px)] h-[calc(100%-4px)] border-2 border-background group-hover:scale-105 transition-transform">
-                  <AvatarImage src={story.profile_picture} alt={story.user_name} />
-                  <AvatarFallback>{story.user_name[0]}</AvatarFallback>
+                  <AvatarImage src={story.profile_picture} alt={story.name} />
+                  <AvatarFallback>{story.name[0]}</AvatarFallback>
                 </Avatar>
               </button>
 
-              <span className="text-xs font-medium">{story.user_name}</span>
+              <span className="text-xs font-medium">{story.name}</span>
             </div>
           ))}
         </div>
@@ -98,7 +108,9 @@ export function StoriesSection() {
       </div>
 
       <CreateStoryDialog open={storyDialogOpen} onOpenChange={setStoryDialogOpen} />
-      <StoryViewModal open={storyViewOpen} onOpenChange={setStoryViewOpen} stories={[]} />
+      {storyViewOpen.status && storyViewOpen.selectedStory && (
+        <StoryViewModal open={storyViewOpen.status} onOpenChange={() => handleStoryChange(null)} stories={storyViewOpen.selectedStory} />
+      )}
     </div>
   );
 }

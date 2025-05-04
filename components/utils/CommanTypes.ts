@@ -93,14 +93,18 @@ export type FriendsType = {
 };
 
 export type StoryType = {
-  story_id: number;
-  media_url: string;
-  media_type: string;
-  song_name: string;
-  song_start_time: string;
-  song_end_time: string;
-  created_at: string;
-  user_name: string;
+  name: string;
   profile_picture: string;
   ownStory: boolean;
+  stories: {
+    story_id: number;
+    media_url: string;
+    media_type: "IMAGE" | "VIDEO";
+    caption?: string;
+    song_name?: string;
+    song_start_time?: string;
+    song_end_time?: string;
+    created_at: string;
+    ownStory: boolean;
+  }[];
 };

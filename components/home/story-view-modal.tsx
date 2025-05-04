@@ -8,62 +8,15 @@ import { ChevronLeft, ChevronRight, X, Volume2, VolumeX, Pause, Play, MoreVertic
 import { cn } from "@/lib/utils";
 import { formatTimeAgo } from "../utils/functions";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
-type Story = {
-  story_id: number;
-  user_name: string;
-  profile_picture: string;
-  media_url: string;
-  media_type: "IMAGE" | "VIDEO";
-  caption?: string;
-  song_name?: string;
-  song_start_time?: string;
-  song_end_time?: string;
-  created_at: string;
-  ownStory: boolean;
-};
+import { StoryType } from "../utils/CommanTypes";
 
 type StoryViewModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  stories: Story[];
+  stories: StoryType;
 };
 
 export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalProps) {
-  // For demo purposes, using the provided stories with added captions
-  stories = [
-    {
-      story_id: 2,
-      user_name: "You",
-      profile_picture:
-        "https://my-social-space.s3.ap-south-1.amazonaws.com/USER-1/b865b29e-7224-408b-ac85-283484b7685c.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNURQL2QDZ%2F20250502%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250502T100607Z&X-Amz-Expires=432000&X-Amz-Signature=8371e29da27a053a77308967630167c421a893782c00742abf222b17ab93a7ce&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
-      media_url:
-        "https://my-social-space.s3.ap-south-1.amazonaws.com/USER-1/2f697879-927e-44c4-a90d-91c23a15a7da.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNURQL2QDZ%2F20250502%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250502T100607Z&X-Amz-Expires=432000&X-Amz-Signature=7575902a5b34568f57bd10d12af2a1ebc03dc0641b5e3ba7880d2142eaff1e8c&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
-      media_type: "IMAGE",
-      caption: "Enjoying a beautiful day at the beach! 🏖️ #SummerVibes",
-      song_name: "http://aac.saavncdn.com/367/c5de371dc840f6fd7d55d8b1fecefa0c_320.mp4",
-      song_start_time: "0",
-      song_end_time: "15",
-      created_at: "2025-05-02T09:58:27.448Z",
-      ownStory: true,
-    },
-    {
-      story_id: 3,
-      user_name: "You",
-      profile_picture:
-        "https://my-social-space.s3.ap-south-1.amazonaws.com/USER-1/b865b29e-7224-408b-ac85-283484b7685c.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNURQL2QDZ%2F20250502%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250502T100607Z&X-Amz-Expires=432000&X-Amz-Signature=8371e29da27a053a77308967630167c421a893782c00742abf222b17ab93a7ce&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
-      media_url:
-        "https://my-social-space.s3.ap-south-1.amazonaws.com/USER-1/794b1810-c81e-4f2b-a587-8777a195c537.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIATPQ4QJYNURQL2QDZ%2F20250502%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250502T131440Z&X-Amz-Expires=432000&X-Amz-Signature=e2e310c2f729765d6083d94da383c5b509136e4c9c24667c214a591747d934a6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject",
-      media_type: "IMAGE",
-      caption: "Second story with a different caption! 🌟 #NewDay",
-      song_name: "http://aac.saavncdn.com/367/c5de371dc840f6fd7d55d8b1fecefa0c_320.mp4",
-      song_start_time: "0",
-      song_end_time: "15",
-      created_at: "2025-05-02T09:58:27.448Z",
-      ownStory: true,
-    },
-  ];
-
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -79,7 +32,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
   const isMobile = useMediaQuery("(max-width: 640px)");
   const isSmallHeight = useMediaQuery("(max-height: 700px)");
 
-  const currentStory = stories[currentStoryIndex];
+  const currentStory = stories.stories[currentStoryIndex];
   const storyDuration = 5000; // 5 seconds per story without music
 
   // Calculate actual duration based on song if present
@@ -125,7 +78,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
     setAudioLoaded(false);
 
     // Move to next story
-    if (currentStoryIndex < stories.length - 1) {
+    if (currentStoryIndex < stories.stories.length - 1) {
       setCurrentStoryIndex((prevIndex) => prevIndex + 1);
     } else {
       // Loop back to the first story
@@ -146,7 +99,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
       setCurrentStoryIndex((prevIndex) => prevIndex - 1);
     } else {
       // Loop to the last story
-      setCurrentStoryIndex(stories.length - 1);
+      setCurrentStoryIndex(stories.stories.length - 1);
     }
   };
 
@@ -295,7 +248,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
         <div className="absolute top-0 left-0 right-0 z-10 p-2 sm:p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
           {/* Progress indicators */}
           <div className="absolute top-0 left-0 right-0 flex gap-1 p-1 sm:p-2">
-            {stories.map((_, index) => (
+            {stories.stories.map((_, index) => (
               <div key={index} className="h-1 flex-1 bg-white/30 rounded-full overflow-hidden">
                 <div
                   className={cn(
@@ -311,11 +264,11 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
           {/* User info */}
           <div className="flex items-center gap-2 sm:gap-3 mt-4">
             <Avatar className={cn("border-2 border-primary", isMobile ? "h-8 w-8" : "h-10 w-10")}>
-              <AvatarImage src={currentStory.profile_picture || "/placeholder.svg"} alt={currentStory.user_name} />
-              <AvatarFallback>{currentStory.user_name[0]}</AvatarFallback>
+              <AvatarImage src={stories.profile_picture || "/placeholder.svg"} alt={stories.name} />
+              <AvatarFallback>{stories.name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <p className={cn("font-semibold", isMobile ? "text-sm" : "text-base")}>{currentStory.user_name}</p>
+              <p className={cn("font-semibold", isMobile ? "text-sm" : "text-base")}>{stories.name}</p>
               <p className="text-xs text-gray-300">{formatTimeAgo(currentStory.created_at)}</p>
             </div>
           </div>
