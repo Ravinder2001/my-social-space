@@ -69,23 +69,24 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
   };
 
   // Handle story navigation
+  // Modified goToNextStory function to close dialog after viewing all stories
   const goToNextStory = () => {
     cleanupResources();
 
-    // Reset states
+    // If we're at the last story, close the dialog
+    if (currentStoryIndex >= stories.stories.length - 1) {
+      handleOpenChange(false); // Close the dialog
+      return;
+    }
+
+    // Otherwise, move to the next story
     setImageLoaded(false);
     setProgress(0);
     setAudioLoaded(false);
-
-    // Move to next story
-    if (currentStoryIndex < stories.stories.length - 1) {
-      setCurrentStoryIndex((prevIndex) => prevIndex + 1);
-    } else {
-      // Loop back to the first story
-      setCurrentStoryIndex(0);
-    }
+    setCurrentStoryIndex((prevIndex) => prevIndex + 1);
   };
 
+  // Modified goToPrevStory function for consistent behavior
   const goToPrevStory = () => {
     cleanupResources();
 
@@ -98,8 +99,9 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
     if (currentStoryIndex > 0) {
       setCurrentStoryIndex((prevIndex) => prevIndex - 1);
     } else {
-      // Loop to the last story
-      setCurrentStoryIndex(stories.stories.length - 1);
+      // If at first story and trying to go back, do nothing or optionally close
+      // Uncomment below line if you want to close when going back from first story
+      // handleOpenChange(false);
     }
   };
 
@@ -243,7 +245,10 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="p-0 sm:max-w-screen-md w-full h-[85vh] sm:h-[80vh] max-h-[90vh] flex flex-col bg-black text-white overflow-hidden">
+      <DialogContent
+        className="p-0 sm:max-w-screen-md w-full h-[85vh] sm:h-[80vh] max-h-[90vh] flex flex-col bg-black text-white overflow-hidden"
+        hideClose={true}
+      >
         {/* Story header */}
         <div className="absolute top-0 left-0 right-0 z-10 p-2 sm:p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
           {/* Progress indicators */}
@@ -366,42 +371,54 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
             </>
           )}
 
+          {stories.stories.length > 1 && (
+            <>
+              {currentStoryIndex > 0 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    "absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 text-white hover:bg-black/40",
+                    isMobile ? "h-8 w-8" : "h-10 w-10"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPrevStory();
+                  }}
+                >
+                  <ChevronLeft className={cn(isMobile ? "h-5 w-5" : "h-6 w-6")} />
+                  <span className="sr-only">Previous story</span>
+                </Button>
+              )}
+              {currentStoryIndex < stories.stories.length-1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    "absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 text-white hover:bg-black/40",
+                    isMobile ? "h-8 w-8" : "h-10 w-10"
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToNextStory();
+                  }}
+                >
+                  <ChevronRight className={cn(isMobile ? "h-5 w-5" : "h-6 w-6")} />
+                  <span className="sr-only">Next story</span>
+                </Button>
+              )}
+
+              {/* Invisible buttons for left/right click navigation */}
+              {currentStoryIndex > 0 && (
+                <button className="absolute left-0 top-0 w-1/2 h-full opacity-0" onClick={goToPrevStory} aria-hidden="true" />
+              )}
+              {currentStoryIndex < stories.stories.length -1 && (
+                <button className="absolute right-0 top-0 w-1/2 h-full opacity-0" onClick={goToNextStory} aria-hidden="true" />
+              )}
+            </>
+          )}
+
           {/* Navigation buttons */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 text-white hover:bg-black/40",
-              isMobile ? "h-8 w-8" : "h-10 w-10"
-            )}
-            onClick={(e) => {
-              e.stopPropagation();
-              goToPrevStory();
-            }}
-          >
-            <ChevronLeft className={cn(isMobile ? "h-5 w-5" : "h-6 w-6")} />
-            <span className="sr-only">Previous story</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/20 text-white hover:bg-black/40",
-              isMobile ? "h-8 w-8" : "h-10 w-10"
-            )}
-            onClick={(e) => {
-              e.stopPropagation();
-              goToNextStory();
-            }}
-          >
-            <ChevronRight className={cn(isMobile ? "h-5 w-5" : "h-6 w-6")} />
-            <span className="sr-only">Next story</span>
-          </Button>
-
-          {/* Invisible buttons for left/right click navigation */}
-          <button className="absolute left-0 top-0 w-1/2 h-full opacity-0" onClick={goToPrevStory} aria-hidden="true" />
-          <button className="absolute right-0 top-0 w-1/2 h-full opacity-0" onClick={goToNextStory} aria-hidden="true" />
         </div>
 
         {/* Loading indicator for audio */}
