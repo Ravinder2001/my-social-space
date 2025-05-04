@@ -23,6 +23,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
   const [progress, setProgress] = useState(0);
   const [audioLoaded, setAudioLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -66,6 +67,9 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
       audioRef.current.currentTime = 0;
       audioRef.current.src = ""; // Clear source to fully stop audio
     }
+
+    // Reset ready state
+    setMediaReady(false);
   };
 
   // Handle story navigation
@@ -83,6 +87,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
     setImageLoaded(false);
     setProgress(0);
     setAudioLoaded(false);
+    setMediaReady(false);
     setCurrentStoryIndex((prevIndex) => prevIndex + 1);
   };
 
@@ -94,6 +99,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
     setImageLoaded(false);
     setProgress(0);
     setAudioLoaded(false);
+    setMediaReady(false);
 
     // Move to previous story
     if (currentStoryIndex > 0) {
@@ -134,9 +140,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
       const audio = new Audio();
       audio.addEventListener("canplaythrough", () => {
         setAudioLoaded(true);
-        if (!isPaused && open) {
-          audio.play().catch((err) => console.error("Error auto-playing audio:", err));
-        }
+        // We'll control playback in a separate effect when both image and audio are ready
       });
       audioRef.current = audio;
     }
@@ -163,20 +167,27 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
     };
   }, [open, currentStoryIndex, currentStory.song_name]);
 
+  // Check if both image and audio are ready (if audio exists)
+  useEffect(() => {
+    const hasAudio = !!currentStory.song_name;
+    
+    // If we have audio, both image and audio need to be loaded
+    // If we don't have audio, only image needs to be loaded
+    if ((hasAudio && imageLoaded && audioLoaded) || (!hasAudio && imageLoaded)) {
+      setMediaReady(true);
+    } else {
+      setMediaReady(false);
+    }
+  }, [imageLoaded, audioLoaded, currentStory.song_name]);
+
   // Setup timer and progress for story advancement
   useEffect(() => {
-    if (!open) return;
+    if (!open || !mediaReady) return;
 
     // Don't start timers if paused
     if (isPaused) return;
 
-    // Wait for both image and audio to be loaded before starting timers
-    const shouldWaitForAudio = !!currentStory.song_name;
-    if ((shouldWaitForAudio && !audioLoaded) || !imageLoaded) {
-      return;
-    }
-
-    // Play audio if it exists and is loaded
+    // Play audio if it exists and is loaded now that everything is ready
     if (currentStory.song_name && audioRef.current && audioLoaded) {
       audioRef.current.play().catch((err) => console.error("Error playing audio:", err));
     }
@@ -200,7 +211,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
       if (timerRef.current) clearTimeout(timerRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
-  }, [currentStoryIndex, open, isPaused, audioLoaded, imageLoaded]);
+  }, [mediaReady, open, isPaused]);
 
   // Handle progress completion
   useEffect(() => {
@@ -217,6 +228,7 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
       setIsPaused(false);
       setAudioLoaded(false);
       setImageLoaded(false);
+      setMediaReady(false);
       setCurrentStoryIndex(0); // Reset to first story when modal closes
     }
   }, [open]);
@@ -421,11 +433,17 @@ export function StoryViewModal({ open, onOpenChange, stories }: StoryViewModalPr
           {/* Navigation buttons */}
         </div>
 
-        {/* Loading indicator for audio */}
-        {currentStory.song_name && !audioLoaded && !isPaused && (
+        {/* Loading indicators */}
+        {!mediaReady && (
           <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 px-3 py-1 rounded-full text-xs">
             <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            <span>Loading audio...</span>
+            <span>
+              {!imageLoaded 
+                ? "Loading media..." 
+                : currentStory.song_name && !audioLoaded 
+                  ? "Loading audio..." 
+                  : "Preparing story..."}
+            </span>
           </div>
         )}
       </DialogContent>
