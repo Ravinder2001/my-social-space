@@ -44,6 +44,7 @@ const CONSTANTS = {
     REMOVE_STORY:"/story",
     GET_STORIES:"/story",
   },
+  JIO_SAAVN_API:"https://saavn.dev/api/search/songs?query="
 };
 
 export default CONSTANTS;
