@@ -43,6 +43,10 @@ const CONSTANTS = {
     CREATE_STORY:"/story",
     REMOVE_STORY:"/story",
     GET_STORIES:"/story",
+    SEARCH_FRIENDS:"/chat/searchFriends",
+    GET_CHANNELS_LIST:"/chat/channels",
+    GET_CHANNEL_MESSAGES:"/chat/messages",
+    SEND_MESSAGE:"/chat/messages",
   },
   JIO_SAAVN_API:"https://saavn.dev/api/search/songs?query="
 };

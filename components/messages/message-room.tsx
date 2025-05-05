@@ -1,0 +1,181 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Paperclip, ImageIcon, Mic, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
+import React, { ChangeEvent, useEffect, useState, useRef } from "react";
+import { ChannelType, MessageType } from "../utils/CommanTypes";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+import { formatTime } from "../utils/functions";
+
+interface MessageRoomProps {
+  activeConversation: ChannelType;
+  isMobile: boolean;
+  showConversationList: boolean;
+  onBackToList: () => void;
+}
+
+function MessageRoom({ activeConversation, isMobile, showConversationList, onBackToList }: MessageRoomProps) {
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messageInput, setMessageInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { fetchData: FetchChannelMsg } = useApiFetch(CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`);
+  const { fetchData: SendMessage } = useApiFetch("");
+
+  // Function to scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(e.target.value);
+  };
+
+  const handleSendMsg = async () => {
+    await SendMessage(CONSTANTS.API_ROUTES.SEND_MESSAGE, {
+      method: "POST",
+      data: {
+        channel_id: activeConversation.channel_id,
+        message: messageInput,
+        content_type: "TEXT",
+      },
+    }).then((res: any) => {
+      if (res.success == 1) {
+        setMessageInput("")
+        setMessages((prev) => [
+          ...prev,
+          {
+            message_id: res.data.message_id,
+            message: messageInput,
+            sent_at: res.data.sent_at,
+            content_type: "TEXT",
+            ownMessage: true,
+          },
+        ]);
+        // Scroll to bottom after sending a message
+        setTimeout(scrollToBottom, 100); // Small timeout to ensure DOM update
+      }
+    });
+  };
+
+  useEffect(() => {
+    FetchChannelMsg().then((res: any) => {
+      if (res.success == 1) {
+        setMessages(res.data);
+        // Scroll to bottom after messages load
+        setTimeout(scrollToBottom, 100); // Small timeout to ensure DOM update
+      }
+    });
+  }, []);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length]);
+
+  return (
+    <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
+      {/* Chat header */}
+      <div className="h-16 border-b flex items-center justify-between px-4">
+        {isMobile && (
+          <Button variant="ghost" size="icon" className="mr-2" onClick={onBackToList}>
+            <ArrowLeft className="h-5 w-5" />
+            <span className="sr-only">Back to conversations</span>
+          </Button>
+        )}
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarImage src={activeConversation?.profile_picture} alt={activeConversation?.channel_name || "User"} />
+            <AvatarFallback>{activeConversation?.channel_name?.[0] || "U"}</AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-medium">{activeConversation?.channel_name}</p>
+            {/* <p className="text-xs text-muted-foreground">
+              {activeConversation?.user.status === "online"
+                ? "Online"
+                : activeConversation?.user.status === "away"
+                ? "Away"
+                : "Offline"}
+            </p> */}
+          </div>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreVertical className="h-5 w-5" />
+              <span className="sr-only">More options</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>View profile</DropdownMenuItem>
+            <DropdownMenuItem>Search in conversation</DropdownMenuItem>
+            <DropdownMenuItem>Mute notifications</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-destructive">Block user</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div key={message.message_id} className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                <p>{message.message}</p>
+                <p className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                  {formatTime(message.sent_at)}
+                </p>
+              </div>
+            </div>
+          ))}
+          {/* This empty div is used as a reference point to scroll to */}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
+      {/* Message input */}
+      <div className="border-t p-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon">
+            <Paperclip className="h-5 w-5 text-muted-foreground" />
+            <span className="sr-only">Attach file</span>
+          </Button>
+          <Button variant="ghost" size="icon">
+            <ImageIcon className="h-5 w-5 text-muted-foreground" />
+            <span className="sr-only">Attach image</span>
+          </Button>
+          <Button variant="ghost" size="icon">
+            <Mic className="h-5 w-5 text-muted-foreground" />
+            <span className="sr-only">Voice message</span>
+          </Button>
+          <div className="relative flex-1">
+            <Input
+              placeholder="Type a message..."
+              value={messageInput}
+              onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMsg();
+                }
+              }}
+              className="pr-10"
+            />
+            <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full">
+              <Smile className="h-5 w-5 text-muted-foreground" />
+              <span className="sr-only">Add emoji</span>
+            </Button>
+          </div>
+          <Button size="icon" className="rounded-full" onClick={handleSendMsg} disabled={!messageInput.trim()}>
+            <Send className="h-5 w-5" />
+            <span className="sr-only">Send message</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default MessageRoom;

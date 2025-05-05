@@ -1,292 +1,122 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, Send, Smile, Paperclip, ImageIcon, Mic, MoreVertical } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-// Mock data for conversations
-const conversations = [
-  {
-    id: "1",
-    user: { name: "Emma Johnson", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
-    lastMessage: "Hey, how are you doing?",
-    time: "2m",
-    unread: 2,
-  },
-  {
-    id: "2",
-    user: { name: "Noah Williams", avatar: "/placeholder.svg?height=40&width=40", status: "offline" },
-    lastMessage: "Let me know when you're free to catch up",
-    time: "1h",
-    unread: 0,
-  },
-  {
-    id: "3",
-    user: { name: "Olivia Brown", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
-    lastMessage: "Thanks for the help yesterday!",
-    time: "3h",
-    unread: 0,
-  },
-  {
-    id: "4",
-    user: { name: "Liam Davis", avatar: "/placeholder.svg?height=40&width=40", status: "away" },
-    lastMessage: "Did you see the latest project requirements?",
-    time: "1d",
-    unread: 0,
-  },
-  {
-    id: "5",
-    user: { name: "Ava Wilson", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
-    lastMessage: "I just sent you the design files",
-    time: "2d",
-    unread: 0,
-  },
-]
-
-// Mock data for messages
-const messages = [
-  {
-    id: "1",
-    sender: "them",
-    content: "Hey, how are you doing?",
-    time: "10:32 AM",
-  },
-  {
-    id: "2",
-    sender: "me",
-    content: "I'm good, thanks! Just working on that new project we discussed.",
-    time: "10:34 AM",
-  },
-  {
-    id: "3",
-    sender: "them",
-    content: "That sounds great! How's it coming along?",
-    time: "10:35 AM",
-  },
-  {
-    id: "4",
-    sender: "me",
-    content: "Making good progress. I've finished the initial designs and started on the implementation.",
-    time: "10:38 AM",
-  },
-  {
-    id: "5",
-    sender: "them",
-    content: "Awesome! Can't wait to see it. Do you think you'll be able to share a preview soon?",
-    time: "10:40 AM",
-  },
-  {
-    id: "6",
-    sender: "me",
-    content: "Definitely! I should have something to show by the end of the week.",
-    time: "10:42 AM",
-  },
-  {
-    id: "7",
-    sender: "them",
-    content: "Perfect timing. We have the team meeting on Friday, so that would work out well.",
-    time: "10:45 AM",
-  },
-]
+import { useState, useEffect } from "react";
+import { MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { NewConversationDialog } from "./new-conversation-dialog";
+import { CreateGroupDialog } from "./create-group-dialog";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import ChannelList from "./channel-list";
+import MessageRoom from "./message-room";
+import useApiFetch from "@/hooks/use-api-fetch";
+import CONSTANTS from "../utils/constants";
+import { ChannelType } from "../utils/CommanTypes";
 
 export function MessagingView() {
-  const [activeConversation, setActiveConversation] = useState(conversations[0])
-  const [messageInput, setMessageInput] = useState("")
-  const [chatMessages, setChatMessages] = useState(messages)
+  const [channelList, setChannelList] = useState<ChannelType[]>([]);
+  const [activeConversation, setActiveConversation] = useState<ChannelType | null>(null);
+  const [newConversationOpen, setNewConversationOpen] = useState(false);
+  const [createGroupOpen, setCreateGroupOpen] = useState(false);
+  const [showConversationList, setShowConversationList] = useState(true);
 
-  const sendMessage = () => {
-    if (!messageInput.trim()) return
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { fetchData: FetchChannels } = useApiFetch(CONSTANTS.API_ROUTES.GET_CHANNELS_LIST);
 
-    const newMessage = {
-      id: String(Date.now()),
-      sender: "me",
-      content: messageInput,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  // Handle mobile view conversation selection
+  useEffect(() => {
+    if (isMobile && activeConversation) {
+      setShowConversationList(false);
+    } else {
+      setShowConversationList(true);
     }
+  }, [activeConversation, isMobile]);
 
-    setChatMessages([...chatMessages, newMessage])
-    setMessageInput("")
+  const handleSelectConversation = (conversation: ChannelType) => {
+    setActiveConversation(conversation);
+    if (isMobile) {
+      setShowConversationList(false);
+    }
+  };
 
-    // Simulate reply after a delay
-    setTimeout(() => {
-      const replyMessage = {
-        id: String(Date.now() + 1),
-        sender: "them",
-        content: "Thanks for the update! Looking forward to our next chat.",
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  const handleBackToList = () => {
+    setShowConversationList(true);
+  };
+
+  const sendMessage = () => {};
+
+  const handleNewConversation = (userId: string, userName: string) => {
+    console.log(`Starting new conversation with ${userName} (${userId})`);
+    // In a real app, you would create a new conversation and navigate to it
+    setNewConversationOpen(false);
+  };
+
+  const handleCreateGroup = (userIds: number[], groupName: string) => {
+    console.log(`Creating group "${groupName}" with ${userIds.length} members`);
+    // In a real app, you would create a new group conversation and navigate to it
+    setCreateGroupOpen(false);
+  };
+
+  // Render empty state when no conversation is selected
+  const renderEmptyState = () => (
+    <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+      <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mb-4">
+        <MessageSquare className="h-12 w-12 text-muted-foreground" />
+      </div>
+      <h3 className="text-xl font-medium mb-2">No conversation selected</h3>
+      <p className="text-muted-foreground max-w-sm">Select a conversation from the list to start messaging or create a new conversation.</p>
+      <Button className="mt-6" onClick={() => setNewConversationOpen(true)}>
+        <MessageSquare className="mr-2 h-4 w-4" />
+        Start a new conversation
+      </Button>
+    </div>
+  );
+
+  useEffect(() => {
+    FetchChannels().then((res: any) => {
+      if (res.success == 1) {
+        setChannelList(res?.data);
       }
-
-      setChatMessages((prev) => [...prev, replyMessage])
-    }, 3000)
-  }
+    });
+  }, []);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
-      {/* Conversations sidebar */}
-      <div className="w-80 border-r bg-card hidden md:flex flex-col">
-        <div className="p-4">
-          <h2 className="text-xl font-bold mb-4">Messages</h2>
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search conversations..." className="pl-9 bg-muted/40" />
-          </div>
-        </div>
+    <>
+      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+        {/* Conversations sidebar */}
+        <ChannelList
+          channelList={channelList}
+          activeConversation={activeConversation}
+          onSelectConversation={handleSelectConversation}
+          onNewConversation={() => setNewConversationOpen(true)}
+          onCreateGroup={() => setCreateGroupOpen(true)}
+          isMobile={isMobile}
+          show={showConversationList}
+        />
 
-        <ScrollArea className="flex-1">
-          {conversations.map((conversation) => (
-            <div
-              key={conversation.id}
-              className={`p-3 hover:bg-muted/50 cursor-pointer transition-colors ${activeConversation.id === conversation.id ? "bg-muted" : ""}`}
-              onClick={() => setActiveConversation(conversation)}
-            >
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Avatar>
-                    <AvatarImage src={conversation.user.avatar || "/placeholder.svg"} alt={conversation.user.name} />
-                    <AvatarFallback>{conversation.user.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span
-                    className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background ${
-                      conversation.user.status === "online"
-                        ? "bg-brand-green"
-                        : conversation.user.status === "away"
-                          ? "bg-brand-yellow"
-                          : "bg-muted"
-                    }`}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium truncate">{conversation.user.name}</p>
-                    <p className="text-xs text-muted-foreground">{conversation.time}</p>
-                  </div>
-                  <p className="text-sm text-muted-foreground truncate">{conversation.lastMessage}</p>
-                </div>
-                {conversation.unread > 0 && <Badge className="ml-auto bg-brand-blue">{conversation.unread}</Badge>}
-              </div>
-            </div>
-          ))}
-        </ScrollArea>
+        {/* Chat area or empty state */}
+        {activeConversation ? (
+          <MessageRoom
+            activeConversation={activeConversation}
+            isMobile={isMobile}
+            showConversationList={showConversationList}
+            onBackToList={handleBackToList}
+          />
+        ) : (
+          renderEmptyState()
+        )}
       </div>
 
-      {/* Chat area */}
-      <div className="flex-1 flex flex-col">
-        {/* Chat header */}
-        <div className="h-16 border-b flex items-center justify-between px-4">
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage
-                src={activeConversation.user.avatar || "/placeholder.svg"}
-                alt={activeConversation.user.name}
-              />
-              <AvatarFallback>{activeConversation.user.name[0]}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="font-medium">{activeConversation.user.name}</p>
-              <p className="text-xs text-muted-foreground">
-                {activeConversation.user.status === "online"
-                  ? "Online"
-                  : activeConversation.user.status === "away"
-                    ? "Away"
-                    : "Offline"}
-              </p>
-            </div>
-          </div>
+      {/* New conversation dialog */}
+      {newConversationOpen && (
+        <NewConversationDialog
+          open={newConversationOpen}
+          onOpenChange={setNewConversationOpen}
+          // onSelect={handleNewConversation}
+        />
+      )}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-5 w-5" />
-                <span className="sr-only">More options</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>View profile</DropdownMenuItem>
-              <DropdownMenuItem>Search in conversation</DropdownMenuItem>
-              <DropdownMenuItem>Mute notifications</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">Block user</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Messages */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {chatMessages.map((message) => (
-              <div key={message.id} className={`flex ${message.sender === "me" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[70%] rounded-lg p-3 ${
-                    message.sender === "me" ? "bg-primary text-primary-foreground" : "bg-muted"
-                  }`}
-                >
-                  <p>{message.content}</p>
-                  <p
-                    className={`text-xs mt-1 ${
-                      message.sender === "me" ? "text-primary-foreground/70" : "text-muted-foreground"
-                    }`}
-                  >
-                    {message.time}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-
-        {/* Message input */}
-        <div className="border-t p-4">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <Paperclip className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-            <Button variant="ghost" size="icon">
-              <ImageIcon className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Attach image</span>
-            </Button>
-            <Button variant="ghost" size="icon">
-              <Mic className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Voice message</span>
-            </Button>
-
-            <div className="relative flex-1">
-              <Input
-                placeholder="Type a message..."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault()
-                    sendMessage()
-                  }
-                }}
-                className="pr-10"
-              />
-              <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full">
-                <Smile className="h-5 w-5 text-muted-foreground" />
-                <span className="sr-only">Add emoji</span>
-              </Button>
-            </div>
-
-            <Button size="icon" className="rounded-full" onClick={sendMessage} disabled={!messageInput.trim()}>
-              <Send className="h-5 w-5" />
-              <span className="sr-only">Send message</span>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+      {/* Create group dialog */}
+      {createGroupOpen && <CreateGroupDialog open={createGroupOpen} onOpenChange={setCreateGroupOpen} onCreateGroup={handleCreateGroup} />}
+    </>
+  );
 }

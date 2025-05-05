@@ -107,3 +107,20 @@ export type StoryType = {
     created_at: string;
   }[];
 };
+
+export type ChannelType = {
+  channel_id: number;
+  channel_name: string;
+  profile_picture: string;
+  last_message: string | null;
+  content_type: string | null;
+  sent_at: string;
+};
+
+export type MessageType={
+  message_id:number;
+  message:string;
+  sent_at:string;
+  content_type:string;
+  ownMessage:boolean
+}
