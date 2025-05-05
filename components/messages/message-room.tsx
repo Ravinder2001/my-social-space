@@ -4,11 +4,17 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Paperclip, ImageIcon, Mic, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
-import React, { ChangeEvent, useEffect, useState, useRef } from "react";
+import React, { ChangeEvent, useEffect, useState, useRef, lazy, Suspense } from "react";
 import { ChannelType, MessageType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { formatTime } from "../utils/functions";
+
+// Lazy load EmojiPicker to improve performance
+const EmojiPicker = lazy(() => import("emoji-picker-react").then(module => {
+  return { default: module.default };
+}));
+import type { EmojiClickData, Theme } from "emoji-picker-react";
 
 interface MessageRoomProps {
   activeConversation: ChannelType;
@@ -20,7 +26,9 @@ interface MessageRoomProps {
 function MessageRoom({ activeConversation, isMobile, showConversationList, onBackToList }: MessageRoomProps) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   const { fetchData: FetchChannelMsg } = useApiFetch(CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`);
   const { fetchData: SendMessage } = useApiFetch("");
@@ -61,6 +69,26 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
     });
   };
 
+  // Handle emoji selection from emoji-picker-react
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setMessageInput(prev => prev + emojiData.emoji);
+    setShowEmojiPicker(false);
+  };
+
+  // Handle clicks outside the emoji picker to close it
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     FetchChannelMsg().then((res: any) => {
       if (res.success == 1) {
@@ -72,6 +100,50 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
   }, []);
 
   // Scroll to bottom when messages change
+  // Format dates for message grouping
+  const formatMessageDate = (timestamp: string) => {
+    const messageDate = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Reset hours to compare just the dates
+    const messageDay = new Date(messageDate.getFullYear(), messageDate.getMonth(), messageDate.getDate());
+    const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const yesterdayDay = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+    
+    if (messageDay.getTime() === todayDay.getTime()) {
+      return "Today";
+    } else if (messageDay.getTime() === yesterdayDay.getTime()) {
+      return "Yesterday";
+    } else {
+      // Format as "DD/MM/YYYY"
+      return `${messageDate.getDate().toString().padStart(2, '0')}/${
+        (messageDate.getMonth() + 1).toString().padStart(2, '0')}/${
+        messageDate.getFullYear()}`;
+    }
+  };
+  
+  // Group messages by date
+  const groupMessagesByDate = (messages: MessageType[]) => {
+    const groups: { [key: string]: MessageType[] } = {};
+    
+    messages.forEach(message => {
+      const dateGroup = formatMessageDate(message.sent_at);
+      if (!groups[dateGroup]) {
+        groups[dateGroup] = [];
+      }
+      groups[dateGroup].push(message);
+    });
+    
+    // Convert to array of date groups
+    return Object.entries(groups).map(([date, messages]) => ({
+      date,
+      messages
+    }));
+  };
+  
+  // Add effect to scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages.length]);
@@ -93,13 +165,6 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
           </Avatar>
           <div>
             <p className="font-medium">{activeConversation?.channel_name}</p>
-            {/* <p className="text-xs text-muted-foreground">
-              {activeConversation?.user.status === "online"
-                ? "Online"
-                : activeConversation?.user.status === "away"
-                ? "Away"
-                : "Offline"}
-            </p> */}
           </div>
         </div>
         <DropdownMenu>
@@ -121,14 +186,26 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
       {/* Messages */}
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
-          {messages.map((message) => (
-            <div key={message.message_id} className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                <p>{message.message}</p>
-                <p className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                  {formatTime(message.sent_at)}
-                </p>
+          {groupMessagesByDate(messages).map((group, groupIndex) => (
+            <div key={groupIndex} className="space-y-4">
+              {/* Date separator */}
+              <div className="flex justify-center my-4">
+                <div className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">
+                  {group.date}
+                </div>
               </div>
+              
+              {/* Messages for this date */}
+              {group.messages.map((message) => (
+                <div key={message.message_id} className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <p>{message.message}</p>
+                    <p className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                      {formatTime(message.sent_at)}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
           {/* This empty div is used as a reference point to scroll to */}
@@ -163,10 +240,43 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
               }}
               className="pr-10"
             />
-            <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full">
-              <Smile className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Add emoji</span>
-            </Button>
+            <div className="absolute right-0 top-0 h-full">
+              {/* Emoji picker */}
+              {showEmojiPicker && (
+                <div 
+                  ref={emojiPickerRef}
+                  className="absolute bottom-12 right-0 z-50"
+                >
+                  <Suspense fallback={
+                    <div className="bg-background border rounded-lg shadow-lg p-4 w-64 h-64 flex items-center justify-center">
+                      <div className="text-sm text-muted-foreground">Loading emojis...</div>
+                    </div>
+                  }>
+                    <EmojiPicker
+                      onEmojiClick={handleEmojiClick}
+                      searchDisabled={false}
+                      skinTonesDisabled={false}
+                      width={320}
+                      height={400}
+                      // theme={Theme.AUTO}
+                      previewConfig={{
+                        showPreview: true
+                      }}
+                      lazyLoadEmojis={true}
+                    />
+                  </Suspense>
+                </div>
+              )}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-full"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                <Smile className="h-5 w-5 text-muted-foreground" />
+                <span className="sr-only">Add emoji</span>
+              </Button>
+            </div>
           </div>
           <Button size="icon" className="rounded-full" onClick={handleSendMsg} disabled={!messageInput.trim()}>
             <Send className="h-5 w-5" />
