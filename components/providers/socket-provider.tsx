@@ -5,8 +5,8 @@ import { useSession } from "next-auth/react";
 import Config from "@/lib/config";
 import { showToast } from "../utils/toast";
 import CONSTANTS from "../utils/constants";
+import { MessageNotification } from "../messages/message-notification";
 
-// Define the context type
 interface SocketContextType {
   socket: Socket | null;
 }
@@ -19,14 +19,15 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status }: any = useSession();
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
 
+  // Only create and destroy socket on login/logout or tab close
   useEffect(() => {
-    // Only connect if authenticated
     if (status === "authenticated" && !socketRef.current) {
       const newSocket = io(URL, {
         auth: {
-          token: session?.user?.authToken, // Adjust if your session has a token
+          token: session?.user?.authToken,
         },
         autoConnect: true,
         transports: ["websocket"],
@@ -40,16 +41,34 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       newSocket.on(CONSTANTS.SOCKET_EVENTS.ERROR, (errMsg) => {
         showToast({ message: errMsg, type: "error" });
       });
+
+      newSocket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, (msgObj) => {
+        setIsNewMessage(true);
+        setTimeout(() => {
+          setIsNewMessage(false);
+        }, 5000);
+      });
+
       socketRef.current = newSocket;
       setSocket(newSocket);
-      return () => {
+
+      // Disconnect only on tab close or logout
+      const handleBeforeUnload = () => {
         newSocket.disconnect();
-        socketRef.current = null;
-        setSocket(null);
+      };
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        // Only disconnect if logging out
+        if (socketRef.current && status !== "authenticated") {
+          socketRef.current.disconnect();
+          socketRef.current = null;
+          setSocket(null);
+        }
       };
     }
-
-    // Disconnect if not authenticated
+    // On logout, disconnect
     if (status !== "authenticated" && socketRef.current) {
       socketRef.current.disconnect();
       socketRef.current = null;
@@ -57,5 +76,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [status, session]);
 
-  return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {isNewMessage && <MessageNotification sender={{ id: "1", name: "Ravinder", avatar: "" }} message="New message received" onClose={() => {}} />}
+      {children}
+    </SocketContext.Provider>
+  );
 };

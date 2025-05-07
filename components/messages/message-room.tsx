@@ -178,16 +178,6 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
 
   const { socket } = useSocket();
 
-  useEffect(() => {
-    if (!socket) return;
-    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, (data) => {
-      console.log("msg aya------------", data);
-    });
-    return () => {
-      socket.off("message");
-    };
-  }, [socket]);
-
   return (
     <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
       {/* Chat header */}
