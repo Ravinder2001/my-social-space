@@ -162,7 +162,7 @@ export function Navbar() {
                   </Button>
                 </Link>
               </div>
-              <div className="mt-auto pt-4 border-t mt-4">
+              {/* <div className="mt-auto pt-4 border-t mt-4">
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -174,7 +174,7 @@ export function Navbar() {
                   <LogOut className="mr-2 h-5 w-5" />
                   Logout
                 </Button>
-              </div>
+              </div> */}
             </nav>
           </SheetContent>
         </Sheet>
@@ -255,10 +255,10 @@ export function Navbar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={() => signOut()}>
+              {/* <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={() => signOut()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

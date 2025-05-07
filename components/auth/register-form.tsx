@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { getSession, signIn } from "next-auth/react";
-import { setUserDetails } from "@/lib/Slices/UserSlice";
-import { useDispatch } from "react-redux";
+import { signIn } from "next-auth/react";
 
 const formSchema = z
   .object({
@@ -31,8 +29,6 @@ const formSchema = z
 type FormValues = z.infer<typeof formSchema>;
 
 export function RegisterForm() {
-  const dispatch = useDispatch()
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -50,26 +46,13 @@ export function RegisterForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      const response = await signIn("credentials", {
+      await signIn("credentials", {
         email: values.email,
         password: values.password,
         full_name: values.name,
-        redirect: false, // Set to false to handle response manually
+        redirect: true, // Set to false to handle response manually
         callbackUrl: "/",
       });
-
-      if (response?.ok) {
-        // Fetch the session to get the user object with the token
-        const session: any = await getSession();
-        if (session?.user?.authToken) {
-          // Save the backend token to localStorage
-          localStorage.setItem("authToken", session?.user?.authToken);
-          dispatch(setUserDetails(session.user));
-        }
-        router.push("/");
-      } else {
-        console.error("Login failed:", response?.error);
-      }
     } catch (error) {
       console.error("Registration failed:", error);
     } finally {

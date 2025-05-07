@@ -72,7 +72,7 @@ export function SettingsView() {
         </CardContent>
       </Card>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <h2 className="text-lg font-semibold">Danger Zone</h2>
         </CardHeader>
@@ -82,7 +82,7 @@ export function SettingsView() {
             Logout
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   )
 }

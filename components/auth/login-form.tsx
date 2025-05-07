@@ -12,9 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getProviders, getSession, signIn } from "next-auth/react";
-import { useDispatch } from "react-redux";
-import { setUserDetails } from "@/lib/Slices/UserSlice";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -24,8 +22,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LoginForm() {
-  const dispatch = useDispatch();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,25 +36,12 @@ export function LoginForm() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      const response = await signIn("credentials", {
+      await signIn("credentials", {
         email: values.email,
         password: values.password,
-        redirect: false, // Set to false to handle response manually
+        redirect: true, // Set to false to handle response manually
         callbackUrl: "/",
       });
-
-      if (response?.ok) {
-        // Fetch the session to get the user object with the token
-        const session: any = await getSession();
-        if (session?.user?.authToken) {
-          // Save the backend token to localStorage
-          localStorage.setItem("authToken", session?.user?.authToken);
-          dispatch(setUserDetails(session.user));
-        }
-        router.push("/");
-      } else {
-        console.error("Login failed:", response?.error);
-      }
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -69,18 +52,7 @@ export function LoginForm() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const response = await signIn("google", { callbackUrl: "/" });
-      if (response?.ok) {
-        // Fetch the session to get the user object with the token
-        const session: any = await getSession();
-        if (session?.user?.authToken) {
-          // Save the backend token to localStorage
-          localStorage.setItem("authToken", session?.user?.authToken);
-        }
-        router.push("/");
-      } else {
-        console.error("Login failed:", response?.error);
-      }
+      await signIn("google", { redirect: true, callbackUrl: "/" });
     } catch (error) {
       console.error("Google sign-in failed:", error);
     } finally {
