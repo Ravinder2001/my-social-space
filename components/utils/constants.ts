@@ -54,6 +54,7 @@ const CONSTANTS = {
     CONNECT: "connect",
     DISCONNECT: "disconnect",
     ERROR: "SOCKET_ERROR",
+    MSG_RECEIVED:"Message-Received"
   },
 };
 
