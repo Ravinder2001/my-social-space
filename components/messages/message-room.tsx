@@ -22,6 +22,9 @@ const EmojiPicker = lazy(() =>
   })
 );
 import type { EmojiClickData } from "emoji-picker-react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveChannel, setNewMessage } from "@/lib/Slices/MessageSlice";
+import { RootState } from "@/lib/store";
 // import { useSocket } from "../providers/socket-provider";
 
 interface MessageRoomProps {
@@ -37,6 +40,9 @@ function MessageRoom({
   showConversationList,
   onBackToList,
 }: MessageRoomProps) {
+  const dispatch = useDispatch();
+  const currentChannel: any = useSelector((state: RootState) => state.message);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -124,6 +130,14 @@ function MessageRoom({
         setIsInitialLoad(true);
       }
     });
+    if (activeConversation.channel_id) {
+      console.log("trying");
+      dispatch(setActiveChannel(activeConversation.channel_id));
+    }
+
+    return () => {
+      dispatch(setActiveChannel(null));
+    };
   }, [activeConversation.channel_id]);
 
   // Scroll to bottom on initial load and when sending new messages
@@ -198,6 +212,13 @@ function MessageRoom({
   };
 
   // const { socket } = useSocket();
+
+  useEffect(() => {
+    if (currentChannel.channel_id == activeConversation.channel_id && currentChannel.newMsg) {
+      setMessages((prev) => [...prev, currentChannel.newMsg]);
+      dispatch(setNewMessage(null));
+    }
+  }, [currentChannel]);
 
   return (
     <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>

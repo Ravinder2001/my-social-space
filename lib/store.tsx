@@ -1,11 +1,18 @@
 "use client";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import UserReducer from "@/lib/Slices/UserSlice";
+import MessageReducer from "@/lib/Slices/MessageSlice";
+
+// Combine reducers
+const rootReducer = combineReducers({
+  user: UserReducer,
+  message: MessageReducer,
+});
 
 // Persist configuration
 const persistConfig = {
@@ -13,15 +20,13 @@ const persistConfig = {
   storage,
 };
 
-// Create a persisted reducer
-const persistedReducer = persistReducer(persistConfig, UserReducer);
+// Create a persisted reducer for the combined reducers
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Define the store configuration
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      user: persistedReducer,
-    },
+    reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {

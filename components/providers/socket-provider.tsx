@@ -5,7 +5,9 @@ import { useSession } from "next-auth/react";
 import Config from "@/lib/config";
 import { showToast } from "../utils/toast";
 import CONSTANTS from "../utils/constants";
-import { MessageNotification } from "../messages/message-notification";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { setNewMessage } from "@/lib/Slices/MessageSlice";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -18,8 +20,10 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status }: any = useSession();
+  const CurrentChannelDetails = useSelector((state: RootState) => state.message);
+  const dispatch = useDispatch();
+
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
 
   // Only create and destroy socket on login/logout or tab close
@@ -40,14 +44,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
       newSocket.on(CONSTANTS.SOCKET_EVENTS.ERROR, (errMsg) => {
         showToast({ message: errMsg, type: "error" });
-      });
-
-      newSocket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, (msgObj) => {
-        console.log(msgObj);
-        setIsNewMessage(true);
-        setTimeout(() => {
-          setIsNewMessage(false);
-        }, 5000);
       });
 
       socketRef.current = newSocket;
@@ -77,16 +73,27 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [status, session]);
 
-  return (
-    <SocketContext.Provider value={{ socket }}>
-      {isNewMessage && (
-        <MessageNotification
-          sender={{ id: "1", name: "Ravinder", avatar: "" }}
-          message="New message received"
-          onClose={() => {}}
-        />
-      )}
-      {children}
-    </SocketContext.Provider>
-  );
+  // Ensure MSG_RECEIVED handler always has latest CurrentChannelDetails
+  useEffect(() => {
+    if (!socket) return;
+    const handler = (msgObj: any) => {
+      if (msgObj.channel_id == CurrentChannelDetails.channel_id) {
+        dispatch(setNewMessage(msgObj));
+      } else {
+        showToast({
+          message: msgObj.message,
+          type: "notification",
+          picture: msgObj.profile_picture,
+          name: msgObj.name,
+          duration: 10000,
+        });
+      }
+    };
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handler);
+    return () => {
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handler);
+    };
+  }, [socket, CurrentChannelDetails, dispatch]);
+
+  return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>;
 };
