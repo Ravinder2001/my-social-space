@@ -25,7 +25,7 @@ import type { EmojiClickData } from "emoji-picker-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveChannel, setNewMessage } from "@/lib/Slices/MessageSlice";
 import { RootState } from "@/lib/store";
-// import { useSocket } from "../providers/socket-provider";
+import { useSocket } from "../providers/socket-provider";
 
 interface MessageRoomProps {
   activeConversation: ChannelType;
@@ -42,6 +42,7 @@ function MessageRoom({
 }: MessageRoomProps) {
   const dispatch = useDispatch();
   const currentChannel: any = useSelector((state: RootState) => state.message);
+  const { socket } = useSocket();
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState("");
@@ -50,6 +51,7 @@ function MessageRoom({
   const [isTyping, setIsTyping] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { fetchData: FetchChannelMsg } = useApiFetch(
     CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`
@@ -65,6 +67,21 @@ function MessageRoom({
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessageInput(e.target.value);
+    if (socket && activeConversation.channel_id) {
+      socket.emit(CONSTANTS.SOCKET_EVENTS.USER_TYPING, {
+        channel_id: activeConversation.channel_id,
+      });
+    }
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      if (socket && activeConversation.channel_id) {
+        socket.emit(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, {
+          channel_id: activeConversation.channel_id,
+        });
+      }
+    }, 1000);
   };
 
   const handleSendMsg = async () => {
@@ -101,64 +118,6 @@ function MessageRoom({
     setMessageInput((prev) => prev + emojiData.emoji);
     // setShowEmojiPicker(false);
   };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIsTyping(!isTyping);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [isTyping]);
-
-  // Handle clicks outside the emoji picker to close it
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
-        setShowEmojiPicker(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    FetchChannelMsg().then((res: any) => {
-      if (res.success == 1) {
-        setMessages(res.data);
-        setIsInitialLoad(true);
-      }
-    });
-    if (activeConversation.channel_id) {
-      console.log("trying");
-      dispatch(setActiveChannel(activeConversation.channel_id));
-    }
-
-    return () => {
-      dispatch(setActiveChannel(null));
-    };
-  }, [activeConversation.channel_id]);
-
-  // Scroll to bottom on initial load and when sending new messages
-  useEffect(() => {
-    if (messages.length > 0) {
-      if (isInitialLoad) {
-        scrollToBottom();
-        setIsInitialLoad(false);
-      } else {
-        // Check if the user is already at the bottom before auto-scrolling
-        const container = messagesContainerRef.current;
-        if (container) {
-          const isAtBottom =
-            container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-          if (isAtBottom) {
-            scrollToBottom();
-          }
-        }
-      }
-    }
-  }, [messages, isInitialLoad]);
 
   // Format dates for message grouping
   const formatMessageDate = (timestamp: string) => {
@@ -211,7 +170,55 @@ function MessageRoom({
     }));
   };
 
-  // const { socket } = useSocket();
+  // Handle clicks outside the emoji picker to close it
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    FetchChannelMsg().then((res: any) => {
+      if (res.success == 1) {
+        setMessages(res.data);
+        setIsInitialLoad(true);
+      }
+    });
+    if (activeConversation.channel_id) {
+      dispatch(setActiveChannel(activeConversation.channel_id));
+    }
+
+    return () => {
+      dispatch(setActiveChannel(null));
+    };
+  }, [activeConversation.channel_id]);
+
+  // Scroll to bottom on initial load and when sending new messages
+  useEffect(() => {
+    if (messages.length > 0) {
+      if (isInitialLoad) {
+        scrollToBottom();
+        setIsInitialLoad(false);
+      } else {
+        // Check if the user is already at the bottom before auto-scrolling
+        const container = messagesContainerRef.current;
+        if (container) {
+          const isAtBottom =
+            container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+          if (isAtBottom) {
+            scrollToBottom();
+          }
+        }
+      }
+    }
+  }, [messages, isInitialLoad]);
 
   useEffect(() => {
     if (currentChannel.channel_id == activeConversation.channel_id && currentChannel.newMsg) {
@@ -219,6 +226,26 @@ function MessageRoom({
       dispatch(setNewMessage(null));
     }
   }, [currentChannel]);
+
+  useEffect(() => {
+    if (!socket || !activeConversation.channel_id) return;
+    const handleTyping = (data: { channel_id: number }) => {
+      if (data.channel_id === activeConversation.channel_id) {
+        setIsTyping(true);
+      }
+    };
+    const handleStopTyping = (data: { channel_id: number }) => {
+      if (data.channel_id === activeConversation.channel_id) {
+        setIsTyping(false);
+      }
+    };
+    socket.on(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
+    socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
+    return () => {
+      socket.off(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
+      socket.off(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
+    };
+  }, [socket, activeConversation.channel_id]);
 
   return (
     <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
@@ -309,7 +336,7 @@ function MessageRoom({
                   style={{ animationDelay: "600ms" }}
                 ></div>
               </div>
-              <span>John is typing...</span>
+              <span>typing...</span>
             </div>
           </div>
         )}

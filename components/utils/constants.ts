@@ -54,7 +54,9 @@ const CONSTANTS = {
     CONNECT: "connect",
     DISCONNECT: "disconnect",
     ERROR: "SOCKET_ERROR",
-    MSG_RECEIVED:"Message-Received"
+    MSG_RECEIVED: "Message-Received",
+    USER_TYPING: "User-Typing",
+    USER_NOT_TYPING: "User-Not-Typing",
   },
 };
 
