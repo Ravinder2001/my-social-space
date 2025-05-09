@@ -43,6 +43,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       newSocket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, (msgObj) => {
+        console.log(msgObj);
         setIsNewMessage(true);
         setTimeout(() => {
           setIsNewMessage(false);
@@ -78,7 +79,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SocketContext.Provider value={{ socket }}>
-      {isNewMessage && <MessageNotification sender={{ id: "1", name: "Ravinder", avatar: "" }} message="New message received" onClose={() => {}} />}
+      {isNewMessage && (
+        <MessageNotification
+          sender={{ id: "1", name: "Ravinder", avatar: "" }}
+          message="New message received"
+          onClose={() => {}}
+        />
+      )}
       {children}
     </SocketContext.Provider>
   );

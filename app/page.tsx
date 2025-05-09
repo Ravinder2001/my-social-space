@@ -1,9 +1,10 @@
 "use client";
+import React from "react";
 import { MainLayout } from "@/components/layouts/main-layout";
 import { HomeFeed } from "@/components/home/home-feed";
 import { getSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
-import { setUserDetails, UserState } from "@/lib/Slices/UserSlice";
+import { setUserDetails } from "@/lib/Slices/UserSlice";
 import { useEffect, useState } from "react";
 import CONSTANTS from "@/components/utils/constants";
 

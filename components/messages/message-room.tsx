@@ -1,9 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Paperclip, ImageIcon, Mic, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ImageIcon, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
 import React, { ChangeEvent, useEffect, useState, useRef, lazy, Suspense } from "react";
 import { ChannelType, MessageType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
@@ -16,8 +21,8 @@ const EmojiPicker = lazy(() =>
     return { default: module.default };
   })
 );
-import type { EmojiClickData, Theme } from "emoji-picker-react";
-import { useSocket } from "../providers/socket-provider";
+import type { EmojiClickData } from "emoji-picker-react";
+// import { useSocket } from "../providers/socket-provider";
 
 interface MessageRoomProps {
   activeConversation: ChannelType;
@@ -26,7 +31,12 @@ interface MessageRoomProps {
   onBackToList: () => void;
 }
 
-function MessageRoom({ activeConversation, isMobile, showConversationList, onBackToList }: MessageRoomProps) {
+function MessageRoom({
+  activeConversation,
+  isMobile,
+  showConversationList,
+  onBackToList,
+}: MessageRoomProps) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -35,7 +45,9 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
-  const { fetchData: FetchChannelMsg } = useApiFetch(CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`);
+  const { fetchData: FetchChannelMsg } = useApiFetch(
+    CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`
+  );
   const { fetchData: SendMessage } = useApiFetch("");
 
   // Function to scroll to bottom of messages
@@ -124,7 +136,8 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
         // Check if the user is already at the bottom before auto-scrolling
         const container = messagesContainerRef.current;
         if (container) {
-          const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+          const isAtBottom =
+            container.scrollHeight - container.scrollTop - container.clientHeight < 100;
           if (isAtBottom) {
             scrollToBottom();
           }
@@ -141,9 +154,17 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
     yesterday.setDate(yesterday.getDate() - 1);
 
     // Reset hours to compare just the dates
-    const messageDay = new Date(messageDate.getFullYear(), messageDate.getMonth(), messageDate.getDate());
+    const messageDay = new Date(
+      messageDate.getFullYear(),
+      messageDate.getMonth(),
+      messageDate.getDate()
+    );
     const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const yesterdayDay = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+    const yesterdayDay = new Date(
+      yesterday.getFullYear(),
+      yesterday.getMonth(),
+      yesterday.getDate()
+    );
 
     if (messageDay.getTime() === todayDay.getTime()) {
       return "Today";
@@ -176,7 +197,7 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
     }));
   };
 
-  const { socket } = useSocket();
+  // const { socket } = useSocket();
 
   return (
     <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
@@ -190,7 +211,10 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
         )}
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={activeConversation?.profile_picture} alt={activeConversation?.channel_name || "User"} />
+            <AvatarImage
+              src={activeConversation?.profile_picture}
+              alt={activeConversation?.channel_name || "User"}
+            />
             <AvatarFallback>{activeConversation?.channel_name?.[0] || "U"}</AvatarFallback>
           </Avatar>
           <div>
@@ -214,20 +238,32 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
         </DropdownMenu>
       </div>
       {/* Messages */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4"
+      >
         {groupMessagesByDate(messages).map((group, groupIndex) => (
           <div key={groupIndex} className="space-y-4">
             {/* Date separator */}
             <div className="flex justify-center my-4">
-              <div className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">{group.date}</div>
+              <div className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">
+                {group.date}
+              </div>
             </div>
 
             {/* Messages for this date */}
             {group.messages.map((message) => (
-              <div key={message.message_id} className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+              <div
+                key={message.message_id}
+                className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                >
                   <p>{message.message}</p>
-                  <p className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                  <p
+                    className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}
+                  >
                     {formatTime(message.sent_at)}
                   </p>
                 </div>
@@ -239,9 +275,18 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
           <div className="px-4 pb-1 mt-2">
             <div className="flex items-center text-sm text-gray-500">
               <div className="flex space-x-1 mr-2">
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "600ms" }}></div>
+                <div
+                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                ></div>
+                <div
+                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                ></div>
+                <div
+                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
+                  style={{ animationDelay: "600ms" }}
+                ></div>
               </div>
               <span>John is typing...</span>
             </div>
@@ -302,13 +347,23 @@ function MessageRoom({ activeConversation, isMobile, showConversationList, onBac
                   </Suspense>
                 </div>
               )}
-              <Button variant="ghost" size="icon" className="h-full" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-full"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
                 <Smile className="h-5 w-5 text-muted-foreground" />
                 <span className="sr-only">Add emoji</span>
               </Button>
             </div>
           </div>
-          <Button size="icon" className="rounded-full" onClick={handleSendMsg} disabled={!messageInput.trim()}>
+          <Button
+            size="icon"
+            className="rounded-full"
+            onClick={handleSendMsg}
+            disabled={!messageInput.trim()}
+          >
             <Send className="h-5 w-5" />
             <span className="sr-only">Send message</span>
           </Button>
