@@ -110,10 +110,9 @@ function MessageRoom({
   const handleSendMsg = async () => {
     if (!messageInput.trim()) return;
 
-    await SendMessage(CONSTANTS.API_ROUTES.SEND_MESSAGE, {
+    await SendMessage(CONSTANTS.API_ROUTES.SEND_MESSAGE + `/${activeConversation.channel_id}`, {
       method: "POST",
       data: {
-        channel_id: activeConversation.channel_id,
         message: messageInput,
         content_type: "TEXT",
       },
