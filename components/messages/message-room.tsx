@@ -11,10 +11,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ImageIcon, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
-import React, { type ChangeEvent, useEffect, useState, useRef, lazy, Suspense } from "react";
+import React, {
+  type ChangeEvent,
+  useEffect,
+  useState,
+  useRef,
+  lazy,
+  Suspense,
+  useCallback,
+} from "react";
 import type { ChannelType, MessageType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Lazy load EmojiPicker to improve performance
 const EmojiPicker = lazy(() =>
@@ -51,6 +66,10 @@ function MessageRoom({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<MessageType | null>(null);
+  const [editMessageInput, setEditMessageInput] = useState("");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,6 +78,8 @@ function MessageRoom({
     CONSTANTS.API_ROUTES.GET_CHANNEL_MESSAGES + `/${activeConversation.channel_id}`
   );
   const { fetchData: SendMessage } = useApiFetch("");
+  const { fetchData: EditMessage } = useApiFetch("");
+  const { fetchData: DeleteMessage } = useApiFetch("");
 
   // Function to scroll to bottom (which shows the latest messages)
   const scrollToBottom = () => {
@@ -106,6 +127,8 @@ function MessageRoom({
             sent_at: res.data.sent_at,
             content_type: "TEXT",
             ownMessage: true,
+            is_edited: false,
+            is_deleted: false,
           },
           ...prev,
         ]);
@@ -172,6 +195,72 @@ function MessageRoom({
     }));
   };
 
+  // Helper: check if message is editable/deletable
+  const canEditOrDelete = useCallback((message: MessageType) => {
+    if (!message.ownMessage) return false;
+    const sentAt = new Date(message.sent_at);
+    const now = new Date();
+    const diffMs = now.getTime() - sentAt.getTime();
+    const diffMins = diffMs / (1000 * 60);
+    return diffMins <= 15;
+  }, []);
+
+  // Handler: open edit dialog
+  const handleOpenEdit = (message: MessageType) => {
+    setSelectedMessage(message);
+    setEditMessageInput(message.message);
+    setEditDialogOpen(true);
+  };
+
+  // Handler: open delete dialog
+  const handleOpenDelete = (message: MessageType) => {
+    setSelectedMessage(message);
+    setDeleteDialogOpen(true);
+  };
+
+  // Handler: confirm edit
+  const handleConfirmEdit = async () => {
+    if (!selectedMessage || !editMessageInput.trim()) return;
+    await EditMessage(CONSTANTS.API_ROUTES.EDIT_MESSAGE + `/${selectedMessage.message_id}`, {
+      method: "PUT",
+      data: {
+        message: editMessageInput,
+      },
+    }).then((res) => {
+      if (res.success == 1) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.message_id === selectedMessage.message_id
+              ? { ...msg, message: editMessageInput, is_edited: true }
+              : msg
+          )
+        );
+        setEditDialogOpen(false);
+        setSelectedMessage(null);
+      }
+    });
+  };
+
+  // Handler: confirm delete
+  const handleConfirmDelete = async () => {
+    if (!selectedMessage) return;
+    await DeleteMessage(CONSTANTS.API_ROUTES.DELETE_MESSAGE + `/${selectedMessage.message_id}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (res.success == 1) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.message_id === selectedMessage.message_id
+              ? { ...msg, message: "This message has been deleted", is_deleted: true }
+              : msg
+          )
+        );
+        setDeleteDialogOpen(false);
+        setSelectedMessage(null);
+      }
+    });
+  };
+
   // Handle clicks outside the emoji picker to close it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -234,54 +323,94 @@ function MessageRoom({
 
   useEffect(() => {
     if (!socket || !activeConversation.channel_id) return;
+
     const handleTyping = (data: { channel_id: number }) => {
       if (data.channel_id === activeConversation.channel_id) {
         setIsTyping(true);
       }
     };
+
     const handleStopTyping = (data: { channel_id: number }) => {
       if (data.channel_id === activeConversation.channel_id) {
         setIsTyping(false);
       }
     };
+
+    const handleMsgDeleted = (data: { channel_id: number; message_id: number }) => {
+      if (data.channel_id === activeConversation.channel_id) {
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.message_id === data.message_id
+              ? { ...msg, message: "This message has been deleted", is_deleted: true }
+              : msg
+          )
+        );
+      }
+    };
+
+    const handleMsgEdited = (data: { channel_id: number; message_id: number; message: string }) => {
+      if (data.channel_id === activeConversation.channel_id) {
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.message_id === data.message_id
+              ? { ...msg, message: data.message, is_edited: true }
+              : msg
+          )
+        );
+      }
+    };
+
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
+
     return () => {
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
     };
   }, [socket, activeConversation.channel_id]);
 
   return (
-    <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
+    <div
+      className={`fixed inset-0 sm:relative sm:flex-1 flex flex-col bg-background z-0 ${
+        isMobile && showConversationList ? "hidden" : "flex"
+      }`}
+    >
       {/* Chat header */}
-      <div className="h-16 border-b flex items-center justify-between px-4 bg-card/50 shadow-sm">
+      <div
+        className={`sticky top-0 z-50 h-14 sm:h-16 border-b flex items-center justify-between px-3 sm:px-4 bg-background backdrop-blur supports-[backdrop-filter]:bg-background/95 ${isMobile && "mt-[70px]"}`}
+      >
         {isMobile && (
-          <Button variant="ghost" size="icon" className="mr-2" onClick={onBackToList}>
-            <ArrowLeft className="h-5 w-5" />
+          <Button variant="ghost" size="icon" className="mr-1 h-8 w-8" onClick={onBackToList}>
+            <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Back to conversations</span>
           </Button>
         )}
-        <div className="flex items-center gap-3">
-          <Avatar>
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0">
             <AvatarImage
               src={activeConversation?.profile_picture || "/placeholder.svg"}
               alt={activeConversation?.channel_name || "User"}
             />
             <AvatarFallback>{activeConversation?.channel_name?.[0] || "U"}</AvatarFallback>
           </Avatar>
-          <div>
-            <p className="font-medium">{activeConversation?.channel_name}</p>
+          <div className="min-w-0 flex-1">
+            <p className="font-medium truncate text-sm sm:text-base">
+              {activeConversation?.channel_name}
+            </p>
           </div>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
+              <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5" />
               <span className="sr-only">More options</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" side="bottom" className="w-48">
             <DropdownMenuItem>View profile</DropdownMenuItem>
             <DropdownMenuItem>Search in conversation</DropdownMenuItem>
             <DropdownMenuItem>Mute notifications</DropdownMenuItem>
@@ -291,10 +420,10 @@ function MessageRoom({
         </DropdownMenu>
       </div>
 
-      {/* Messages container with flex-col-reverse to invert the scroll direction */}
+      {/* Messages container */}
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-4 flex flex-col-reverse scroll-smooth"
+        className="flex-1 overflow-y-auto p-2 sm:p-4 flex flex-col-reverse scroll-smooth"
       >
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
@@ -350,23 +479,54 @@ function MessageRoom({
                     key={message.message_id}
                     className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}
                   >
-                    <div
-                      className={`max-w-[70%] rounded-lg p-3 ${
-                        message.ownMessage
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "bg-muted shadow-sm"
-                      }`}
-                    >
-                      <p className="break-words">{message.message}</p>
-                      <p
-                        className={`text-xs mt-1 ${
-                          message.ownMessage
-                            ? "text-primary-foreground/70"
-                            : "text-muted-foreground"
-                        }`}
+                    <div className="relative max-w-[70%]">
+                      <div
+                        className={`rounded-lg p-3 w-full group
+                          ${message.ownMessage ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted shadow-sm"}
+                        `}
                       >
-                        {moment(message.sent_at).format("HH:MM")}
-                      </p>
+                        {message.ownMessage && !message.is_deleted && canEditOrDelete(message) && (
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button size="sm" variant="ghost" className="h-7 w-7 p-0">
+                                  <MoreVertical className="h-4 w-4" />
+                                  <span className="sr-only">More options</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+
+                              <DropdownMenuContent align="end" className="w-[160px]">
+                                {message.content_type === "TEXT" && (
+                                  <DropdownMenuItem onClick={() => handleOpenEdit(message)}>
+                                    Edit message
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem
+                                  onClick={() => handleOpenDelete(message)}
+                                  className="text-destructive"
+                                >
+                                  Delete message
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        )}
+                        <p className="break-words pr-8">{message.message}</p>
+                        <div className="flex items-center gap-2">
+                          <p
+                            className={`text-xs ${
+                              message.ownMessage
+                                ? "text-primary-foreground/70"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {moment(message.sent_at).format("HH:MM")}
+                          </p>
+                          {message.is_edited && !message.is_deleted && (
+                            <i className="text-xs">Edited</i>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -384,10 +544,10 @@ function MessageRoom({
       </div>
 
       {/* Message input */}
-      <div className="border-t p-4">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon">
-            <ImageIcon className="h-5 w-5 text-muted-foreground" />
+      <div className="border-t p-2 sm:p-4 bg-background">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10 shrink-0">
+            <ImageIcon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
             <span className="sr-only">Attach image</span>
           </Button>
           <div className="relative flex-1">
@@ -401,15 +561,22 @@ function MessageRoom({
                   handleSendMsg();
                 }
               }}
-              className="pr-10"
+              className="pr-8 sm:pr-10 h-8 sm:h-10 text-sm"
             />
             <div className="absolute right-0 top-0 h-full">
               {/* Emoji picker */}
               {showEmojiPicker && (
-                <div ref={emojiPickerRef} className="absolute bottom-12 right-0 z-50">
+                <div
+                  ref={emojiPickerRef}
+                  className="absolute bottom-full right-0 z-50 mb-2"
+                  style={{
+                    width: isMobile ? "calc(100vw - 2rem)" : "320px",
+                    maxHeight: isMobile ? "40vh" : "400px",
+                  }}
+                >
                   <Suspense
                     fallback={
-                      <div className="bg-background border rounded-lg shadow-lg p-4 w-64 h-64 flex items-center justify-center">
+                      <div className="bg-background border rounded-lg shadow-lg p-4 w-full h-[40vh] sm:h-[400px] flex items-center justify-center">
                         <div className="text-sm text-muted-foreground">Loading emojis...</div>
                       </div>
                     }
@@ -418,10 +585,10 @@ function MessageRoom({
                       onEmojiClick={handleEmojiClick}
                       searchDisabled={false}
                       skinTonesDisabled={false}
-                      width={320}
-                      height={400}
+                      width="100%"
+                      height={isMobile ? "40vh" : "400px"}
                       previewConfig={{
-                        showPreview: true,
+                        showPreview: !isMobile,
                       }}
                       lazyLoadEmojis={true}
                     />
@@ -431,25 +598,90 @@ function MessageRoom({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-full"
+                className="h-8 sm:h-10 w-8 sm:w-10"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
-                <Smile className="h-5 w-5 text-muted-foreground" />
+                <Smile className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                 <span className="sr-only">Add emoji</span>
               </Button>
             </div>
           </div>
           <Button
             size="icon"
-            className="rounded-full"
+            className="rounded-full h-8 w-8 sm:h-10 sm:w-10 shrink-0"
             onClick={handleSendMsg}
             disabled={!messageInput.trim()}
           >
-            <Send className="h-5 w-5" />
+            <Send className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="sr-only">Send message</span>
           </Button>
         </div>
       </div>
+
+      {/* Edit Message Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="w-[90vw] max-h-[200px] sm:w-[400px] p-4 sm:p-6 gap-4">
+          <DialogHeader>
+            <DialogTitle>Edit Message</DialogTitle>
+          </DialogHeader>
+          <div>
+            <Input
+              value={editMessageInput}
+              onChange={(e) => setEditMessageInput(e.target.value)}
+              autoFocus
+              className="min-h-0"
+            />
+          </div>
+          <DialogFooter className="sm:justify-end">
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button
+                variant="outline"
+                onClick={() => setEditDialogOpen(false)}
+                className="flex-1 sm:flex-initial"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirmEdit}
+                disabled={!editMessageInput.trim()}
+                className="flex-1 sm:flex-initial"
+              >
+                Save
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Message Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="w-[90vw] max-h-[200px] sm:w-[400px] p-4 sm:p-6 gap-4">
+          <DialogHeader>
+            <DialogTitle>Delete Message</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Are you sure you want to delete this message?
+          </p>
+          <DialogFooter className="sm:justify-end">
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                className="flex-1 sm:flex-initial"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                className="flex-1 sm:flex-initial"
+              >
+                Delete
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

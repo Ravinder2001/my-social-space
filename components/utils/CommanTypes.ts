@@ -117,10 +117,12 @@ export type ChannelType = {
   sent_at: string;
 };
 
-export type MessageType={
-  message_id:number;
-  message:string;
-  sent_at:string;
-  content_type:string;
-  ownMessage:boolean
-}
+export type MessageType = {
+  message_id: number;
+  message: string;
+  sent_at: string;
+  content_type: string;
+  ownMessage: boolean;
+  is_edited: boolean;
+  is_deleted: boolean;
+};

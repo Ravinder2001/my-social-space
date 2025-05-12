@@ -47,6 +47,8 @@ const CONSTANTS = {
     GET_CHANNELS_LIST: "/chat/channels",
     GET_CHANNEL_MESSAGES: "/chat/messages",
     SEND_MESSAGE: "/chat/messages",
+    DELETE_MESSAGE: "/chat/messages",
+    EDIT_MESSAGE: "/chat/messages",
   },
   JIO_SAAVN_API: "https://saavn.dev/api/search/songs?query=",
   LOCAL_STORAGE_KEY: "authToken",
@@ -57,6 +59,8 @@ const CONSTANTS = {
     MSG_RECEIVED: "Message-Received",
     USER_TYPING: "User-Typing",
     USER_NOT_TYPING: "User-Not-Typing",
+    MSG_EDITED: "Message-Edited",
+    MSG_DELETED: "Message-Deleted",
   },
 };
 
