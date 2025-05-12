@@ -61,6 +61,8 @@ const CONSTANTS = {
     USER_NOT_TYPING: "User-Not-Typing",
     MSG_EDITED: "Message-Edited",
     MSG_DELETED: "Message-Deleted",
+    CHAT_OPENED: "Chat-Opened",
+    CHAT_CLOSED: "Chat-Closed",
   },
 };
 

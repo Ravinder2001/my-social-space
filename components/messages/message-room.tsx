@@ -104,7 +104,7 @@ function MessageRoom({
           channel_id: activeConversation.channel_id,
         });
       }
-    }, 1000);
+    }, 2000);
   };
 
   const handleSendMsg = async () => {
@@ -359,6 +359,10 @@ function MessageRoom({
       }
     };
 
+    socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_OPENED, {
+      channel_id: activeConversation.channel_id,
+    });
+
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
@@ -369,6 +373,9 @@ function MessageRoom({
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
+      socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_CLOSED, {
+        channel_id: activeConversation.channel_id,
+      });
     };
   }, [socket, activeConversation.channel_id]);
 
@@ -464,7 +471,6 @@ function MessageRoom({
                       style={{ animationDelay: "600ms" }}
                     ></div>
                   </div>
-                  <span>typing...</span>
                 </div>
               </div>
             )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -59,7 +59,7 @@ export function NewConversationDialog({ open, onOpenChange }: NewConversationDia
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[500px]">
         <DialogHeader>
           <DialogTitle>New Conversation</DialogTitle>
         </DialogHeader>
@@ -76,7 +76,10 @@ export function NewConversationDialog({ open, onOpenChange }: NewConversationDia
           {filteredUsers.length > 0 ? (
             <div className="space-y-2">
               {filteredUsers.map((user) => (
-                <div key={user.user_id} className="flex items-center gap-3 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors">
+                <div
+                  key={user.user_id}
+                  className="flex items-center gap-3 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                >
                   <div className="relative">
                     <Avatar>
                       <AvatarImage src={user.profile_picture} alt={user.name} />

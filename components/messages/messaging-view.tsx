@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NewConversationDialog } from "./new-conversation-dialog";
@@ -42,13 +42,11 @@ export function MessagingView() {
     setShowConversationList(true);
   };
 
-  const sendMessage = () => {};
-
-  const handleNewConversation = (userId: string, userName: string) => {
-    console.log(`Starting new conversation with ${userName} (${userId})`);
-    // In a real app, you would create a new conversation and navigate to it
-    setNewConversationOpen(false);
-  };
+  // const handleNewConversation = (userId: string, userName: string) => {
+  //   console.log(`Starting new conversation with ${userName} (${userId})`);
+  //   // In a real app, you would create a new conversation and navigate to it
+  //   setNewConversationOpen(false);
+  // };
 
   const handleCreateGroup = (userIds: number[], groupName: string) => {
     console.log(`Creating group "${groupName}" with ${userIds.length} members`);
@@ -63,7 +61,9 @@ export function MessagingView() {
         <MessageSquare className="h-12 w-12 text-muted-foreground" />
       </div>
       <h3 className="text-xl font-medium mb-2">No conversation selected</h3>
-      <p className="text-muted-foreground max-w-sm">Select a conversation from the list to start messaging or create a new conversation.</p>
+      <p className="text-muted-foreground max-w-sm">
+        Select a conversation from the list to start messaging or create a new conversation.
+      </p>
       <Button className="mt-6" onClick={() => setNewConversationOpen(true)}>
         <MessageSquare className="mr-2 h-4 w-4" />
         Start a new conversation
@@ -116,7 +116,13 @@ export function MessagingView() {
       )}
 
       {/* Create group dialog */}
-      {createGroupOpen && <CreateGroupDialog open={createGroupOpen} onOpenChange={setCreateGroupOpen} onCreateGroup={handleCreateGroup} />}
+      {createGroupOpen && (
+        <CreateGroupDialog
+          open={createGroupOpen}
+          onOpenChange={setCreateGroupOpen}
+          onCreateGroup={handleCreateGroup}
+        />
+      )}
     </>
   );
 }
