@@ -2,12 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Plus, Users, MessageSquare, Search } from "lucide-react";
 import React from "react";
 import { ChannelType } from "../utils/CommanTypes";
-import { formatTime } from "../utils/functions";
+import moment from "moment";
 
 type Props = {
   channelList: ChannelType[];
@@ -68,7 +67,7 @@ function ChannelList({ channelList, activeConversation, onSelectConversation, on
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <p className="font-medium truncate">{conversation.channel_name}</p>
-                  <p className="text-xs text-muted-foreground">{formatTime(conversation.sent_at)}</p>
+                  <p className="text-xs text-muted-foreground">{moment(conversation.sent_at).format("HH:MM")}</p>
                 </div>
                 <p className="text-sm text-muted-foreground truncate">{conversation.last_message}</p>
               </div>

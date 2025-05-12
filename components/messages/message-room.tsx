@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ImageIcon, Smile, Send, MoreVertical, ArrowLeft } from "lucide-react";
-import React, { ChangeEvent, useEffect, useState, useRef, lazy, Suspense } from "react";
-import { ChannelType, MessageType } from "../utils/CommanTypes";
+import React, { type ChangeEvent, useEffect, useState, useRef, lazy, Suspense } from "react";
+import type { ChannelType, MessageType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
-import { formatTime } from "../utils/functions";
 
 // Lazy load EmojiPicker to improve performance
 const EmojiPicker = lazy(() =>
@@ -24,8 +25,9 @@ const EmojiPicker = lazy(() =>
 import type { EmojiClickData } from "emoji-picker-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveChannel, setNewMessage } from "@/lib/Slices/MessageSlice";
-import { RootState } from "@/lib/store";
+import type { RootState } from "@/lib/store";
 import { useSocket } from "../providers/socket-provider";
+import moment from "moment";
 
 interface MessageRoomProps {
   activeConversation: ChannelType;
@@ -47,7 +49,7 @@ function MessageRoom({
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageInput, setMessageInput] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ function MessageRoom({
   );
   const { fetchData: SendMessage } = useApiFetch("");
 
-  // Function to scroll to bottom of messages
+  // Function to scroll to bottom (which shows the latest messages)
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -98,7 +100,6 @@ function MessageRoom({
       if (res.success == 1) {
         setMessageInput("");
         setMessages((prev) => [
-          ...prev,
           {
             message_id: res.data.message_id,
             message: messageInput,
@@ -106,6 +107,7 @@ function MessageRoom({
             content_type: "TEXT",
             ownMessage: true,
           },
+          ...prev,
         ]);
         // Scroll to bottom after sending a message
         setTimeout(scrollToBottom, 100); // Small timeout to ensure DOM update
@@ -185,12 +187,17 @@ function MessageRoom({
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     FetchChannelMsg().then((res: any) => {
       if (res.success == 1) {
         setMessages(res.data);
-        setIsInitialLoad(true);
+        setIsLoading(false);
+
+        // Set a small timeout to ensure the DOM is updated before scrolling
+        setTimeout(scrollToBottom, 100);
       }
     });
+
     if (activeConversation.channel_id) {
       dispatch(setActiveChannel(activeConversation.channel_id));
     }
@@ -200,32 +207,30 @@ function MessageRoom({
     };
   }, [activeConversation.channel_id]);
 
-  // Scroll to bottom on initial load and when sending new messages
-  useEffect(() => {
-    if (messages.length > 0) {
-      if (isInitialLoad) {
-        scrollToBottom();
-        setIsInitialLoad(false);
-      } else {
-        // Check if the user is already at the bottom before auto-scrolling
-        const container = messagesContainerRef.current;
-        if (container) {
-          const isAtBottom =
-            container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-          if (isAtBottom) {
-            scrollToBottom();
-          }
-        }
-      }
-    }
-  }, [messages, isInitialLoad]);
-
+  // Handle new messages from socket
   useEffect(() => {
     if (currentChannel.channel_id == activeConversation.channel_id && currentChannel.newMsg) {
-      setMessages((prev) => [...prev, currentChannel.newMsg]);
+      if (isTyping) {
+        setIsTyping(false);
+      }
+      setMessages((prev) => [currentChannel.newMsg, ...prev]);
       dispatch(setNewMessage(null));
     }
   }, [currentChannel]);
+
+  // Don't force scroll when typing indicator changes
+  useEffect(() => {
+    if (isTyping) {
+      const container = messagesContainerRef.current;
+      if (container) {
+        const isAtBottom =
+          container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+        if (isAtBottom) {
+          setTimeout(scrollToBottom, 100);
+        }
+      }
+    }
+  }, [isTyping]);
 
   useEffect(() => {
     if (!socket || !activeConversation.channel_id) return;
@@ -250,7 +255,7 @@ function MessageRoom({
   return (
     <div className={`flex-1 flex flex-col ${isMobile && showConversationList ? "hidden" : "flex"}`}>
       {/* Chat header */}
-      <div className="h-16 border-b flex items-center justify-between px-4">
+      <div className="h-16 border-b flex items-center justify-between px-4 bg-card/50 shadow-sm">
         {isMobile && (
           <Button variant="ghost" size="icon" className="mr-2" onClick={onBackToList}>
             <ArrowLeft className="h-5 w-5" />
@@ -260,7 +265,7 @@ function MessageRoom({
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarImage
-              src={activeConversation?.profile_picture}
+              src={activeConversation?.profile_picture || "/placeholder.svg"}
               alt={activeConversation?.channel_name || "User"}
             />
             <AvatarFallback>{activeConversation?.channel_name?.[0] || "U"}</AvatarFallback>
@@ -285,77 +290,106 @@ function MessageRoom({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {/* Messages */}
+
+      {/* Messages container with flex-col-reverse to invert the scroll direction */}
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-4 flex flex-col space-y-4"
+        className="flex-1 overflow-y-auto p-4 flex flex-col-reverse scroll-smooth"
       >
-        {groupMessagesByDate(messages).map((group, groupIndex) => (
-          <div key={groupIndex} className="space-y-4">
-            {/* Date separator */}
-            <div className="flex justify-center my-4">
-              <div className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">
-                {group.date}
-              </div>
-            </div>
-
-            {/* Messages for this date */}
-            {group.messages.map((message) => (
-              <div
-                key={message.message_id}
-                className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}
-              >
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex space-x-1">
                 <div
-                  className={`max-w-[70%] rounded-lg p-3 ${message.ownMessage ? "bg-primary text-primary-foreground" : "bg-muted"}`}
-                >
-                  <p>{message.message}</p>
-                  <p
-                    className={`text-xs mt-1 ${message.ownMessage ? "text-primary-foreground/70" : "text-muted-foreground"}`}
+                  className="w-3 h-3 rounded-full bg-primary/70 animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                ></div>
+                <div
+                  className="w-3 h-3 rounded-full bg-primary/70 animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                ></div>
+                <div
+                  className="w-3 h-3 rounded-full bg-primary/70 animate-bounce"
+                  style={{ animationDelay: "600ms" }}
+                ></div>
+              </div>
+              <p className="text-sm text-muted-foreground">Loading messages...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col-reverse space-y-reverse space-y-4">
+            {/* Typing indicator at the top (visually at the bottom due to flex-col-reverse) */}
+            {isTyping && (
+              <div className="px-4 pb-1 mt-2 order-first">
+                <div className="inline-flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full text-sm text-muted-foreground">
+                  <div className="flex space-x-1">
+                    <div
+                      className="w-2 h-2 rounded-full bg-primary/70 animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-primary/70 animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-primary/70 animate-bounce"
+                      style={{ animationDelay: "600ms" }}
+                    ></div>
+                  </div>
+                  <span>typing...</span>
+                </div>
+              </div>
+            )}
+
+            {/* Messages grouped by date, in reverse order */}
+            {groupMessagesByDate(messages).map((group, groupIndex) => (
+              <div key={groupIndex} className="flex flex-col-reverse gap-2">
+                {/* Messages for this date in reverse order */}
+                {group.messages.map((message) => (
+                  <div
+                    key={message.message_id}
+                    className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}
                   >
-                    {formatTime(message.sent_at)}
-                  </p>
+                    <div
+                      className={`max-w-[70%] rounded-lg p-3 ${
+                        message.ownMessage
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "bg-muted shadow-sm"
+                      }`}
+                    >
+                      <p className="break-words">{message.message}</p>
+                      <p
+                        className={`text-xs mt-1 ${
+                          message.ownMessage
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {moment(message.sent_at).format("HH:MM")}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Date separator */}
+                <div className="flex justify-center my-4">
+                  <div className="bg-muted px-3 py-1 rounded-full text-xs text-muted-foreground">
+                    {group.date}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        ))}
-        {isTyping && (
-          <div className="px-4 pb-1 mt-2">
-            <div className="flex items-center text-sm text-gray-500">
-              <div className="flex space-x-1 mr-2">
-                <div
-                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
-                  style={{ animationDelay: "0ms" }}
-                ></div>
-                <div
-                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
-                  style={{ animationDelay: "300ms" }}
-                ></div>
-                <div
-                  className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"
-                  style={{ animationDelay: "600ms" }}
-                ></div>
-              </div>
-              <span>typing...</span>
-            </div>
-          </div>
         )}
       </div>
+
       {/* Message input */}
       <div className="border-t p-4">
         <div className="flex items-center gap-2">
-          {/* <Button variant="ghost" size="icon">
-            <Paperclip className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Attach file</span>
-          </Button> */}
           <Button variant="ghost" size="icon">
             <ImageIcon className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Attach image</span>
           </Button>
-          {/* <Button variant="ghost" size="icon">
-            <Mic className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Voice message</span>
-          </Button> */}
           <div className="relative flex-1">
             <Input
               placeholder="Type a message..."
@@ -386,7 +420,6 @@ function MessageRoom({
                       skinTonesDisabled={false}
                       width={320}
                       height={400}
-                      // theme={Theme.AUTO}
                       previewConfig={{
                         showPreview: true,
                       }}
