@@ -64,7 +64,8 @@ const CONSTANTS = {
     MSG_DELETED: "Message-Deleted",
     CHAT_OPENED: "Chat-Opened",
     CHAT_CLOSED: "Chat-Closed",
-    USER_PRESENCE_CHANGE: "USER_PRESENCE_CHANGE",
+    USER_PRESENCE_CHANGE: "User-Presence-Change",
+    MSG_NOTIFICATION: "Message-Notification",
   },
 };
 

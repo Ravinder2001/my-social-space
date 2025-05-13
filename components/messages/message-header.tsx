@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, MoreVertical } from "lucide-react";
-import { type ChannelType } from "../utils/CommanTypes";
+import { ChannelMembers, type ChannelType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { formatTimeAgo } from "../utils/functions";
@@ -19,21 +19,18 @@ interface MessageHeaderProps {
   activeConversation: ChannelType;
   isMobile: boolean;
   onBackToList: () => void;
+  setMembers: Dispatch<SetStateAction<ChannelMembers[]>>;
+  members: ChannelMembers[];
 }
 
-type ChannelMembers = {
-  user_id: number;
-  full_name: string;
-  profile_picture: string;
-  is_online: boolean;
-  last_seen: string;
-};
-
-export function MessageHeader({ activeConversation, isMobile, onBackToList }: MessageHeaderProps) {
+export function MessageHeader({
+  activeConversation,
+  isMobile,
+  onBackToList,
+  setMembers,
+  members,
+}: MessageHeaderProps) {
   const { socket } = useSocket();
-
-  const [members, setMembers] = useState<ChannelMembers[]>([]);
-  const [isGroup, setIsGroup] = useState(false);
 
   const { fetchData: GetChannelDetails } = useApiFetch("");
 
@@ -42,7 +39,6 @@ export function MessageHeader({ activeConversation, isMobile, onBackToList }: Me
       CONSTANTS.API_ROUTES.CHANNEL_DETAILS + `/${activeConversation.channel_id}`
     ).then((res: any) => {
       if (res.success == 1) {
-        setIsGroup(res.data.is_group);
         setMembers(res.data.members);
       }
     });
@@ -99,7 +95,7 @@ export function MessageHeader({ activeConversation, isMobile, onBackToList }: Me
           </p>
           {members.length ? (
             <p className="truncate text-xs text-muted-foreground">
-              {!isGroup
+              {!activeConversation.is_group
                 ? members[0].is_online
                   ? "Online"
                   : `last seen at ${formatTimeAgo(members[0].last_seen)}`

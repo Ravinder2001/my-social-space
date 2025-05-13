@@ -1,7 +1,7 @@
 "use client";
 
 import React, { type ChangeEvent, useEffect, useState, useCallback, useRef } from "react";
-import type { ChannelType, MessageType } from "../utils/CommanTypes";
+import type { ChannelMembers, ChannelType, MessageType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { MessageHeader } from "./message-header";
@@ -10,9 +10,6 @@ import { MessageList } from "./message-list";
 import { MessageEditDialog } from "./message-edit-dialog";
 import { MessageDeleteDialog } from "./message-delete-dialog";
 import type { EmojiClickData } from "emoji-picker-react";
-import { useDispatch, useSelector } from "react-redux";
-import { setActiveChannel, setNewMessage } from "@/lib/Slices/MessageSlice";
-import type { RootState } from "@/lib/store";
 import { useSocket } from "../providers/socket-provider";
 
 interface MessageRoomProps {
@@ -28,8 +25,6 @@ function MessageRoom({
   showConversationList,
   onBackToList,
 }: MessageRoomProps) {
-  const dispatch = useDispatch();
-  const currentChannel: any = useSelector((state: RootState) => state.message);
   const { socket } = useSocket();
 
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -41,6 +36,7 @@ function MessageRoom({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageType | null>(null);
   const [editMessageInput, setEditMessageInput] = useState("");
+  const [members, setMembers] = useState<ChannelMembers[]>([]);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -209,25 +205,7 @@ function MessageRoom({
         setTimeout(scrollToBottom, 100);
       }
     });
-
-    if (activeConversation.channel_id) {
-      dispatch(setActiveChannel(activeConversation.channel_id));
-    }
-
-    return () => {
-      dispatch(setActiveChannel(null));
-    };
   }, [activeConversation.channel_id]);
-
-  useEffect(() => {
-    if (currentChannel.channel_id == activeConversation.channel_id && currentChannel.newMsg) {
-      if (isTyping) {
-        setIsTyping(false);
-      }
-      setMessages((prev) => [currentChannel.newMsg, ...prev]);
-      dispatch(setNewMessage(null));
-    }
-  }, [currentChannel]);
 
   useEffect(() => {
     if (!socket || !activeConversation.channel_id) return;
@@ -268,10 +246,17 @@ function MessageRoom({
       }
     };
 
+    const handleNewMsg = (msgObj: any) => {
+      setIsTyping(false);
+
+      setMessages((prev) => [msgObj, ...prev]);
+    };
+
     socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_OPENED, {
       channel_id: activeConversation.channel_id,
     });
 
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handleNewMsg);
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
@@ -282,6 +267,7 @@ function MessageRoom({
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handleNewMsg);
       socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_CLOSED, {
         channel_id: activeConversation.channel_id,
       });
@@ -298,6 +284,8 @@ function MessageRoom({
         activeConversation={activeConversation}
         isMobile={isMobile}
         onBackToList={onBackToList}
+        setMembers={setMembers}
+        members={members}
       />
 
       <div
@@ -312,6 +300,8 @@ function MessageRoom({
           onOpenEdit={handleOpenEdit}
           onOpenDelete={handleOpenDelete}
           formatMessageDate={formatMessageDate}
+          members={members}
+          isGroup={activeConversation.is_group}
         />
       </div>
 

@@ -6,12 +6,10 @@ import { persistStore, persistReducer, Persistor } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { PersistGate } from "redux-persist/integration/react";
 import UserReducer from "@/lib/Slices/UserSlice";
-import MessageReducer from "@/lib/Slices/MessageSlice";
 
 // Combine reducers
 const rootReducer = combineReducers({
   user: UserReducer,
-  message: MessageReducer,
 });
 
 // Persist configuration

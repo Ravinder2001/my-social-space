@@ -1,5 +1,5 @@
 import React from "react";
-import { type MessageType } from "../utils/CommanTypes";
+import { ChannelMembers, type MessageType } from "../utils/CommanTypes";
 import { MessageItem } from "./message-item";
 
 interface MessageListProps {
@@ -10,6 +10,8 @@ interface MessageListProps {
   onOpenEdit: (message: MessageType) => void;
   onOpenDelete: (message: MessageType) => void;
   formatMessageDate: (timestamp: string) => string;
+  members: ChannelMembers[];
+  isGroup: boolean;
 }
 
 export function MessageList({
@@ -20,6 +22,8 @@ export function MessageList({
   onOpenEdit,
   onOpenDelete,
   formatMessageDate,
+  isGroup,
+  members,
 }: MessageListProps) {
   // Group messages by date
   const groupMessagesByDate = (messages: MessageType[]) => {
@@ -92,15 +96,22 @@ export function MessageList({
       {groupMessagesByDate(messages).map((group, groupIndex) => (
         <div key={groupIndex} className="flex flex-col-reverse gap-2">
           {/* Messages for this date */}
-          {group.messages.map((message) => (
-            <MessageItem
-              key={message.message_id}
-              message={message}
-              canEditOrDelete={canEditOrDelete}
-              onOpenEdit={onOpenEdit}
-              onOpenDelete={onOpenDelete}
-            />
-          ))}
+          {group.messages.map((message) => {
+            let UserName;
+            if (isGroup && !message.ownMessage) {
+              UserName = members.find((item) => item.user_id == message.sender_id);
+            }
+            return (
+              <MessageItem
+                key={message.message_id}
+                message={message}
+                canEditOrDelete={canEditOrDelete}
+                onOpenEdit={onOpenEdit}
+                onOpenDelete={onOpenDelete}
+                name={isGroup && UserName ? UserName?.full_name.split(" ")[0] : null}
+              />
+            );
+          })}
 
           {/* Date separator */}
           <div className="flex justify-center my-4">

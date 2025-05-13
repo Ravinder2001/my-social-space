@@ -15,6 +15,7 @@ interface MessageItemProps {
   canEditOrDelete: (message: MessageType) => boolean;
   onOpenEdit: (message: MessageType) => void;
   onOpenDelete: (message: MessageType) => void;
+  name: string | null;
 }
 
 export function MessageItem({
@@ -22,15 +23,21 @@ export function MessageItem({
   canEditOrDelete,
   onOpenEdit,
   onOpenDelete,
+  name,
 }: MessageItemProps) {
   return (
     <div className={`flex ${message.ownMessage ? "justify-end" : "justify-start"}`}>
       <div className="relative max-w-[70%]">
         <div
-          className={`rounded-lg p-3 w-full group
+          className={`rounded-lg p-2 w-full group
             ${message.ownMessage ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted shadow-sm"}
           `}
         >
+          {!message.ownMessage && name && (
+            <div className="">
+              <span className="text-xs font-medium text-muted-foreground/90">{name}</span>
+            </div>
+          )}
           {message.ownMessage && !message.is_deleted && canEditOrDelete(message) && (
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <DropdownMenu>

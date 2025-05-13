@@ -5,9 +5,6 @@ import { useSession } from "next-auth/react";
 import Config from "@/lib/config";
 import { showToast } from "../utils/toast";
 import CONSTANTS from "../utils/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { setNewMessage } from "@/lib/Slices/MessageSlice";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -20,8 +17,6 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status }: any = useSession();
-  const CurrentChannelDetails = useSelector((state: RootState) => state.message);
-  const dispatch = useDispatch();
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const socketRef = useRef<Socket | null>(null);
@@ -77,23 +72,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!socket) return;
     const handler = (msgObj: any) => {
-      if (msgObj.channel_id == CurrentChannelDetails.channel_id) {
-        dispatch(setNewMessage(msgObj));
-      } else {
-        showToast({
-          message: msgObj.message,
-          type: "notification",
-          picture: msgObj.profile_picture,
-          name: msgObj.name,
-          duration: 10000,
-        });
-      }
+      showToast({
+        message: msgObj.message,
+        type: "notification",
+        picture: msgObj.profile_picture,
+        name: msgObj.name,
+        duration: 10000,
+      });
     };
-    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handler);
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_NOTIFICATION, handler);
     return () => {
-      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handler);
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_NOTIFICATION, handler);
     };
-  }, [socket, CurrentChannelDetails, dispatch]);
+  }, [socket]);
 
   return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>;
 };

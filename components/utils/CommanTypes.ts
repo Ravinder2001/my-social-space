@@ -115,6 +115,7 @@ export type ChannelType = {
   last_message: string | null;
   content_type: string | null;
   sent_at: string;
+  is_group: boolean;
 };
 
 export type MessageType = {
@@ -125,4 +126,13 @@ export type MessageType = {
   ownMessage: boolean;
   is_edited: boolean;
   is_deleted: boolean;
+  sender_id?: number;
+};
+
+export type ChannelMembers = {
+  user_id: number;
+  full_name: string;
+  profile_picture: string;
+  is_online: boolean;
+  last_seen: string;
 };
