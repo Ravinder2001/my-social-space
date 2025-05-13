@@ -46,7 +46,7 @@ export function MessageHeader({ activeConversation, isMobile, onBackToList }: Me
         setMembers(res.data.members);
       }
     });
-  }, []);
+  }, [activeConversation]);
 
   useEffect(() => {
     if (!socket || !activeConversation.channel_id) return;
@@ -73,7 +73,7 @@ export function MessageHeader({ activeConversation, isMobile, onBackToList }: Me
     return () => {
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_PRESENCE_CHANGE, handleUserPresence);
     };
-  }, [socket]);
+  }, [socket, activeConversation]);
 
   return (
     <div
@@ -99,9 +99,11 @@ export function MessageHeader({ activeConversation, isMobile, onBackToList }: Me
           </p>
           {members.length ? (
             <p className="truncate text-xs text-muted-foreground">
-              {!isGroup && members[0].is_online
-                ? "Online"
-                : `last seen at ${formatTimeAgo(members[0].last_seen)}`}
+              {!isGroup
+                ? members[0].is_online
+                  ? "Online"
+                  : `last seen at ${formatTimeAgo(members[0].last_seen)}`
+                : `${members.filter((member) => member.is_online).length} Online`}
             </p>
           ) : null}
         </div>
