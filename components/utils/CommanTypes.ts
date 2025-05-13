@@ -116,6 +116,7 @@ export type ChannelType = {
   content_type: string | null;
   sent_at: string;
   is_group: boolean;
+  unread_count: number;
 };
 
 export type MessageType = {

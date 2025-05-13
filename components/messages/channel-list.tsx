@@ -2,11 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Plus, Users, MessageSquare, Search } from "lucide-react";
 import React from "react";
 import { ChannelType } from "../utils/CommanTypes";
 import moment from "moment";
+import { Badge } from "../ui/badge";
 
 type Props = {
   channelList: ChannelType[];
@@ -18,9 +24,19 @@ type Props = {
   show: boolean;
 };
 
-function ChannelList({ channelList, activeConversation, onSelectConversation, onNewConversation, onCreateGroup, isMobile, show }: Props) {
+function ChannelList({
+  channelList,
+  activeConversation,
+  onSelectConversation,
+  onNewConversation,
+  onCreateGroup,
+  isMobile,
+  show,
+}: Props) {
   return (
-    <div className={`w-full md:w-80 border-r bg-card flex flex-col ${isMobile && !show ? "hidden" : "flex"}`}>
+    <div
+      className={`w-full md:w-80 border-r bg-card flex flex-col ${isMobile && !show ? "hidden" : "flex"}`}
+    >
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Messages</h2>
@@ -67,11 +83,21 @@ function ChannelList({ channelList, activeConversation, onSelectConversation, on
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <p className="font-medium truncate">{conversation.channel_name}</p>
-                  <p className="text-xs text-muted-foreground">{moment(conversation.sent_at).format("HH:MM")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {moment(conversation.sent_at).format("HH:MM")}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground truncate">{conversation.last_message}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p
+                    className={`text-sm text-muted-foreground truncate ${conversation.unread_count > 0 ? "font-bold" : ""}`}
+                  >
+                    {conversation.last_message}
+                  </p>
+                  {conversation.unread_count > 0 && (
+                    <Badge className="bg-brand-blue shrink-0">{conversation.unread_count}</Badge>
+                  )}
+                </div>
               </div>
-              {/* {conversation.unread > 0 && <Badge className="ml-auto bg-brand-blue">{conversation.unread}</Badge>} */}
             </div>
           </div>
         ))}

@@ -11,8 +11,11 @@ import MessageRoom from "./message-room";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { ChannelType } from "../utils/CommanTypes";
+import { useSocket } from "../providers/socket-provider";
 
 export function MessagingView() {
+  const { socket } = useSocket();
+
   const [channelList, setChannelList] = useState<ChannelType[]>([]);
   const [activeConversation, setActiveConversation] = useState<ChannelType | null>(null);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
@@ -20,7 +23,7 @@ export function MessagingView() {
   const [showConversationList, setShowConversationList] = useState(true);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { fetchData: FetchChannels } = useApiFetch(CONSTANTS.API_ROUTES.GET_CHANNELS_LIST);
+  const { fetchData: FetchChannels } = useApiFetch("");
 
   // Handle mobile view conversation selection
   useEffect(() => {
@@ -41,12 +44,6 @@ export function MessagingView() {
   const handleBackToList = () => {
     setShowConversationList(true);
   };
-
-  // const handleNewConversation = (userId: string, userName: string) => {
-  //   console.log(`Starting new conversation with ${userName} (${userId})`);
-  //   // In a real app, you would create a new conversation and navigate to it
-  //   setNewConversationOpen(false);
-  // };
 
   const handleCreateGroup = (userIds: number[], groupName: string) => {
     console.log(`Creating group "${groupName}" with ${userIds.length} members`);
@@ -71,13 +68,26 @@ export function MessagingView() {
     </div>
   );
 
-  useEffect(() => {
-    FetchChannels().then((res: any) => {
+  const handleFetchChannels = async () => {
+    await FetchChannels(CONSTANTS.API_ROUTES.GET_CHANNELS_LIST).then((res: any) => {
       if (res.success == 1) {
         setChannelList(res?.data);
       }
     });
+  };
+
+  useEffect(() => {
+    handleFetchChannels();
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_NOTIFICATION, handleFetchChannels);
+    return () => {
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_NOTIFICATION, handleFetchChannels);
+    };
+  }, [socket]);
 
   return (
     <>
