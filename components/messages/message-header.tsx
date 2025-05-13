@@ -12,8 +12,8 @@ import { ArrowLeft, MoreVertical } from "lucide-react";
 import { ChannelMembers, type ChannelType } from "../utils/CommanTypes";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
-import { formatTimeAgo } from "../utils/functions";
 import { useSocket } from "../providers/socket-provider";
+import { OnlineStatus } from "./online-status";
 
 interface MessageHeaderProps {
   activeConversation: ChannelType;
@@ -93,15 +93,7 @@ export function MessageHeader({
           <p className="font-medium truncate text-sm sm:text-base">
             {activeConversation?.channel_name}
           </p>
-          {members.length ? (
-            <p className="truncate text-xs text-muted-foreground">
-              {!activeConversation.is_group
-                ? members[0].is_online
-                  ? "Online"
-                  : `last seen at ${formatTimeAgo(members[0].last_seen)}`
-                : `${members.filter((member) => member.is_online).length} Online`}
-            </p>
-          ) : null}
+          <OnlineStatus members={members} activeConversation={activeConversation} />
         </div>
       </div>
       <DropdownMenu>

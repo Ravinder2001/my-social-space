@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search } from "lucide-react";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
+import { showToast } from "../utils/toast";
 
 type FriendType = {
   user_id: number;
@@ -26,11 +27,26 @@ export function NewConversationDialog({ open, onOpenChange }: NewConversationDia
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { fetchData: FetchFriends } = useApiFetch("");
+  const { fetchData: CreateChannel } = useApiFetch("");
 
   const fetchUsers = (query: string) => {
     FetchFriends(CONSTANTS.API_ROUTES.SEARCH_FRIENDS + `?searchQuery=${query}`).then((res: any) => {
       if (res.success == 1) {
         setFilteredUsers(res.data);
+      }
+    });
+  };
+
+  const handleSubmit = async (user_id: number) => {
+    await CreateChannel(CONSTANTS.API_ROUTES.CREATE_CHANNEL, {
+      method: "POST",
+      data: {
+        user_ids: [user_id],
+      },
+    }).then((res) => {
+      if (res.success == 1) {
+        onOpenChange(false);
+        showToast({ message: "Channel created", type: "success" });
       }
     });
   };
@@ -79,6 +95,7 @@ export function NewConversationDialog({ open, onOpenChange }: NewConversationDia
                 <div
                   key={user.user_id}
                   className="flex items-center gap-3 p-2 rounded-md hover:bg-muted cursor-pointer transition-colors"
+                  onClick={() => handleSubmit(user.user_id)}
                 >
                   <div className="relative">
                     <Avatar>

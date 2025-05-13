@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,20 +16,21 @@ import { Badge } from "@/components/ui/badge";
 import { Search, X, Users, ChevronLeft } from "lucide-react";
 import CONSTANTS from "../utils/constants";
 import useApiFetch from "@/hooks/use-api-fetch";
+import { showToast } from "../utils/toast";
 
 type FriendType = {
   user_id: number;
   name: string;
   profile_picture: string;
 };
-  
+
 type CreateGroupDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreateGroup: (userIds: number[], groupName: string) => void;
 };
 
-export function CreateGroupDialog({ open, onOpenChange, onCreateGroup }: CreateGroupDialogProps) {
+export function CreateGroupDialog({ open, onOpenChange }: CreateGroupDialogProps) {
   const [step, setStep] = useState<"select-users" | "name-group">("select-users");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<FriendType[]>([]);
@@ -33,6 +40,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreateGroup }: CreateG
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { fetchData: FetchFriends } = useApiFetch("");
+  const { fetchData: CreateGroup } = useApiFetch("");
 
   const fetchUsers = (query: string) => {
     FetchFriends(CONSTANTS.API_ROUTES.SEARCH_FRIENDS + `?searchQuery=${query}`).then((res: any) => {
@@ -96,8 +104,21 @@ export function CreateGroupDialog({ open, onOpenChange, onCreateGroup }: CreateG
     setStep("select-users");
   };
 
-  const handleCreateGroup = () => {
+  const handleCreateGroup = async () => {
     if (groupName.trim() && selectedUsers.length >= 2) {
+      await CreateGroup(CONSTANTS.API_ROUTES.CREATE_CHANNEL, {
+        method: "POST",
+        data: {
+          is_group: true,
+          user_ids: selectedUsers.map((item) => item.user_id),
+          name: groupName,
+        },
+      }).then((res) => {
+        if (res.success == 1) {
+          onOpenChange(false);
+          showToast({ message: "Group created", type: "success" });
+        }
+      });
     }
   };
 
@@ -119,15 +140,26 @@ export function CreateGroupDialog({ open, onOpenChange, onCreateGroup }: CreateG
           <>
             <div className="relative mb-4">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search friends..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <Input
+                placeholder="Search friends..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
 
             {selectedUsers.length > 0 && (
               <div className="mb-4">
-                <p className="text-sm text-muted-foreground mb-2">Selected ({selectedUsers.length}):</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Selected ({selectedUsers.length}):
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {selectedUsers.map((user) => (
-                    <Badge key={user.user_id} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
+                    <Badge
+                      key={user.user_id}
+                      variant="secondary"
+                      className="pl-2 pr-1 py-1 flex items-center gap-1"
+                    >
                       <span className="text-xs">{user.name}</span>
                       <Button
                         variant="ghost"
@@ -194,7 +226,11 @@ export function CreateGroupDialog({ open, onOpenChange, onCreateGroup }: CreateG
 
               <div>
                 <p className="text-sm font-medium mb-2">Group Name</p>
-                <Input placeholder="Enter group name..." value={groupName} onChange={(e) => setGroupName(e.target.value)} />
+                <Input
+                  placeholder="Enter group name..."
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                />
               </div>
 
               <div>
