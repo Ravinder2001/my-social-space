@@ -70,6 +70,7 @@ function MessageRoom({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageType | null>(null);
   const [editMessageInput, setEditMessageInput] = useState("");
+
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -359,6 +360,16 @@ function MessageRoom({
       }
     };
 
+    const handleUserPresence = (data: {
+      user_id: number;
+      isOnline: boolean;
+      channel_id: number;
+    }) => {
+      if (data.channel_id === activeConversation.channel_id) {
+        console.log("hey");
+      }
+    };
+
     socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_OPENED, {
       channel_id: activeConversation.channel_id,
     });
@@ -367,6 +378,7 @@ function MessageRoom({
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
+    socket.on(CONSTANTS.SOCKET_EVENTS.USER_PRESENCE_CHANGE, handleUserPresence);
 
     return () => {
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);

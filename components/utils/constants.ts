@@ -49,6 +49,7 @@ const CONSTANTS = {
     SEND_MESSAGE: "/chat/messages",
     DELETE_MESSAGE: "/chat/messages",
     EDIT_MESSAGE: "/chat/messages",
+    CHANNEL_DETAILS: "/chat/channelDetails",
   },
   JIO_SAAVN_API: "https://saavn.dev/api/search/songs?query=",
   LOCAL_STORAGE_KEY: "authToken",
@@ -63,6 +64,7 @@ const CONSTANTS = {
     MSG_DELETED: "Message-Deleted",
     CHAT_OPENED: "Chat-Opened",
     CHAT_CLOSED: "Chat-Closed",
+    USER_PRESENCE_CHANGE: "USER_PRESENCE_CHANGE",
   },
 };
 
