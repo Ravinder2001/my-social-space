@@ -136,4 +136,5 @@ export type ChannelMembers = {
   profile_picture: string;
   is_online: boolean;
   last_seen: string;
+  last_seen_message_id: number;
 };

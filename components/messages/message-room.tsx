@@ -47,6 +47,7 @@ function MessageRoom({
   const { fetchData: SendMessage } = useApiFetch("");
   const { fetchData: EditMessage } = useApiFetch("");
   const { fetchData: DeleteMessage } = useApiFetch("");
+  const { fetchData: SeenMessages } = useApiFetch("");
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -205,25 +206,26 @@ function MessageRoom({
         setTimeout(scrollToBottom, 100);
       }
     });
+    SeenMessages(CONSTANTS.API_ROUTES.MESSAGE_SEEN + `/${activeConversation.channel_id}`);
   }, [activeConversation.channel_id]);
 
   useEffect(() => {
     if (!socket || !activeConversation.channel_id) return;
 
     const handleTyping = (data: { channel_id: number }) => {
-      if (data.channel_id === activeConversation.channel_id) {
+      if (data.channel_id == activeConversation.channel_id) {
         setIsTyping(true);
       }
     };
 
     const handleStopTyping = (data: { channel_id: number }) => {
-      if (data.channel_id === activeConversation.channel_id) {
+      if (data.channel_id == activeConversation.channel_id) {
         setIsTyping(false);
       }
     };
 
     const handleMsgDeleted = (data: { channel_id: number; message_id: number }) => {
-      if (data.channel_id === activeConversation.channel_id) {
+      if (data.channel_id == activeConversation.channel_id) {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.message_id === data.message_id
@@ -235,7 +237,7 @@ function MessageRoom({
     };
 
     const handleMsgEdited = (data: { channel_id: number; message_id: number; message: string }) => {
-      if (data.channel_id === activeConversation.channel_id) {
+      if (data.channel_id == activeConversation.channel_id) {
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg.message_id === data.message_id
@@ -250,6 +252,21 @@ function MessageRoom({
       setIsTyping(false);
 
       setMessages((prev) => [msgObj, ...prev]);
+      setTimeout(() => {
+        SeenMessages(CONSTANTS.API_ROUTES.MESSAGE_SEEN + `/${activeConversation.channel_id}`);
+      }, 500);
+    };
+
+    const handleSeen = (data: { channel_id: number; user_id: number; msg_id: number }) => {
+      if (data.channel_id == activeConversation.channel_id) {
+        setMembers((prev) =>
+          prev.map((member) =>
+            member.user_id === data.user_id
+              ? { ...member, last_seen_message_id: data.msg_id }
+              : member
+          )
+        );
+      }
     };
 
     socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_OPENED, {
@@ -261,6 +278,7 @@ function MessageRoom({
     socket.on(CONSTANTS.SOCKET_EVENTS.USER_NOT_TYPING, handleStopTyping);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
     socket.on(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
+    socket.on(CONSTANTS.SOCKET_EVENTS.MSG_SEEN_NOTIFICATION, handleSeen);
 
     return () => {
       socket.off(CONSTANTS.SOCKET_EVENTS.USER_TYPING, handleTyping);
@@ -268,6 +286,7 @@ function MessageRoom({
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_DELETED, handleMsgDeleted);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_EDITED, handleMsgEdited);
       socket.off(CONSTANTS.SOCKET_EVENTS.MSG_RECEIVED, handleNewMsg);
+      socket.off(CONSTANTS.SOCKET_EVENTS.MSG_SEEN_NOTIFICATION, handleSeen);
       socket.emit(CONSTANTS.SOCKET_EVENTS.CHAT_CLOSED, {
         channel_id: activeConversation.channel_id,
       });

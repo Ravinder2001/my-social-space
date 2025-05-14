@@ -101,15 +101,29 @@ export function MessageList({
             if (isGroup && !message.ownMessage) {
               UserName = members.find((item) => item.user_id == message.sender_id);
             }
+
+            // Get members who have this message_id as their last seen
+            const seenByMembers = members.filter(
+              (member) => member.last_seen_message_id === message.message_id
+            );
             return (
-              <MessageItem
-                key={message.message_id}
-                message={message}
-                canEditOrDelete={canEditOrDelete}
-                onOpenEdit={onOpenEdit}
-                onOpenDelete={onOpenDelete}
-                name={isGroup && UserName ? UserName?.full_name.split(" ")[0] : null}
-              />
+              <React.Fragment key={message.message_id}>
+                {/* Seen by text */}
+                {seenByMembers.length > 0 && (
+                  <div className="text-xs text-muted-foreground flex justify-end -mt-1">
+                    {isGroup
+                      ? `Seen by ${seenByMembers.map((m) => m.full_name.split(" ")[0]).join(", ")}`
+                      : "Seen"}
+                  </div>
+                )}
+                <MessageItem
+                  message={message}
+                  canEditOrDelete={canEditOrDelete}
+                  onOpenEdit={onOpenEdit}
+                  onOpenDelete={onOpenDelete}
+                  name={isGroup && UserName ? UserName?.full_name.split(" ")[0] : null}
+                />
+              </React.Fragment>
             );
           })}
 

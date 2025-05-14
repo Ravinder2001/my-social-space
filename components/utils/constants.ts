@@ -51,6 +51,7 @@ const CONSTANTS = {
     EDIT_MESSAGE: "/chat/messages",
     CHANNEL_DETAILS: "/chat/channelDetails",
     CREATE_CHANNEL: "/chat/channels",
+    MESSAGE_SEEN: "/chat/seen",
   },
   JIO_SAAVN_API: "https://saavn.dev/api/search/songs?query=",
   LOCAL_STORAGE_KEY: "authToken",
@@ -67,6 +68,7 @@ const CONSTANTS = {
     CHAT_CLOSED: "Chat-Closed",
     USER_PRESENCE_CHANGE: "User-Presence-Change",
     MSG_NOTIFICATION: "Message-Notification",
+    MSG_SEEN_NOTIFICATION: "Message-Seen",
   },
 };
 
