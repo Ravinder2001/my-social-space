@@ -79,49 +79,26 @@ function GroupInfoDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden">
-        <div className="flex h-[500px] max-h-[80vh]">
+      <DialogContent className="sm:max-w-[800px] p-0 overflow-hidden max-h-[90vh]">
+        <div className="flex flex-col md:flex-row">
           {/* Left side - Group info */}
-          <div className="w-1/2 border-r p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Group Info</h2>
-              {isEditing ? (
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setGroupLogo({ url: activeConversation.profile_picture, key: "" });
-                    }}
-                  >
-                    <X className="h-4 w-4 mr-1" />
-                    Cancel
-                  </Button>
-                  <Button size="sm" onClick={handleSaveChanges}>
-                    <Check className="h-4 w-4 mr-1" />
-                    Save
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                  Edit
-                </Button>
-              )}
+          <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r p-4 md:p-6 flex flex-col">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-semibold">Group Info</h2>
             </div>
 
-            <div className="flex flex-col items-center mb-6">
+            <div className="flex flex-col items-center mb-4 md:mb-6">
               <div className="relative mb-4">
-                <Avatar className="h-[150px] w-[150px]">
+                <Avatar className="h-[100px] w-[100px] md:h-[150px] md:w-[150px]">
                   <AvatarImage src={groupLogo.url} alt={groupName} />
-                  <AvatarFallback className="text-2xl">{groupName[0]}</AvatarFallback>
+                  <AvatarFallback className="text-xl md:text-2xl">{groupName[0]}</AvatarFallback>
                 </Avatar>
                 {isEditing && (
                   <div
                     className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Camera className="h-8 w-8 text-white" />
+                    <Camera className="h-6 w-6 md:h-8 md:w-8 text-white" />
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -147,12 +124,37 @@ function GroupInfoDialog({
                 </div>
               ) : (
                 <>
-                  <h3 className="text-lg font-medium">{groupName}</h3>
+                  <h3 className="text-base md:text-lg font-medium">{groupName}</h3>
                 </>
               )}
+              <div className="mt-4">
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setGroupLogo({ url: activeConversation.profile_picture, key: "" });
+                      }}
+                    >
+                      <X className="h-3 md:h-4 w-3 md:w-4 mr-1" />
+                      Cancel
+                    </Button>
+                    <Button size="sm" onClick={handleSaveChanges}>
+                      <Check className="h-3 md:h-4 w-3 md:w-4 mr-1" />
+                      Save
+                    </Button>
+                  </div>
+                ) : (
+                  <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                    Edit
+                  </Button>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 mt-auto">
               <Button variant="destructive" className="w-full">
                 Leave group
               </Button>
@@ -160,29 +162,29 @@ function GroupInfoDialog({
           </div>
 
           {/* Right side - Members list */}
-          <div className="w-1/2 p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Users className="h-5 w-5" />
+          <div className="w-full md:w-1/2 p-4 md:p-6 flex flex-col min-h-[300px] max-h-[600px]">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+                <Users className="h-4 md:h-5 w-4 md:w-5" />
                 Members ({members.length})
               </h2>
             </div>
 
-            <ScrollArea className="flex-1 pr-4">
+            <ScrollArea className="flex-1 pr-2 md:pr-4">
               <div className="space-y-2">
                 {members.map((member) => (
                   <div
                     key={member.user_id}
                     className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                       <div className="relative">
-                        <Avatar>
+                        <Avatar className="h-8 w-8 md:h-10 md:w-10">
                           <AvatarImage src={member.profile_picture} alt={member.full_name} />
                           <AvatarFallback>{member.full_name[0]}</AvatarFallback>
                         </Avatar>
                         <span
-                          className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background ${
+                          className={`absolute bottom-0 right-0 h-2 w-2 md:h-3 md:w-3 rounded-full border-2 border-background ${
                             member.is_online
                               ? "bg-green-500"
                               : !member.is_online
@@ -192,13 +194,13 @@ function GroupInfoDialog({
                         />
                       </div>
                       <div>
-                        <p className="font-medium">{member.full_name}</p>
+                        <p className="font-medium text-sm md:text-base">{member.full_name}</p>
                       </div>
                     </div>
                     {member.is_admin && (
                       <Badge
                         variant="outline"
-                        className="bg-primary/10 text-primary border-primary/20"
+                        className="bg-primary/10 text-primary border-primary/20 text-xs md:text-sm"
                       >
                         Admin
                       </Badge>

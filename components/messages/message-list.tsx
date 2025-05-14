@@ -1,6 +1,8 @@
 import React from "react";
 import { ChannelMembers, type MessageType } from "../utils/CommanTypes";
 import { MessageItem } from "./message-item";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 interface MessageListProps {
   messages: MessageType[];
@@ -25,6 +27,7 @@ export function MessageList({
   isGroup,
   members,
 }: MessageListProps) {
+  const UserDetails = useSelector((state: RootState) => state.user);
   // Group messages by date
   const groupMessagesByDate = (messages: MessageType[]) => {
     const groups: { [key: string]: MessageType[] } = {};
@@ -104,7 +107,9 @@ export function MessageList({
 
             // Get members who have this message_id as their last seen
             const seenByMembers = members.filter(
-              (member) => member.last_seen_message_id === message.message_id
+              (member) =>
+                member.last_seen_message_id === message.message_id &&
+                member.user_id != UserDetails.id
             );
             return (
               <React.Fragment key={message.message_id}>
