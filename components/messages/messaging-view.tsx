@@ -91,7 +91,7 @@ export function MessagingView() {
 
   return (
     <>
-      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="flex h-[calc(100vh-5rem)] overflow-hidden">
         {/* Conversations sidebar */}
         <ChannelList
           channelList={channelList}

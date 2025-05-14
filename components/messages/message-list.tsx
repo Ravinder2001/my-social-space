@@ -110,7 +110,7 @@ export function MessageList({
               <React.Fragment key={message.message_id}>
                 {/* Seen by text */}
                 {seenByMembers.length > 0 && (
-                  <div className="text-xs text-muted-foreground flex justify-end -mt-1">
+                  <div className="text-xs text-muted-foreground flex justify-end -mt-1 animate-slide-up">
                     {isGroup
                       ? `Seen by ${seenByMembers.map((m) => m.full_name.split(" ")[0]).join(", ")}`
                       : "Seen"}
