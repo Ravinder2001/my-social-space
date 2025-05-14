@@ -336,26 +336,32 @@ function MessageRoom({
         onEmojiClick={handleEmojiClick}
         onToggleEmojiPicker={() => setShowEmojiPicker(!showEmojiPicker)}
       />
+      {editDialogOpen && (
+        <MessageEditDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          editMessageInput={editMessageInput}
+          onEditMessageChange={(value) => setEditMessageInput(value)}
+          onConfirmEdit={handleConfirmEdit}
+        />
+      )}
 
-      <MessageEditDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        editMessageInput={editMessageInput}
-        onEditMessageChange={(value) => setEditMessageInput(value)}
-        onConfirmEdit={handleConfirmEdit}
-      />
+      {deleteDialogOpen && (
+        <MessageDeleteDialog
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onConfirmDelete={handleConfirmDelete}
+        />
+      )}
 
-      <MessageDeleteDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirmDelete={handleConfirmDelete}
-      />
-      <GroupInfoDialog
-        open={showGroupInfo}
-        onOpenChange={setShowGroupInfo}
-        activeConversation={activeConversation}
-        members={members}
-      />
+      {showGroupInfo && (
+        <GroupInfoDialog
+          open={showGroupInfo}
+          onOpenChange={setShowGroupInfo}
+          activeConversation={activeConversation}
+          members={members}
+        />
+      )}
     </div>
   );
 }
