@@ -11,6 +11,7 @@ import { MessageEditDialog } from "./message-edit-dialog";
 import { MessageDeleteDialog } from "./message-delete-dialog";
 import type { EmojiClickData } from "emoji-picker-react";
 import { useSocket } from "../providers/socket-provider";
+import GroupInfoDialog from "./group-info-dialog";
 
 interface MessageRoomProps {
   activeConversation: ChannelType;
@@ -37,6 +38,7 @@ function MessageRoom({
   const [selectedMessage, setSelectedMessage] = useState<MessageType | null>(null);
   const [editMessageInput, setEditMessageInput] = useState("");
   const [members, setMembers] = useState<ChannelMembers[]>([]);
+  const [showGroupInfo, setShowGroupInfo] = useState<boolean>(false);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -305,6 +307,7 @@ function MessageRoom({
         onBackToList={onBackToList}
         setMembers={setMembers}
         members={members}
+        setShowGroupInfo={setShowGroupInfo}
       />
 
       <div
@@ -346,6 +349,12 @@ function MessageRoom({
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         onConfirmDelete={handleConfirmDelete}
+      />
+      <GroupInfoDialog
+        open={showGroupInfo}
+        onOpenChange={setShowGroupInfo}
+        activeConversation={activeConversation}
+        members={members}
       />
     </div>
   );

@@ -52,6 +52,7 @@ const CONSTANTS = {
     CHANNEL_DETAILS: "/chat/channelDetails",
     CREATE_CHANNEL: "/chat/channels",
     MESSAGE_SEEN: "/chat/seen",
+    EDIT_CHANNEL_DETAILS: "/chat/channelDetails",
   },
   JIO_SAAVN_API: "https://saavn.dev/api/search/songs?query=",
   LOCAL_STORAGE_KEY: "authToken",

@@ -20,6 +20,7 @@ interface MessageHeaderProps {
   isMobile: boolean;
   onBackToList: () => void;
   setMembers: Dispatch<SetStateAction<ChannelMembers[]>>;
+  setShowGroupInfo: Dispatch<SetStateAction<boolean>>;
   members: ChannelMembers[];
 }
 
@@ -29,6 +30,7 @@ export function MessageHeader({
   onBackToList,
   setMembers,
   members,
+  setShowGroupInfo,
 }: MessageHeaderProps) {
   const { socket } = useSocket();
 
@@ -81,7 +83,14 @@ export function MessageHeader({
           <span className="sr-only">Back to conversations</span>
         </Button>
       )}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+      <div
+        className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1"
+        onClick={() => {
+          if (activeConversation.is_group) {
+            setShowGroupInfo(true);
+          }
+        }}
+      >
         <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0">
           <AvatarImage
             src={activeConversation?.profile_picture || "/placeholder.svg"}

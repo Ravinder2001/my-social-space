@@ -137,4 +137,5 @@ export type ChannelMembers = {
   is_online: boolean;
   last_seen: string;
   last_seen_message_id: number;
+  is_admin: boolean;
 };

@@ -6,15 +6,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { UploadFile } from "../utils/functions";
 import axiosInstance from "../utils/axiosInstance";
 import { showToast } from "../utils/toast";
 import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { EditPostType, VisibilityType } from "../utils/CommanTypes";
-import { getSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
@@ -38,11 +48,13 @@ export function CreatePostDialog({
   const [caption, setCaption] = useState(editPost?.caption || "");
   const [visibility, setVisibility] = useState<VisibilityType>(editPost?.visibility || "PUBLIC");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
-  const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>(editPost?.images || []);
+  const [uploadedMedia, setUploadedMedia] = useState<{ key: string; url: string }[]>(
+    editPost?.images || []
+  );
   const [showAiPrompt, setShowAiPrompt] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { fetchData: UploadPost, isLoading: UploadPostLoading } = useApiFetch("");
@@ -198,7 +210,9 @@ export function CreatePostDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold">{editPost ? "Edit Post" : "Create Post"}</DialogTitle>
+          <DialogTitle className="text-center text-xl font-semibold">
+            {editPost ? "Edit Post" : "Create Post"}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center gap-3 mt-2">
@@ -211,13 +225,24 @@ export function CreatePostDialog({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-7 gap-1 px-2">
-                  {React.createElement(visibilityOptions[visibility].icon, { className: "h-3.5 w-3.5" })}
+                  {React.createElement(visibilityOptions[visibility].icon, {
+                    className: "h-3.5 w-3.5",
+                  })}
                   <span>{visibilityOptions[visibility].label}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                {(Object.entries(visibilityOptions) as [VisibilityType, { label: string; icon: any }][]).map(([key, { label, icon }]) => (
-                  <DropdownMenuItem key={key} onClick={() => setVisibility(key as VisibilityType)} className="gap-2">
+                {(
+                  Object.entries(visibilityOptions) as [
+                    VisibilityType,
+                    { label: string; icon: any },
+                  ][]
+                ).map(([key, { label, icon }]) => (
+                  <DropdownMenuItem
+                    key={key}
+                    onClick={() => setVisibility(key as VisibilityType)}
+                    className="gap-2"
+                  >
                     {React.createElement(icon, { className: "h-4 w-4" })}
                     {label}
                   </DropdownMenuItem>
@@ -229,8 +254,13 @@ export function CreatePostDialog({
 
         <div className="space-y-4 mt-2">
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium">What's on your mind?</p>
-            <Button variant="outline" size="sm" className="gap-2" onClick={() => setShowAiPrompt(!showAiPrompt)}>
+            <p className="text-sm font-medium">What&apos;s on your mind?</p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => setShowAiPrompt(!showAiPrompt)}
+            >
               <Sparkles className="h-4 w-4 text-brand-purple" />
               Ask AI
             </Button>
@@ -238,7 +268,9 @@ export function CreatePostDialog({
 
           {showAiPrompt && (
             <div className="space-y-2 p-3 bg-muted/30 rounded-md">
-              <p className="text-sm text-muted-foreground">Let AI help you craft the perfect caption</p>
+              <p className="text-sm text-muted-foreground">
+                Let AI help you craft the perfect caption
+              </p>
               <div className="flex gap-2">
                 <Input
                   placeholder="Enter a prompt for the AI..."
@@ -246,7 +278,10 @@ export function CreatePostDialog({
                   onChange={(e) => setAiPrompt(e.target.value)}
                   disabled={isGeneratingCaption}
                 />
-                <Button onClick={generateAICaption} disabled={isGeneratingCaption || !aiPrompt.trim()}>
+                <Button
+                  onClick={generateAICaption}
+                  disabled={isGeneratingCaption || !aiPrompt.trim()}
+                >
                   {isGeneratingCaption ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -271,10 +306,19 @@ export function CreatePostDialog({
           />
 
           {uploadedMedia.length > 0 && (
-            <div className={`grid gap-2 ${uploadedMedia.length === 1 ? "grid-cols-1" : uploadedMedia.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+            <div
+              className={`grid gap-2 ${uploadedMedia.length === 1 ? "grid-cols-1" : uploadedMedia.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}
+            >
               {uploadedMedia.map((media, index) => (
-                <div key={index} className="relative group aspect-square rounded-md overflow-hidden">
-                  <img src={media.url || "/placeholder.svg"} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                <div
+                  key={index}
+                  className="relative group aspect-square rounded-md overflow-hidden"
+                >
+                  <img
+                    src={media.url || "/placeholder.svg"}
+                    alt={`Preview ${index}`}
+                    className="w-full h-full object-cover"
+                  />
                   {!editPost && (
                     <Button
                       variant="destructive"
@@ -295,11 +339,23 @@ export function CreatePostDialog({
         <div className="flex flex-wrap gap-2 mt-2">
           {!editPost && (
             <>
-              <Button variant="outline" size="sm" className="gap-2" onClick={() => fileInputRef.current?.click()}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <ImageIcon className="h-4 w-4 text-brand-pink" />
                 <span>Add Photos</span>
               </Button>
-              <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileChange}
+              />
 
               <Button variant="outline" size="sm" className="gap-2">
                 <Smile className="h-4 w-4 text-brand-yellow" />
@@ -307,10 +363,14 @@ export function CreatePostDialog({
               </Button>
             </>
           )}
-        </div>  
+        </div>
 
         <DialogFooter>
-          <Button className="w-full" onClick={handleSubmit} disabled={UploadPostLoading || (caption.trim() === "" && uploadedMedia.length === 0)}>
+          <Button
+            className="w-full"
+            onClick={handleSubmit}
+            disabled={UploadPostLoading || (caption.trim() === "" && uploadedMedia.length === 0)}
+          >
             {UploadPostLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

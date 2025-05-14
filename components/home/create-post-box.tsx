@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { ImageIcon, Video, Smile, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,7 @@ export function CreatePostBox(props: Props) {
           onClick={() => props.setDialogOpen(true)}
           className="flex-1 bg-muted rounded-full px-4 py-2.5 text-muted-foreground cursor-pointer hover:bg-muted/80 transition-colors"
         >
-        What's on your mind?
+          What&apos;s on your mind?
         </div>
       </div>
 
@@ -75,7 +75,11 @@ export function CreatePostBox(props: Props) {
         </Button>
       </div>
 
-      <CreatePostDialog open={props.dialogOpen} onOpenChange={props.setDialogOpen} editPost={props.selectedPost} />
+      <CreatePostDialog
+        open={props.dialogOpen}
+        onOpenChange={props.setDialogOpen}
+        editPost={props.selectedPost}
+      />
     </div>
   );
 }
