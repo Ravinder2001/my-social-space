@@ -70,6 +70,8 @@ const CONSTANTS = {
     USER_PRESENCE_CHANGE: "User-Presence-Change",
     MSG_NOTIFICATION: "Message-Notification",
     MSG_SEEN_NOTIFICATION: "Message-Seen",
+    STORY_ADDED: "Story-Added",
+    STORY_DELETED: "Story-Deleted",
   },
 };
 

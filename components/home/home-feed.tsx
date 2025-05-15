@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StoriesSection } from "@/components/home/stories-section";
 import { CreatePostBox } from "@/components/home/create-post-box";
 import { TrendingTopics } from "@/components/home/trending-topics";
@@ -27,7 +27,11 @@ export function HomeFeed() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <StoriesSection />
-          <CreatePostBox selectedPost={selectedPost} dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
+          <CreatePostBox
+            selectedPost={selectedPost}
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+          />
           <div className="space-y-6">
             {postList.map((post) => (
               <PostCard

@@ -9,13 +9,18 @@ import useApiFetch from "@/hooks/use-api-fetch";
 import CONSTANTS from "../utils/constants";
 import { StoryType } from "../utils/CommanTypes";
 import { StoryViewModal } from "./story-view-modal";
+import { useSocket } from "../providers/socket-provider";
 
 export function StoriesSection() {
+  const { socket } = useSocket();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [storyDialogOpen, setStoryDialogOpen] = React.useState(false);
   const [stories, setStories] = useState<StoryType[]>([]);
   const [showScrollButtons, setShowScrollButtons] = useState(false);
-  const [storyViewOpen, setStoryViewOpen] = useState<{ selectedStory: StoryType | null; status: boolean }>({
+  const [storyViewOpen, setStoryViewOpen] = useState<{
+    selectedStory: StoryType | null;
+    status: boolean;
+  }>({
     selectedStory: null,
     status: false,
   });
@@ -47,7 +52,7 @@ export function StoriesSection() {
     }
   };
 
-  useEffect(() => {
+  const handleFetchStories = () => {
     fetchStories().then((res: any) => {
       if (res.success == 1) {
         setStories(res.data);
@@ -55,13 +60,25 @@ export function StoriesSection() {
         setTimeout(checkScrollable, 100);
       }
     });
-  }, []);
+  };
 
   // Also check when window resizes
   useEffect(() => {
-    window.addEventListener('resize', checkScrollable);
-    return () => window.removeEventListener('resize', checkScrollable);
+    handleFetchStories();
+    window.addEventListener("resize", checkScrollable);
+    return () => window.removeEventListener("resize", checkScrollable);
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on(CONSTANTS.SOCKET_EVENTS.STORY_ADDED, () => {
+      handleFetchStories();
+    });
+
+    return () => {
+      socket.off(CONSTANTS.SOCKET_EVENTS.STORY_ADDED, handleFetchStories);
+    };
+  }, [socket]);
 
   return (
     <div className="relative bg-card rounded-xl p-4 shadow-sm">
@@ -98,12 +115,14 @@ export function StoriesSection() {
             <span className="text-xs font-medium">Add Story</span>
           </div>
           {stories.map((story, index) => (
-            <div key={index} className="flex flex-col items-center space-y-2 flex-shrink-0" onClick={() => handleStoryChange(story)}>
+            <div
+              key={index}
+              className="flex flex-col items-center space-y-2 flex-shrink-0"
+              onClick={() => handleStoryChange(story)}
+            >
               <button className="relative w-16 h-16 rounded-full group">
                 <div
-                  className={`absolute inset-0 rounded-full ${
-                    false ? "bg-muted" : "bg-gradient-to-tr from-brand-pink via-brand-purple to-brand-blue animate-pulse"
-                  }`}
+                  className={`absolute inset-0 rounded-full bg-gradient-to-tr from-brand-pink via-brand-purple to-brand-blue animate-pulse`}
                 />
                 <Avatar className="absolute inset-0.5 w-[calc(100%-4px)] h-[calc(100%-4px)] border-2 border-background group-hover:scale-105 transition-transform">
                   <AvatarImage src={story.profile_picture} alt={story.name} />
@@ -131,7 +150,11 @@ export function StoriesSection() {
 
       <CreateStoryDialog open={storyDialogOpen} onOpenChange={setStoryDialogOpen} />
       {storyViewOpen.status && storyViewOpen.selectedStory && (
-        <StoryViewModal open={storyViewOpen.status} onOpenChange={() => handleStoryChange(null)} stories={storyViewOpen.selectedStory} />
+        <StoryViewModal
+          open={storyViewOpen.status}
+          onOpenChange={() => handleStoryChange(null)}
+          stories={storyViewOpen.selectedStory}
+        />
       )}
     </div>
   );
