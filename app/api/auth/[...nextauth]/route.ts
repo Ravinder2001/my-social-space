@@ -78,14 +78,6 @@ export const authOptions: NextAuthOptions = {
             const data: ApiResponse = await response.json();
             if (data.success && data.data.token) {
               // Decode JWT to extract id, name, and email
-              console.log("change", () => {
-                return new Promise((resolve, reject) => {
-                  try {
-                  } catch (err) {
-                    reject(err);
-                  }
-                });
-              });
               const decoded = jwt.decode(data.data.token) as JWTPayload | null;
               if (decoded && typeof decoded === "object") {
                 return {
@@ -116,15 +108,18 @@ export const authOptions: NextAuthOptions = {
       try {
         if (account?.provider === "google") {
           // Check if Google user exists or create new user (not using signup endpoint)
-          const response = await fetch(`${Config.API_BASE_URL}${CONSTANTS.API_ROUTES.GOOGLE_SIGNIN}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: account.id_token,
-            }),
-          });
+          const response = await fetch(
+            `${Config.API_BASE_URL}${CONSTANTS.API_ROUTES.GOOGLE_SIGNIN}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: account.id_token,
+              }),
+            }
+          );
 
           if (response.status === 200 || response.status === 201) {
             const data: ApiResponse = await response.json();
