@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, UserCheck, UserX } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { UserCard } from "@/components/explore/user-card";
@@ -44,7 +44,10 @@ export function ExploreView() {
     }).then((res) => {
       if (res.success == 1) {
         setFriendReqList((prev) => prev.filter((req) => req.request_id !== req_id));
-        showToast({ message: `You ${status == "ACCEPTED" ? "accepted" : "rejected"} the friend request.`, type: "success" });
+        showToast({
+          message: `You ${status == "ACCEPTED" ? "accepted" : "rejected"} the friend request.`,
+          type: "success",
+        });
       }
     });
   };
@@ -135,12 +138,22 @@ export function ExploreView() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button variant="default" size="sm" className="gap-1" onClick={() => handleReq(request.request_id, "ACCEPTED")}>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => handleReq(request.request_id, "ACCEPTED")}
+                      >
                         <UserCheck className="h-4 w-4" />
                         <span className="hidden sm:inline">Accept</span>
                       </Button>
 
-                      <Button variant="outline" size="sm" className="gap-1" onClick={() => handleReq(request.request_id, "REJECTED")}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1"
+                        onClick={() => handleReq(request.request_id, "REJECTED")}
+                      >
                         <UserX className="h-4 w-4" />
                         <span className="hidden sm:inline">Reject</span>
                       </Button>
@@ -153,7 +166,12 @@ export function ExploreView() {
         )}
         <div className="relative mb-6">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search users..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          <Input
+            placeholder="Search users..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">People you may know</h2>
@@ -169,7 +187,10 @@ export function ExploreView() {
           <h2 className="text-xl font-semibold mb-4">Recent Public Posts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {publicPost.map((post) => (
-              <div key={post.post_id} className="overflow-hidden rounded-lg border bg-background shadow-sm">
+              <div
+                key={post.post_id}
+                className="overflow-hidden rounded-lg border bg-background shadow-sm"
+              >
                 <div className="p-4 flex items-center gap-3">
                   <Avatar>
                     <AvatarImage src={post.profile_picture} alt={post.full_name} />
@@ -177,7 +198,11 @@ export function ExploreView() {
                   </Avatar>
                   <span className="font-medium">{post.full_name}</span>
                 </div>
-                <img src={post.image_url} alt={`Post by ${post.full_name}`} className="w-full aspect-square object-cover" />
+                <img
+                  src={post.image_url}
+                  alt={`Post by ${post.full_name}`}
+                  className="w-full aspect-square object-cover"
+                />
                 <div className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">

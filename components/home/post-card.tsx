@@ -1,12 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Heart, MessageCircle, MoreHorizontal, ChevronLeft, ChevronRight, Bookmark } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Heart,
+  MessageCircle,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Bookmark,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { EditPostType, PostType } from "../utils/CommanTypes";
 import moment from "moment";
 import useApiFetch from "@/hooks/use-api-fetch";
@@ -85,7 +97,9 @@ export function PostCard({ post, onEditClick }: Props) {
             <div className="flex items-center gap-1">
               <span className="font-medium">{post.user_name}</span>
             </div>
-            <p className="text-xs text-muted-foreground">{moment(post.created_at).format("DD-MM-YYYY HH:MM")}</p>
+            <p className="text-xs text-muted-foreground">
+              {moment(post.created_at).format("DD-MM-YYYY HH:MM")}
+            </p>
           </div>
         </div>
 
@@ -120,7 +134,11 @@ export function PostCard({ post, onEditClick }: Props) {
         <p className="whitespace-pre-line">
           {displayContent}
           {shouldTruncate && (
-            <Button variant="link" className="px-0 h-auto font-normal" onClick={() => setExpanded(true)}>
+            <Button
+              variant="link"
+              className="px-0 h-auto font-normal"
+              onClick={() => setExpanded(true)}
+            >
               See more
             </Button>
           )}
@@ -132,13 +150,23 @@ export function PostCard({ post, onEditClick }: Props) {
         <div className="relative cursor-pointer" onClick={openPostModal}>
           {post.images.length === 1 ? (
             // Single image
-            <img src={post.images[0] || "/placeholder.svg"} alt={`Post by ${post.user_name}`} className="w-full object-cover max-h-[400px]" />
+            <img
+              src={post.images[0] || "/placeholder.svg"}
+              alt={`Post by ${post.user_name}`}
+              className="w-full object-cover max-h-[400px]"
+            />
           ) : (
             // Multiple images grid
-            <div className={`grid gap-1 ${post.images.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}>
+            <div
+              className={`grid gap-1 ${post.images.length === 2 ? "grid-cols-2" : "grid-cols-2 grid-rows-2"}`}
+            >
               {visibleMedia.map((images, index) => (
                 <div key={index} className="relative aspect-square">
-                  <img src={images || "/placeholder.svg"} alt={`Post by ${post.user_name}`} className="w-full h-full object-cover" />
+                  <img
+                    src={images || "/placeholder.svg"}
+                    alt={`Post by ${post.user_name}`}
+                    className="w-full h-full object-cover"
+                  />
                   {/* Show count overlay on the last visible image if there are more */}
                   {index === visibleMedia.length - 1 && remainingCount > 0 && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -201,7 +229,12 @@ export function PostCard({ post, onEditClick }: Props) {
 
       {/* Post actions */}
       <div className="px-2 py-1 flex justify-between">
-        <Button variant="ghost" size="sm" className={cn("gap-2 flex-1", liked ? "text-brand-red" : "")} onClick={toggleLike}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn("gap-2 flex-1", liked ? "text-brand-red" : "")}
+          onClick={toggleLike}
+        >
           <Heart className={cn("h-5 w-5", liked ? "fill-current animate-pulse-once" : "")} />
           <span>Like</span>
         </Button>
@@ -211,7 +244,12 @@ export function PostCard({ post, onEditClick }: Props) {
           <span>Comment</span>
         </Button>
 
-        <Button variant="ghost" size="sm" className={cn("gap-2 flex-1", saved ? "text-brand-white" : "")} onClick={toggleSave}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn("gap-2 flex-1", saved ? "text-brand-white" : "")}
+          onClick={toggleSave}
+        >
           <Bookmark className={cn("h-5 w-5", saved ? "fill-current animate-pulse-once" : "")} />
           <span>Save</span>
         </Button>
@@ -220,7 +258,11 @@ export function PostCard({ post, onEditClick }: Props) {
       {/* Comments preview */}
       {post.comment_count > 0 && (
         <div className="px-4 py-2 bg-muted/30">
-          <Button variant="link" className="p-0 h-auto text-sm text-muted-foreground" onClick={openPostModal}>
+          <Button
+            variant="link"
+            className="p-0 h-auto text-sm text-muted-foreground"
+            onClick={openPostModal}
+          >
             View all {post.comment_count} comments
           </Button>
         </div>
@@ -228,7 +270,10 @@ export function PostCard({ post, onEditClick }: Props) {
       {post.latest_comment ? (
         <div className="flex items-center gap-3 p-2">
           <Avatar>
-            <AvatarImage src={post.latest_comment.profile_picture} alt={post.latest_comment.user_name} />
+            <AvatarImage
+              src={post.latest_comment.profile_picture}
+              alt={post.latest_comment.user_name}
+            />
             <AvatarFallback>{post.latest_comment.user_name[0]}</AvatarFallback>
           </Avatar>
           <div>
